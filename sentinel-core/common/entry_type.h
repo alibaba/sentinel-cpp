@@ -4,9 +4,9 @@
 namespace Sentinel {
 
 enum class EntryType {
-    IN, OUT
+  IN, OUT
 };
 
-}
+}  // namespace Sentinel
 
 #endif

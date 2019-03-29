@@ -2,61 +2,58 @@
 
 #include <vector>
 
-#include <statistic/base/bucket.hpp>
+#include <sentinel-core/statistic/base/bucket.h>
 
 namespace Sentinel {
 namespace Stat {
 
 class Metric {
-public:
-    /**
-     * Get total success count.
-     *
-     * @return success count
-     */
-    virtual long Complete() = 0;
+ public:
+  virtual ~Metric() {}
+  
+  virtual long Complete() = 0;
 
     /**
      * Get max success count.
      *
      * @return max success count
      */
-    virtual long MaxComplete() = 0;
+  virtual long MaxComplete() = 0;
 
     /**
      * Get total exception count.
      *
      * @return exception count
      */
-    virtual long Exception() = 0;
+  virtual long Exception() = 0;
 
     /**
      * Get total block count.
      *
      * @return block count
      */
-    virtual long Block() = 0;
+  virtual long Block() = 0;
 
     /**
      * Get total pass count. not include {@link #occupiedPass()}
      *
      * @return pass count
      */
-    virtual long Pass() = 0;
+  virtual long Pass() = 0;
 
     /**
      * Get total response time.
      *
      * @return total RT
      */
-    virtual long Rt() = 0;
+  virtual long Rt() = 0;
 
     /**
      * Get the minimal RT.
      *
      * @return minimal RT
      */
-    virtual long MinRt() = 0;
+  virtual long MinRt() = 0;
 
     /**
      * Get aggregated metric nodes of all resources.
@@ -70,50 +67,50 @@ public:
      *
      * @return window metric array
      */
-    virtual std::vector<MetricBucket> Windows() = 0;
+  virtual std::vector<MetricBucket> Windows() = 0;
 
     /**
      * Add current exception count.
      *
      * @param n count to add
      */
-    virtual void AddException(int n) = 0;
+  virtual void AddException(int n) = 0;
 
     /**
      * Add current block count.
      *
      * @param n count to add
      */
-    virtual void AddBlock(int n) = 0;
+  virtual void AddBlock(int n) = 0;
 
     /**
      * Add current completed count.
      *
      * @param n count to add
      */
-    virtual void AddComplete(int n) = 0;
+  virtual void AddComplete(int n) = 0;
 
     /**
      * Add current pass count.
      *
      * @param n count to add
      */
-    virtual void AddPass(int n) = 0;
+  virtual void AddPass(int n) = 0;
 
     /**
      * Add given RT to current total RT.
      *
      * @param rt RT
      */
-    virtual void AddRt(long rt) = 0;
+  virtual void AddRt(long rt) = 0;
 
     /**
      * Get the sliding window length in seconds.
      *
      * @return the sliding window length
      */
-    virtual double GetWindowIntervalInSec() = 0;
+  virtual double GetWindowIntervalInSec() = 0;
 };
 
-}
-}
+}  // namespace Stat
+}  // namespace Sentinel

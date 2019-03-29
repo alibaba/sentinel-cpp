@@ -6,4 +6,4 @@ class SphU {
 
 };
 
-}
+}  // namespace Sentinel

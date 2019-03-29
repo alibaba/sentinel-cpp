@@ -7,5 +7,5 @@ class AppNameUtil {
 
 };
 
-}
-}
+}  // namespace Util
+}  // namespace Sentinel

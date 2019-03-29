@@ -1,4 +1,4 @@
-#include <common/sph.hpp>
+#include <sentinel-core/common/sph.h>
 
 namespace Sentinel {
 
@@ -10,4 +10,4 @@ EntryResult Sph::Entry(ResourceWrapper& r, Context& context, int count, int flag
     
 }
 
-}
+}  // namespace Sentinel
