@@ -10,14 +10,7 @@ namespace Stat {
 template <typename T>
 class LeapArray {
 public:
-    explicit LeapArray(int sample_count, int interval_ms) {
-        // TODO: check args;
-        // AssertUtil.isTrue(sampleCount > 0, "bucket count is invalid: " + sampleCount);
-        // AssertUtil.isTrue(intervalInMs > 0, "total time interval of the sliding window should be positive");
-        // AssertUtil.isTrue(intervalInMs % sampleCount == 0, "time span needs to be evenly divided");
-
-    }
-    
+    explicit LeapArray(int sample_count, int interval_ms);
     virtual ~LeapArray();
 
     int GetSampleCount();
@@ -27,7 +20,7 @@ public:
     virtual WindowWrap<T> ResetWindowTo(WindowWrap<T> wrap, long start_time) = 0;
 
     virtual WindowWrap<T> CurrentWindow();
-    virtual WindowWrap<T> cCurrentWindow(long time_millis);
+    virtual WindowWrap<T> CurrentWindow(long time_millis);
 
     std::vector<WindowWrap<T>> Buckets();
     std::vector<T> Values();

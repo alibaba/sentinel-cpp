@@ -8,7 +8,7 @@
 namespace Sentinel {
 namespace Stat {
 
-class ClusterNode {
+class ClusterNode : public StatisticNode {
 public:
     explicit ClusterNode() {}
     virtual ~ClusterNode() {}

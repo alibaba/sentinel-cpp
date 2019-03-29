@@ -13,9 +13,14 @@ public:
     virtual ~ProcessorSlot() {}
 
     virtual TokenResult Entry(Context& context, ResourceWrapper& resource,
-        Stat::Node& node, int count, int flag);
+        Stat::Node& node, int count, int flag) = 0;
     
-    virtual void Exit(Context& context, ResourceWrapper& resource, int count);
+    virtual TokenResult FireEntry(Context& context, ResourceWrapper& resource,
+        Stat::Node& node, int count, int flag) = 0;
+    
+    virtual void Exit(Context& context, ResourceWrapper& resource, int count) = 0;
+
+    virtual void FireExit(Context& context, ResourceWrapper& resource, int count) = 0;
 };
 
 }
