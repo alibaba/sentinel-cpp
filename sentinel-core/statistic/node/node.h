@@ -5,7 +5,7 @@ namespace Stat {
 
 class Node {
  public:
-  virtual ~Node() {}
+  virtual ~Node() = default;
 
   virtual long TotalCountInMinute() = 0;
   virtual long PassCountInMinute() = 0;
@@ -26,7 +26,7 @@ class Node {
 
   virtual double PreviousBlockQps() = 0;
   virtual double PreviousPassQps() = 0;
-  //virtual std::map&<long, MetricNode> metrics();
+  // virtual std::map&<long, MetricNode> metrics();
 
   virtual void AddPassRequest(int count) = 0;
   virtual void AddRtAndCompleteRequest(long rt, int completeCount) = 0;

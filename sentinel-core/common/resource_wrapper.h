@@ -2,15 +2,14 @@
 
 #include <string>
 
-#include <sentinel-core/common/entry_type.h>
+#include "sentinel-core/common/entry_type.h"
 
 namespace Sentinel {
-
 class ResourceWrapper {
  public:
-  virtual ~ResourceWrapper() {}
+  virtual ~ResourceWrapper() = default;
 
-  virtual std::string& name() = 0;
+  virtual const std::string& name() = 0;
   virtual EntryType entryType() = 0;
 };
 

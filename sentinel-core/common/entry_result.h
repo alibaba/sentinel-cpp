@@ -12,6 +12,7 @@ class EntryResult {
   std::string& exception();
 
   bool IsBlocked();
+
  private:
   std::shared_ptr<Entry> entry_;
   std::string& exception_;

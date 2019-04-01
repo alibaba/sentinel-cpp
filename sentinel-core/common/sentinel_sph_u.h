@@ -2,8 +2,6 @@
 
 namespace Sentinel {
 
-class SphU {
-
-};
+class SphU {};
 
 }  // namespace Sentinel

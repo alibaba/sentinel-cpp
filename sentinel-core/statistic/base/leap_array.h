@@ -24,10 +24,12 @@ class LeapArray {
 
   std::vector<WindowWrap<T>> Buckets();
   std::vector<T> Values();
+
  protected:
-  const int interval_ms_; // total time length of the sliding window
-  const int sample_count_; // sample count that divide the sliding window into n parts
-  const int bucket_length_ms_; // time length of each bucket
+  const int interval_ms_;   // total time length of the sliding window
+  const int sample_count_;  // sample count that divide the sliding window into
+                            // n parts
+  const int bucket_length_ms_;  // time length of each bucket
  private:
   int CalculateTimeIdx(/*@Valid*/ long time_millis);
   long CalculateWindowStart(/*@Valid*/ long time_millis);

@@ -1,23 +1,18 @@
 #pragma once
 
-#include <common/resource_wrapper.hpp>
-#include <statistic/node/node.hpp>
-#include <context/context.hpp>
-#include <slot/base/slot_chain_result.hpp>
-#include <slot/base/processor_slot.hpp>
+#include "sentinel-core/context/context.h"
 
 namespace Sentinel {
 namespace Slot {
 
 class FlowSlot : public Slot::ProcessorSlot {
-public:
+  public:
     virtual ~FlowSlot();
-
     TokenResult Entry(Context& context, ResourceWrapper& resource,
-        Stat::Node& node, int count, int flag) override;
-    
+                      Stat::Node& node, int count, int flag) override;
+
     void Exit(Context& context, ResourceWrapper& resource, int count) override;
 };
 
-}
-}
+}  // namespace Slot
+}  // namespace Sentinel

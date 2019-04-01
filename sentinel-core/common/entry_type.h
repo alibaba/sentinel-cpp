@@ -1,12 +1,6 @@
-#ifndef SENTINEL_CPP_ENTRY_TYPE_H
-#define SENTINEL_CPP_ENTRY_TYPE_H
+#pragma once
 
 namespace Sentinel {
-
-enum class EntryType {
-  IN, OUT
-};
+enum class EntryType { IN, OUT };
 
 }  // namespace Sentinel
-
-#endif

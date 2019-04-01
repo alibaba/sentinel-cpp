@@ -15,6 +15,7 @@ class ClusterNode : public StatisticNode {
 
   StatisticNode GetOrCreateOriginNode(std::string& origin);
   void TraceException(std::string& message, int count);
+
  private:
   std::unordered_map<std::string, StatisticNode> origin_node_map_;
 };

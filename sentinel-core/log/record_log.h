@@ -14,5 +14,3 @@ class RecordLog {
 
 }  // namespace Log
 }  // namespace Sentinel
-
-

@@ -9,13 +9,13 @@
 namespace Sentinel {
 namespace Slot {
 
-class LogSlot : public Slot::ProcessorSlot {
+class LogSlot : public Slot::StatsSlot {
 public:
     virtual ~LogSlot();
 
     TokenResult Entry(Context& context, ResourceWrapper& resource,
         Stat::Node& node, int count, int flag) override;
-    
+
     void Exit(Context& context, ResourceWrapper& resource, int count) override;
 };
 

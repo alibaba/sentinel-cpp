@@ -1,17 +1,16 @@
 #pragma once
 
-#include <sentinel-core/statistic/base/event.h>
+#include "sentinel-core/statistic/base/metric_event.h"
 
 namespace Sentinel {
 namespace Stat {
-
 class MetricBucket {
  public:
-  ~MetricBucket();
+  ~MetricBucket() = default;
 
   MetricBucket& Reset();
-  long Get(MetricEvent& event);
-  void Add(MetricEvent& event, long n);
+  long Get(const MetricEvent& event);
+  void Add(const MetricEvent& event, long n);
   void AddRt(long rt);
 };
 

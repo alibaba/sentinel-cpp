@@ -16,6 +16,7 @@ class WindowWrap {
 
   bool IsWindowDeprecated();
   bool IsWindowDeprecated(long time_millis);
+
  private:
   const long bucketLengthInMs_;
   long bucketStart_;

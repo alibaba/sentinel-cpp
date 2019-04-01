@@ -3,21 +3,20 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-  name = "context_interface",
-  srcs =  [
-    "context.h",
+  name = "entry_type_enum",
+  srcs = [
+    "entry_type.h",
   ],
   copts = DEFAULT_COPTS,
 )
 
 cc_library(
-  name = "context_util_lib",
+  name = "resource_wrapper_interface",
   srcs = [
-    "context_util.h",
-    "context_util.cc",
+    "resource_wrapper.h",
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":context_interface",
+    ":entry_type_enum",
   ]
 )

@@ -16,7 +16,8 @@ class Sph {
  public:
   Sph() = delete;
 
-  static EntryResult Entry(ResourceWrapper& r, Context& context, int count, int flag);
+  static EntryResult Entry(ResourceWrapper& r, Context& context, int count,
+                           int flag);
   static EntryResult Entry(ResourceWrapper& r, int count, int flag);
 };
 
