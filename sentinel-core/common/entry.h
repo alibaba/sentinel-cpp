@@ -1,19 +1,28 @@
 #pragma once
 
+#include <chrono>
+
 #include "sentinel-core/common/resource_wrapper.h"
 
 namespace Sentinel {
 
 class Entry {
  public:
-  explicit Entry(ResourceWrapper& r) : resource_(r), create_time_(/*TODO*/ 0) {}
-  ~Entry() = default;
+  explicit Entry(const ResourceWrapperSharedPtr resource)
+      : resource_(resource),
+        create_time_(std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now())) {}
 
-  void Exit();
+  ~Entry();
+
+  void Exit(int count);
+  ResourceWrapperSharedPtr GetResourceWrapper() const { return resource_; }
+  std::chrono::milliseconds GetCreateTime() const { return create_time_; }
 
  private:
-  const long create_time_;
-  const ResourceWrapper& resource_;
+  bool is_exit_{false};
+  const std::chrono::milliseconds create_time_;
+  const ResourceWrapperSharedPtr resource_;
 };
 
 }  // namespace Sentinel

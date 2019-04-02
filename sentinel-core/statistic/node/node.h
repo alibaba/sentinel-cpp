@@ -7,11 +7,11 @@ class Node {
  public:
   virtual ~Node() = default;
 
-  virtual long TotalCountInMinute() = 0;
-  virtual long PassCountInMinute() = 0;
-  virtual long CompleteCountInMinute() = 0;
-  virtual long BlockCountInMinute() = 0;
-  virtual long ExceptionCountInMinute() = 0;
+  virtual int64_t TotalCountInMinute() = 0;
+  virtual int64_t PassCountInMinute() = 0;
+  virtual int64_t CompleteCountInMinute() = 0;
+  virtual int64_t BlockCountInMinute() = 0;
+  virtual int64_t ExceptionCountInMinute() = 0;
 
   virtual double PassQps() = 0;
   virtual double BlockQps() = 0;
@@ -22,7 +22,7 @@ class Node {
 
   virtual double AvgRt() = 0;
   virtual double MinRt() = 0;
-  virtual int CurThreadNum() = 0;
+  virtual uint32_t CurThreadNum() = 0;
 
   virtual double PreviousBlockQps() = 0;
   virtual double PreviousPassQps() = 0;

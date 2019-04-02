@@ -18,7 +18,7 @@ class StatsSlot : public Slot {
     return true;
   }
 
-  SlotType Type() const {
+  SlotType Type() const override {
     static constexpr SlotType type = SlotType::STATS_SLOT;
     return type;
   }

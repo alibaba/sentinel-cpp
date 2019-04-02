@@ -31,3 +31,22 @@ cc_library(
     ":resource_wrapper_interface",
   ]
 )
+
+cc_library(
+  name = "entry_lib",
+  srcs = [
+    "entry.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":resource_wrapper_interface",
+  ]
+)
+
+cc_library(
+  name = "rule_lib",
+  srcs = [
+    "rule.h",
+  ],
+  copts = DEFAULT_COPTS,
+)

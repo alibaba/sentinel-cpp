@@ -115,6 +115,13 @@ cc_test(
   ],
   copts = TEST_COPTS,
   deps = [
+    ":rule_checker_slot_interface",
+    ":stats_slot_interface",
+    ":slot_interface",
+    ":default_slot_chain_impl_lib",
+    "//sentinel-core/common:string_resource_wrapper_lib",
+    "//sentinel-core/test/mock/slot:mock_lib",
+    "//sentinel-core/test/mock/statistic:mock_lib",
     "@com_google_googletest//:gtest_main",
   ]
 )
