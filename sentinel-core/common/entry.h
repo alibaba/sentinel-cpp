@@ -1,13 +1,13 @@
 #pragma once
 
-#include <sentinel-core/common/resource_wrapper.h>
+#include "sentinel-core/common/resource_wrapper.h"
 
 namespace Sentinel {
 
 class Entry {
  public:
   explicit Entry(ResourceWrapper& r) : resource_(r), create_time_(/*TODO*/ 0) {}
-  virtual ~Entry() {}
+  ~Entry() = default;
 
   void Exit();
 

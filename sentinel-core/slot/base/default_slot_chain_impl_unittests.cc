@@ -5,9 +5,7 @@
 namespace Sentinel {
 namespace Slot {
 
-TEST(DefaultSlotChainImplTest, Basic) {
-  EXPECT_TRUE(true);
-}
+TEST(DefaultSlotChainImplTest, Basic) { EXPECT_TRUE(true); }
 
 }  // namespace Slot
 }  // namespace Sentinel

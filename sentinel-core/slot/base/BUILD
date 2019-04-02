@@ -80,6 +80,20 @@ cc_library(
 )
 
 cc_library(
+  name = "slot_callback_interface",
+  srcs = [
+    "slot_callback.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":token_result_lib",
+    "//sentinel-core/common:resource_wrapper_interface",
+    "//sentinel-core/context:context_interface",
+    "//sentinel-core/statistic/node:node_interface"
+  ]
+)
+
+cc_library(
   name = "default_slot_chain_impl_lib",
   srcs = [
     "default_slot_chain_impl.h",

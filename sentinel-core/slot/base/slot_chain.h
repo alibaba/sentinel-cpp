@@ -10,7 +10,7 @@ namespace Slot {
 
 class SlotChain : public SlotBase {
  public:
-  ~SlotChain() = default;
+  virtual ~SlotChain() = default;
   virtual void AddFirst(std::unique_ptr<Slot>&& slot) = 0;
   virtual void AddLast(std::unique_ptr<Slot>&& slot) = 0;
 };

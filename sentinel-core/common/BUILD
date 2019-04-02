@@ -20,3 +20,14 @@ cc_library(
     ":entry_type_enum",
   ]
 )
+
+cc_library(
+  name = "string_resource_wrapper_lib",
+  srcs = [
+    "string_resource_wrapper.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":resource_wrapper_interface",
+  ]
+)

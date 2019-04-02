@@ -9,8 +9,8 @@ class ResourceWrapper {
  public:
   virtual ~ResourceWrapper() = default;
 
-  virtual const std::string& name() = 0;
-  virtual EntryType entryType() = 0;
+  virtual const std::string& Name() = 0;
+  virtual EntryType EntryType() = 0;
 };
 
 }  // namespace Sentinel
