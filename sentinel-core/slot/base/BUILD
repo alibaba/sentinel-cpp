@@ -92,3 +92,15 @@ cc_library(
     ":slot_interface",
   ]
 )
+
+
+cc_test(
+  name = "default_slot_chain_impl_unittests",
+  srcs = [
+    "default_slot_chain_impl_unittests.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    "@com_google_googletest//:gtest_main",
+  ]
+)

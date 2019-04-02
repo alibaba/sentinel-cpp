@@ -18,9 +18,9 @@ class StatsSlot : public Slot {
     return true;
   }
 
-  const std::string& Name() const override {
-    static constexpr std::string name = "StatsSlot";
-    return name;
+  SlotType Type() const {
+    static constexpr SlotType type = SlotType::STATS_SLOT;
+    return type;
   }
 
  protected:

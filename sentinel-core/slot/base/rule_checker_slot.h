@@ -17,9 +17,9 @@ class RuleCheckerSlot : public Slot {
     return true;
   }
 
-  const std::string& Name() const override {
-    static constexpr std::string name = "RuleCheckSlot";
-    return name;
+  SlotType Type() const {
+    static constexpr SlotType type = SlotType::RULE_CHECKER_SLOT;
+    return type;
   }
 };
 
