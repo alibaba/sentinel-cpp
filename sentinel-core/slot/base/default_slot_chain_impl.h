@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <deque>
+#include <memory>
 
-#include "sentinel-core/slot/base/slot_chain.h"
 #include "sentinel-core/slot/base/slot.h"
+#include "sentinel-core/slot/base/slot_chain.h"
 #include "sentinel-core/slot/base/token_result.h"
 
 namespace Sentinel {
@@ -18,9 +18,10 @@ class DefaultSlotChainImpl : public SlotChain {
   // SlotChain<RuleCheckerSlot>
   void AddFirst(std::unique_ptr<Slot>&& slot) override;
   void AddLast(std::unique_ptr<Slot>&& slot) override;
-  TokenResult Entry(Context& context, const ResourceWrapper& resource,
-                    Stat::Node& node, int count, int flag) override;
-  void Exit(Context& context, const ResourceWrapper& resource, int count) override;
+  TokenResultSharedPtr Entry(Context& context, const ResourceWrapper& resource,
+                             Stat::Node& node, int count, int flag) override;
+  void Exit(Context& context, const ResourceWrapper& resource,
+            int count) override;
 
  private:
   std::deque<std::unique_ptr<Slot>> slots_;
@@ -28,4 +29,3 @@ class DefaultSlotChainImpl : public SlotChain {
 
 }  // namespace Slot
 }  // namespace Sentinel
-

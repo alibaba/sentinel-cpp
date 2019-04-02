@@ -10,10 +10,10 @@ void DefaultSlotChainImpl::AddLast(std::unique_ptr<Slot>&& slot) {
   slots_.emplace_back(std::move(slot));
 }
 
-TokenResult DefaultSlotChainImpl::Entry(Context& context, const ResourceWrapper& resource,
-                                        Stat::Node& node, int count, int flag) {
-  // TODO(tianqain.zyf): Use shared_ptr to manage TokenResult to avoid copying
-  TokenResult token_result = TokenResult::Ok();
+TokenResultSharedPtr DefaultSlotChainImpl::Entry(
+    Context& context, const ResourceWrapper& resource, Stat::Node& node,
+    int count, int flag) {
+  auto token_result = TokenResult::Ok();
   for (auto elem = slots_.begin(); elem != slots_.end(); ++elem) {
     if ((*elem)->IsContinue(token_result)) {
       token_result = (*elem)->Entry(context, resource, node, count, flag);
@@ -22,7 +22,8 @@ TokenResult DefaultSlotChainImpl::Entry(Context& context, const ResourceWrapper&
   return token_result;
 }
 
-void DefaultSlotChainImpl::Exit(Context& context, const ResourceWrapper& resource, int count) {
+void DefaultSlotChainImpl::Exit(Context& context,
+                                const ResourceWrapper& resource, int count) {
   for (auto elem = slots_.begin(); elem != slots_.end(); ++elem) {
     (*elem)->Exit(context, resource, count);
   }
