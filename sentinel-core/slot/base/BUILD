@@ -107,7 +107,6 @@ cc_library(
   ]
 )
 
-
 cc_test(
   name = "default_slot_chain_impl_unittests",
   srcs = [

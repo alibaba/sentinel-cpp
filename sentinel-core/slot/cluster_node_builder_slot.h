@@ -11,10 +11,8 @@ namespace Slot {
 
 class ClusterNodeBuilderSlot : public Slot::RuleCheckerSlot {
  public:
-  virtual ~ClusterNodeBuilderSlot();
-  Entry(Context& context, const ResourceWrapper& resource, Stat::Node& node,
-        int count, int flag) override;
-  void Exit(Context& context, ResourceWrapper& resource, int count) override;
+  ClusterNodeBuilderSlot();
+  ~ClusterNodeBuilderSlot();
 
   static Stat::ClusterNode& GetClusterNode(const std::string& resource_name);
   static Stat::ClusterNode& GetClusterNode(const std::string& resource_name,

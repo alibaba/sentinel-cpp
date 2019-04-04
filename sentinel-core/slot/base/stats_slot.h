@@ -12,6 +12,8 @@ class StatsSlot : public Slot {
   virtual ~StatsSlot() = default;
   /*
    * Statistics class slot default always continue the rest of the slot
+   * TODO(tianqian.zyf): TokenResultSharedPtr should be passed over the entire
+   * slot chain using the SlotChainContext method.
    */
   bool IsContinue(const TokenResultSharedPtr& token) override {
     last_token_result_ = token;

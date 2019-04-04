@@ -19,22 +19,49 @@ namespace Sentinel {
 namespace Slot {
 
 TEST(DefaultSlotChainImplTest, Basic) {
-  DefaultSlotChainImpl slot_chain;
-  Stat::MockNode node;
-  auto mock_rule_checker_slot = std::make_unique<MockRuleCheckerSlot>();
-  auto mock_stat_slot = std::make_unique<MockStatsSlot>();
+  {
+    DefaultSlotChainImpl slot_chain;
+    Stat::MockNode node;
+    auto mock_rule_checker_slot = std::make_unique<MockRuleCheckerSlot>();
+    auto mock_stat_slot = std::make_unique<MockStatsSlot>();
 
-  InSequence s;
-  EXPECT_CALL(*mock_rule_checker_slot.get(), Entry(_, _, _, _, _))
-      .WillOnce(Return(TokenResult::Blocked("test")));
-  EXPECT_CALL(*mock_stat_slot.get(), Entry(_, _, _, _, _)).Times(1);
+    InSequence s;
+    EXPECT_CALL(*mock_rule_checker_slot.get(), Entry(_, _, _, _, _))
+        .WillOnce(Return(TokenResult::Blocked("test")));
+    EXPECT_CALL(*mock_stat_slot.get(), Entry(_, _, _, _, _)).Times(1);
 
-  slot_chain.AddLast(std::move(mock_rule_checker_slot));
-  slot_chain.AddLast(std::move(mock_stat_slot));
-  Context context;
-  StringResourceWrapper test_resource("test_resource", EntryType::IN);
+    slot_chain.AddLast(std::move(mock_rule_checker_slot));
+    slot_chain.AddLast(std::move(mock_stat_slot));
+    Context context;
+    StringResourceWrapper test_resource("test_resource", EntryType::IN);
 
-  slot_chain.Entry(context, test_resource, node, 1, 1);
+    slot_chain.Entry(context, test_resource, node, 1, 1);
+  }
+
+  {
+    DefaultSlotChainImpl slot_chain;
+    Stat::MockNode node;
+    auto mock_rule_checker_slot1 = std::make_unique<MockRuleCheckerSlot>();
+    auto mock_rule_checker_slot2 = std::make_unique<MockRuleCheckerSlot>();
+    auto mock_stat_slot1 = std::make_unique<MockStatsSlot>();
+    auto mock_stat_slot2 = std::make_unique<MockStatsSlot>();
+
+    InSequence s;
+    EXPECT_CALL(*mock_rule_checker_slot1.get(), Entry(_, _, _, _, _))
+        .WillOnce(Return(TokenResult::Blocked("test")));
+    EXPECT_CALL(*mock_rule_checker_slot2.get(), Entry(_, _, _, _, _)).Times(0);
+    EXPECT_CALL(*mock_stat_slot1.get(), Entry(_, _, _, _, _)).Times(1);
+    EXPECT_CALL(*mock_stat_slot2.get(), Entry(_, _, _, _, _)).Times(1);
+
+    slot_chain.AddLast(std::move(mock_rule_checker_slot1));
+    slot_chain.AddLast(std::move(mock_rule_checker_slot2));
+    slot_chain.AddLast(std::move(mock_stat_slot1));
+    slot_chain.AddLast(std::move(mock_stat_slot2));
+    Context context;
+    StringResourceWrapper test_resource("test_resource", EntryType::IN);
+
+    slot_chain.Entry(context, test_resource, node, 1, 1);
+  }
 }
 
 }  // namespace Slot

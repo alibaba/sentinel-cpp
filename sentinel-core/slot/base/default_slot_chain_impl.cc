@@ -1,9 +1,13 @@
 #include "sentinel-core/slot/base/default_slot_chain_impl.h"
 
+#include <assert.h>
+
 namespace Sentinel {
 namespace Slot {
 
 void DefaultSlotChainImpl::AddFirst(std::unique_ptr<Slot>&& slot) {
+  // The StatsSlot type slot is forbidden to be placed in the first position
+  assert(slot->Type() != SlotType::STATS_SLOT);
   slots_.emplace_front(std::move(slot));
 }
 void DefaultSlotChainImpl::AddLast(std::unique_ptr<Slot>&& slot) {
