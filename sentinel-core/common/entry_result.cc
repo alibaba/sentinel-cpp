@@ -2,8 +2,8 @@
 
 namespace Sentinel {
 
-
-EntryResult::EntryResult(EntryShredPtr entry, bool is_blocked) : entry_(entry), is_blocked_(is_blocked) {}
+EntryResult::EntryResult(EntryShredPtr entry, bool is_blocked)
+    : entry_(entry), is_blocked_(is_blocked) {}
 
 EntryResult::~EntryResult() = default;
 

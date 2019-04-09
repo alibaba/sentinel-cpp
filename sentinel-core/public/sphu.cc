@@ -2,14 +2,16 @@
 
 namespace Sentinel {
 
-
+/*
 // static
-EntryResult SphU::Entry(const ResourceWrapper& r, EntryType type, int count = 1) {
+EntryResult SphUImpl::Entry(const ResourceWrapper& r, EntryType type, int count)
+{
 
 }
 
-EntryResult Sphu::Entry(const ResourceWrapper& r,  int count = 1) {
+EntryResult SphuImpl::Entry(const ResourceWrapper& r,  int count = 1) {
 
 }
+*/
 
 }  // namespace Sentinel

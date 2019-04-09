@@ -17,5 +17,5 @@ class ReadableDataSource {
   virtual std::shared_ptr<Property::SentinelProperty> GetProperty() = 0;
 };
 
-}
-}
+}  // namespace DataSource
+}  // namespace Sentinel

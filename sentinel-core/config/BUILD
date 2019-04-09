@@ -2,17 +2,16 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 
 package(default_visibility = ["//visibility:public"])
 
+
 cc_library(
-  name = "sphu_interface",
+  name = "local_config",
   srcs = [
-    "sphu.h",
-    "sphu.cc",
+    "local_config.h",
+    "local_config.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/common:entry_type_enum",
-    "//sentinel-core/common:entry_result_lib",
-    "//sentinel-core/common:resource_wrapper_interface",
+    "//sentinel-core/init:init_target_interface",
     "//sentinel-core/utils:utils_lib",
   ]
 )

@@ -10,5 +10,5 @@ class Converter {
   virtual T Convert(S source) = 0;
 };
 
-}
-}
+}  // namespace DataSource
+}  // namespace Sentinel

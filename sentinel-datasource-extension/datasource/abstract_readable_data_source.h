@@ -17,6 +17,7 @@ class AbstractReadableDataSource : public ReadableDataSource<S, T> {
 
   T LoadConfig() override;
   std::shared_ptr<Property::SentinelProperty> GetProperty() override;
+
  private:
   std::shared_ptr<Converter> parser_;
   std::shared_ptr<SentinelProperty> property_;
@@ -24,5 +25,5 @@ class AbstractReadableDataSource : public ReadableDataSource<S, T> {
   T LoadConfig(S conf);
 };
 
-}
-}
+}  // namespace DataSource
+}  // namespace Sentinel
