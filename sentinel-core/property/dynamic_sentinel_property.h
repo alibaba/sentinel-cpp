@@ -16,7 +16,8 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
   DynamicSentinelProperty() = default;
   ~DynamicSentinelProperty() = default;
   void AddListener(PropertyListenerPtr<T>&& listener) override {
-    listeners_.emplace(std::make_pair(listener->Name(), std::move(listener)));
+    auto name = listener->Name();
+    listeners_.emplace(std::make_pair(std::string(name), std::move(listener)));
   }
 
   void RemoveListener(const std::string& listener_name) override {

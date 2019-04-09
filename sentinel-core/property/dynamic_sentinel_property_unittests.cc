@@ -21,10 +21,9 @@ TEST(DynamicSentinelPropertyTest, Basic) {
   rule.set_fake_rule_data("test");
   DynamicSentinelProperty<FakeRule> ds;
   auto pl = std::make_unique<MockPropertyListener<FakeRule>>();
+  auto pl_point = pl.get();
 
-  InSequence s;
-  EXPECT_CALL(*pl.get(), Name()).WillOnce(ReturnRef("mock_property_listener"));
-  EXPECT_CALL(*pl.get(), ConfigUpdate(Matcher<const Rule&>(rule), false))
+  EXPECT_CALL(*pl_point, ConfigUpdate(Matcher<const Rule&>(rule), false))
       .Times(1);
 
   ds.AddListener(std::move(pl));
