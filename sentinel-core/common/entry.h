@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <memory>
 
 #include "sentinel-core/common/resource_wrapper.h"
 
@@ -11,7 +12,7 @@ class Entry {
   explicit Entry(const ResourceWrapperSharedPtr resource)
       : resource_(resource),
         create_time_(std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now())) {}
+            std::chrono::system_clock::now().time_since_epoch())) {}
 
   ~Entry();
 
@@ -21,8 +22,10 @@ class Entry {
 
  private:
   bool is_exit_{false};
-  const std::chrono::milliseconds create_time_;
   const ResourceWrapperSharedPtr resource_;
+  const std::chrono::milliseconds create_time_;
 };
+
+using EntryShredPtr = std::shared_ptr<Entry>;
 
 }  // namespace Sentinel

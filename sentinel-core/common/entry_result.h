@@ -2,20 +2,20 @@
 
 #include <memory>
 
-#include <sentinel-core/common/entry.h>
+#include "sentinel-core/common/entry.h"
 
 namespace Sentinel {
 
 class EntryResult {
  public:
-  std::shared_ptr<Entry> entry();
-  std::string& exception();
-
+  EntryResult(EntryShredPtr entry, bool is_blocked);
+  ~EntryResult();
+  EntryShredPtr entry();
   bool IsBlocked();
 
  private:
-  std::shared_ptr<Entry> entry_;
-  std::string& exception_;
+  EntryShredPtr entry_;
+  bool is_blocked_{false};
 };
 
 }  // namespace Sentinel
