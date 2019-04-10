@@ -27,6 +27,7 @@ class MetricItem {
 
   std::string ToThinString();
   std::string ToFatString();
+
  private:
   std::string resource_;
   long timestamp_;
@@ -35,7 +36,7 @@ class MetricItem {
   long complete_qps_;
   long exception_qps_;
   long rt_;
-}; // MetricNode in Java version
+};  // MetricNode in Java version
 
 }  // namespace Stat
 }  // namespace Sentinel

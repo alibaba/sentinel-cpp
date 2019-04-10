@@ -12,7 +12,8 @@ namespace Stat {
 class SlidingWindowMetric : public Metric {
  public:
   explicit SlidingWindowMetric(int sample_count, int interval_ms)
-      : sliding_window_(std::make_unique<LeapArray<MetricBucket>>(sample_count, interval_ms)) {}
+      : sliding_window_(std::make_unique<LeapArray<MetricBucket>>(
+            sample_count, interval_ms)) {}
   virtual ~SlidingWindowMetric() = default;
 
   long Complete() override;
@@ -31,6 +32,7 @@ class SlidingWindowMetric : public Metric {
 
   double WindowIntervalInSec() const override;
   int SampleCount() const override;
+
  private:
   const std::unique_ptr<LeapArray<MetricBucket>> sliding_window_;
 };

@@ -16,6 +16,7 @@ addons:
     packages:
       - bazel
 
-script:
+script: 
+  - bash format.sh
   - bazel clean && bazel build //...
   - bazel clean && bazel test --test_output=errors --strategy=TestRunner=standalone //...

@@ -6,10 +6,10 @@ namespace Sentinel {
 namespace Utils {
 
 class TimeUtils {
-  public:
-    TimeUtils() = delete;
+ public:
+  TimeUtils() = delete;
 
-    static std::chrono::milliseconds CurrentTimeMillis();
+  static std::chrono::milliseconds CurrentTimeMillis();
 };
 
 }  // namespace Utils

@@ -39,7 +39,7 @@ long LeapArray<T>::CalculateWindowStart(long time_millis) const {
 template <typename T>
 std::vector<WindowWrapPtr<T>> LeapArray<T>::Buckets(long time_millis) const {
   std::vector<WindowWrapPtr<T>> result;
-  return {}; // TODO
+  return {};  // TODO
 }
 
 template <typename T>
@@ -48,10 +48,9 @@ std::vector<std::shared_ptr<T>> LeapArray<T>::Values(long time_millis) const {
     return {};
   }
   int size = array_.size();
-  std::vector<std::shared_ptr<T>> result {};
+  std::vector<std::shared_ptr<T>> result{};
   WindowWrap<T>& wrap;
-  if ()
-}
+  if () }
 
 }  // namespace Stat
 }  // namespace Sentinel

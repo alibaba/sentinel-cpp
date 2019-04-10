@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
 #include <map>
-
-#include "sentinel-core/statistic/base/metric_item.h"
+#include <memory>
 
 namespace Sentinel {
 namespace Stat {

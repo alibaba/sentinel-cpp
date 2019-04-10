@@ -7,8 +7,7 @@ namespace Utils {
 
 std::chrono::milliseconds TimeUtils::CurrentTimeMillis() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(
-    std::chrono::system_clock::now().time_since_epoch()
-  );
+      std::chrono::system_clock::now().time_since_epoch());
 }
 
 }  // namespace Utils

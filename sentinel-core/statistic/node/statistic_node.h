@@ -42,6 +42,7 @@ class StatisticNode : public Node {
   virtual void DecreaseThreadNum() override;
 
   virtual void Reset() override;
+
  private:
   std::unique_ptr<Metric> rolling_counter_second_;
   std::unique_ptr<Metric> rolling_counter_minute_;

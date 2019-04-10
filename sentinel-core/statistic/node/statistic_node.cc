@@ -24,27 +24,30 @@ int64_t StatisticNode::ExceptionCountInMinute() {
 }
 
 double StatisticNode::PassQps() {
-  return rolling_counter_second_->Pass() / rolling_counter_second_->WindowIntervalInSec();
+  return rolling_counter_second_->Pass() /
+         rolling_counter_second_->WindowIntervalInSec();
 }
 
 double StatisticNode::BlockQps() {
-  return rolling_counter_second_->Block() / rolling_counter_second_->WindowIntervalInSec();
+  return rolling_counter_second_->Block() /
+         rolling_counter_second_->WindowIntervalInSec();
 }
 
-double StatisticNode::TotalQps() {
-  return this->PassQps() + this->BlockQps();
-}
+double StatisticNode::TotalQps() { return this->PassQps() + this->BlockQps(); }
 
 double StatisticNode::CompleteQps() {
-  return rolling_counter_second_->Complete() / rolling_counter_second_->WindowIntervalInSec();
+  return rolling_counter_second_->Complete() /
+         rolling_counter_second_->WindowIntervalInSec();
 }
 
 double StatisticNode::MaxCompleteQps() {
-  return rolling_counter_second_->MaxComplete() * rolling_counter_second_->SampleCount();
+  return rolling_counter_second_->MaxComplete() *
+         rolling_counter_second_->SampleCount();
 }
 
 double StatisticNode::ExceptionQps() {
-  return rolling_counter_second_->Exception() / rolling_counter_second_->WindowIntervalInSec();
+  return rolling_counter_second_->Exception() /
+         rolling_counter_second_->WindowIntervalInSec();
 }
 
 double StatisticNode::AvgRt() {
@@ -55,20 +58,18 @@ double StatisticNode::AvgRt() {
   return rolling_counter_second_->Rt() * 1.0 / completed;
 }
 
-double StatisticNode::MinRt() {
-  return rolling_counter_second_->MinRt();
-}
+double StatisticNode::MinRt() { return rolling_counter_second_->MinRt(); }
 
 uint32_t StatisticNode::CurThreadNum() const {
   return this->cur_thread_num_.load();
 }
 
 double StatisticNode::PreviousBlockQps() {
-  return 0; //TODO
+  return 0;  // TODO
 }
 
 double StatisticNode::PreviousPassQps() {
-  return 0; //TODO
+  return 0;  // TODO
 }
 
 void StatisticNode::AddPassRequest(int count) {
@@ -94,13 +95,9 @@ void StatisticNode::AddExceptionRequest(int count) {
   this->rolling_counter_minute_->AddException(count);
 }
 
-void StatisticNode::IncreaseThreadNum() {
-  this->cur_thread_num_++;
-}
+void StatisticNode::IncreaseThreadNum() { this->cur_thread_num_++; }
 
-void StatisticNode::DecreaseThreadNum() {
-  this->cur_thread_num_--;
-}
+void StatisticNode::DecreaseThreadNum() { this->cur_thread_num_--; }
 
 void StatisticNode::Reset() {
   // TODO

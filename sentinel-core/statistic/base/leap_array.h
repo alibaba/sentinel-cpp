@@ -12,10 +12,12 @@ namespace Stat {
 template <typename T>
 class LeapArray {
  public:
-  explicit LeapArray(const int sample_count, int interval_ms): sample_count_(sample_count),
-      interval_ms_(interval_ms), bucket_length_ms_(interval_ms / sample_count),
+  explicit LeapArray(const int sample_count, int interval_ms)
+      : sample_count_(sample_count),
+        interval_ms_(interval_ms),
+        bucket_length_ms_(interval_ms / sample_count),
 
-  virtual ~LeapArray() = default;
+        virtual ~LeapArray() = default;
 
   int SampleCount() const;
   int IntervalInMs() const;
@@ -30,6 +32,7 @@ class LeapArray {
   std::vector<WindowWrapPtr<T>> Buckets(long time_millis) const;
   std::vector<std::shared_ptr<T>> Values() const;
   std::vector<std::shared_ptr<T>> Values(long time_millis) const;
+
  protected:
   const int interval_ms_;   // total time length of the sliding window
   const int sample_count_;  // sample count that divide the sliding window into
@@ -37,7 +40,7 @@ class LeapArray {
   const int bucket_length_ms_;  // time length of each bucket
  private:
   const std::atomic<WindowWrapPtr<T>> array_[];
-  
+
   int CalculateTimeIdx(/*@Valid*/ long time_millis) const;
   long CalculateWindowStart(/*@Valid*/ long time_millis) const;
 };

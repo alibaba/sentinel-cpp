@@ -4,7 +4,7 @@ namespace Sentinel {
 namespace Stat {
 
 StatisticNodeSharedPtr ClusterNode::GetOrCreateOriginNode(std::string& origin) {
-  return nullptr; // TODO: implemet here.
+  return nullptr;  // TODO: implemet here.
 }
 
 void ClusterNode::TraceException(int count) {
