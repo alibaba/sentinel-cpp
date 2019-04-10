@@ -5,16 +5,17 @@ namespace Sentinel {
 namespace Slot {
 
 TokenResultSharedPtr TokenResult::Ok() {
-  return std::make_shared<TokenResult>(Status::RESULT_STATUS_OK);
+  return std::make_shared<TokenResult>(TokenStatus::RESULT_STATUS_OK);
 }
 
 TokenResultSharedPtr TokenResult::Blocked(const std::string& blocked_reason) {
-  return std::make_shared<TokenResult>(Status::RESULT_STATUS_BLOCKED,
+  return std::make_shared<TokenResult>(TokenStatus::RESULT_STATUS_BLOCKED,
                                        blocked_reason);
 }
 
-TokenResultSharedPtr TokenResult::ShouldWat(std::chrono::milliseconds wait_ms) {
-  return std::make_shared<TokenResult>(Status::RESULT_STATUS_SHOULD_WAIT,
+TokenResultSharedPtr TokenResult::ShouldWait(
+    std::chrono::milliseconds wait_ms) {
+  return std::make_shared<TokenResult>(TokenStatus::RESULT_STATUS_SHOULD_WAIT,
                                        wait_ms);
 }
 

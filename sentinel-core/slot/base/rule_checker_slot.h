@@ -11,7 +11,7 @@ class RuleCheckerSlot : public Slot {
  public:
   virtual ~RuleCheckerSlot() = default;
   bool IsContinue(const TokenResultSharedPtr& token) override {
-    if (token->status() != Status::RESULT_STATUS_OK) {
+    if (token->status() != TokenStatus::RESULT_STATUS_OK) {
       return false;
     }
     return true;

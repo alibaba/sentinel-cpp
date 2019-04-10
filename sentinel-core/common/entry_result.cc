@@ -2,12 +2,12 @@
 
 namespace Sentinel {
 
-EntryResult::EntryResult(EntryShredPtr entry, bool is_blocked)
+EntryResult::EntryResult(EntrySharedPtr entry, bool is_blocked)
     : entry_(entry), is_blocked_(is_blocked) {}
 
 EntryResult::~EntryResult() = default;
 
-EntryShredPtr EntryResult::entry() { return entry_; }
+EntrySharedPtr EntryResult::entry() { return entry_; }
 
 bool EntryResult::IsBlocked() { return is_blocked_; }
 

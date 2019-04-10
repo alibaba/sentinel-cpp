@@ -13,17 +13,17 @@ class SlotEntryCallback {
  public:
   virtual ~SlotEntryCallback() = default;
   virtual void OnPass(Context& context, const ResourceWrapper& resource_wrapper,
-                      Stat::Node& node, int count) = 0;
+                      const Stat::NodePtr& node, int count, int flag) = 0;
   virtual void OnBlocked(const TokenResultSharedPtr& token_result,
                          Context& context,
                          const ResourceWrapper& resource_wrapper,
-                         Stat::Node& node, int count) = 0;
+                         const Stat::NodePtr& node, int count, int flag) = 0;
 };
 
 class SlotExitCallback {
   virtual ~SlotExitCallback() = default;
-  virtual OnExit(const ResourceWrapper& resource_wrapper, Stat::Node& node,
-                 int count) = 0;
+  virtual OnExit(const ResourceWrapper& resource_wrapper,
+                 const Stat::NodePtr& node, int count, int flag) = 0;
 }
 
 }  // namespace Slot

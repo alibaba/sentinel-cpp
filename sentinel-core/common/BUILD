@@ -48,6 +48,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":resource_wrapper_interface",
+    "//sentinel-core/statistic/node:node_interface",
   ]
 )
 

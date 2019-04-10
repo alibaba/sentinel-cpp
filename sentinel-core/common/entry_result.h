@@ -8,13 +8,13 @@ namespace Sentinel {
 
 class EntryResult {
  public:
-  EntryResult(EntryShredPtr entry, bool is_blocked);
+  EntryResult(EntrySharedPtr entry, bool is_blocked);
   ~EntryResult();
-  EntryShredPtr entry();
+  EntrySharedPtr entry();
   bool IsBlocked();
 
  private:
-  EntryShredPtr entry_;
+  EntrySharedPtr entry_;
   bool is_blocked_{false};
 };
 

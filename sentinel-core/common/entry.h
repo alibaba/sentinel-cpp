@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "sentinel-core/common/resource_wrapper.h"
+#include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
 
@@ -19,13 +20,19 @@ class Entry {
   void Exit(int count);
   ResourceWrapperSharedPtr GetResourceWrapper() const { return resource_; }
   std::chrono::milliseconds GetCreateTime() const { return create_time_; }
+  Stat::NodePtr GetCurrentNode() { return cur_node_; }
+  Stat::NodePtr GetOriginNode() { return origin_node_; }
+  bool IsError();
 
  private:
   bool is_exit_{false};
   const ResourceWrapperSharedPtr resource_;
   const std::chrono::milliseconds create_time_;
+
+  Stat::NodePtr cur_node_;
+  Stat::NodePtr origin_node_;
 };
 
-using EntryShredPtr = std::shared_ptr<Entry>;
+using EntrySharedPtr = std::shared_ptr<Entry>;
 
 }  // namespace Sentinel

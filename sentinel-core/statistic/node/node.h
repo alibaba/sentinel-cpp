@@ -41,5 +41,7 @@ class Node {
   virtual void Reset() = 0;
 };
 
+using NodePtr = std::shared_ptr<Node>;
+
 }  // namespace Stat
 }  // namespace Sentinel
