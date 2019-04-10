@@ -7,6 +7,8 @@ cc_library(
   srcs = [
     "utils.h",
     "utils.cc",
+    "time_utils.h",
+    "time_utils.cc",
   ],
   copts = DEFAULT_COPTS,
 )

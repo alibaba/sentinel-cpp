@@ -10,6 +10,7 @@ class MetricBucket {
 
   MetricBucket& Reset();
   long Get(const MetricEvent& event) const;
+  long MinRt() const;
   void Add(const MetricEvent& event, long n);
   void AddRt(long rt);
 };

@@ -16,7 +16,7 @@ int LeapArray<T>::IntervalInMs() const {
 
 template <typename T>
 WindowWrapPtr<T> LeapArray<T>::CurrentWindow() {
-  return this->CurrentWindow(Utils::TimeUtils::CurrentTimeMillis().count())
+  return this->CurrentWindow(Utils::TimeUtils::CurrentTimeMillis().count());
 }
 
 template <typename T>
@@ -28,7 +28,8 @@ template <typename T>
 int LeapArray<T>::CalculateTimeIdx(const long time_millis) const {
   long time_id = time_millis / bucket_length_ms_;
   // Calculate current index so we can map the timestamp to the leap array.
-  return (int)(time_id % array_.size());
+  int size;  // array_.size()
+  return (int)(time_id % size);
 }
 
 template <typename T>
@@ -44,10 +45,9 @@ std::vector<WindowWrapPtr<T>> LeapArray<T>::Buckets(long time_millis) const {
 
 template <typename T>
 std::vector<std::shared_ptr<T>> LeapArray<T>::Values(long time_millis) const {
-  if (long time_millis < 0) {
+  if (time_millis < 0) {
     return {};
   }
-  int size = array_.size();
   std::vector<std::shared_ptr<T>> result{};
   return result;
 }

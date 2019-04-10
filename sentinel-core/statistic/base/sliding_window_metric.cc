@@ -1,38 +1,103 @@
-#pragma once
-
+#include <algorithm>
 #include <memory>
 
+#include "sentinel-core/common/constants.h"
+#include "sentinel-core/statistic/base/metric_event.h"
 #include "sentinel-core/statistic/base/sliding_window_metric.h"
 
 namespace Sentinel {
 namespace Stat {
 
-long SlidingWindowMetric::Complete() {}
+long SlidingWindowMetric::GetSum(const MetricEvent &event) {
+  // Refresh current bucket for sliding window.
+  sliding_window_->CurrentWindow();
 
-long SlidingWindowMetric::MaxComplete() {}
+  long sum = 0;
+  auto list = sliding_window_->Values();
+  for (const auto &bucket : list) {
+    sum += bucket->Get(event);
+  }
+  return sum;
+}
 
-long SlidingWindowMetric::Exception() {}
+double SlidingWindowMetric::GetAvg(const MetricEvent &event) {
+  return this->GetSum(event) / this->WindowIntervalInSec();
+}
 
-long SlidingWindowMetric::Block() {}
+long SlidingWindowMetric::Complete() {
+  return this->GetSum(MetricEvent::COMPLETE);
+}
 
-long SlidingWindowMetric::Pass() {}
+long SlidingWindowMetric::MaxComplete() {
+  sliding_window_->CurrentWindow();
 
-long SlidingWindowMetric::Rt() {}
+  long max = 0;
+  auto list = sliding_window_->Values();
+  for (const auto &bucket : list) {
+    long c = bucket->Get(MetricEvent::COMPLETE);
+    if (c > max) {
+      max = c;
+    }
+  }
+  return std::max(1L, max);
+}
 
-long SlidingWindowMetric::MinRt() {}
+long SlidingWindowMetric::Exception() {
+  return this->GetSum(MetricEvent::EXCEPTION);
+}
 
-void SlidingWindowMetric::AddException(int n) {}
+long SlidingWindowMetric::Block() { return this->GetSum(MetricEvent::BLOCK); }
 
-void SlidingWindowMetric::AddBlock(int n) {}
+long SlidingWindowMetric::Pass() { return this->GetSum(MetricEvent::PASS); }
 
-void SlidingWindowMetric::AddComplete(int n) {}
+long SlidingWindowMetric::Rt() { return this->GetSum(MetricEvent::RT); }
 
-void SlidingWindowMetric::AddPass(int n) {}
+long SlidingWindowMetric::MinRt() {
+  sliding_window_->CurrentWindow();
 
-void SlidingWindowMetric::AddRt(long rt) {}
+  long rt = Constants::kMaxAllowedRt;
+  auto list = sliding_window_->Values();
+  for (const auto &bucket : list) {
+    long minRt = bucket->MinRt();
+    if (minRt < rt) {
+      rt = minRt;
+    }
+  }
+  return std::max(1L, rt);
+}
 
-double SlidingWindowMetric::WindowIntervalInSec() const {}
-int SlidingWindowMetric::SampleCount() const {}
+void SlidingWindowMetric::AddException(int n) {
+  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  wrap->Value()->Add(MetricEvent::EXCEPTION, n);
+}
+
+void SlidingWindowMetric::AddBlock(int n) {
+  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  wrap->Value()->Add(MetricEvent::BLOCK, n);
+}
+
+void SlidingWindowMetric::AddComplete(int n) {
+  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  wrap->Value()->Add(MetricEvent::COMPLETE, n);
+}
+
+void SlidingWindowMetric::AddPass(int n) {
+  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  wrap->Value()->Add(MetricEvent::PASS, n);
+}
+
+void SlidingWindowMetric::AddRt(long rt) {
+  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  wrap->Value()->AddRt(rt);
+}
+
+double SlidingWindowMetric::WindowIntervalInSec() const {
+  return sliding_window_->IntervalInMs() / 1000.0;
+}
+
+int SlidingWindowMetric::SampleCount() const {
+  return sliding_window_->SampleCount();
+}
 
 }  // namespace Stat
 }  // namespace Sentinel

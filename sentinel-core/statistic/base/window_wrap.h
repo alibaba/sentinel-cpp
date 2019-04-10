@@ -8,6 +8,10 @@ namespace Stat {
 template <typename T>
 class WindowWrap {
  public:
+  explicit WindowWrap(long length_ms, long start,
+                      const std::shared_ptr<T>& value)
+      : bucket_length_ms_(length_ms), bucket_start_(start), value_(value) {}
+
   long BucketLengthInMs() const;
   long BucketStart() const;
   std::shared_ptr<T> Value() const;
@@ -20,9 +24,9 @@ class WindowWrap {
   bool IsWindowDeprecated(long time_millis) const;
 
  private:
-  const long bucket_length_ms_;
   long bucket_start_;
-  std::shared_ptr<T> value_;
+  const long bucket_length_ms_;
+  const std::shared_ptr<T> value_;
 };
 
 template <typename T>

@@ -3,6 +3,14 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+  name = "constants",
+  srcs = [
+    "constants.h",
+  ],
+  copts = DEFAULT_COPTS,
+)
+
+cc_library(
   name = "entry_type_enum",
   srcs = [
     "entry_type.h",

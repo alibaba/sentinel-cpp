@@ -4,7 +4,7 @@
 #include <chrono>
 #include <vector>
 
-#include <sentinel-core/statistic/base/window_wrap.h>
+#include "sentinel-core/statistic/base/window_wrap.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -13,11 +13,11 @@ template <typename T>
 class LeapArray {
  public:
   explicit LeapArray(const int sample_count, int interval_ms)
-      : sample_count_(sample_count),
-        interval_ms_(interval_ms),
-        bucket_length_ms_(interval_ms / sample_count),
+      : interval_ms_(interval_ms),
+        sample_count_(sample_count),
+        bucket_length_ms_(interval_ms / sample_count) {}
 
-        virtual ~LeapArray() = default;
+  virtual ~LeapArray() = default;
 
   int SampleCount() const;
   int IntervalInMs() const;
@@ -39,7 +39,7 @@ class LeapArray {
                             // n parts
   const int bucket_length_ms_;  // time length of each bucket
  private:
-  const std::atomic<WindowWrapPtr<T>> array_[];
+  // const std::atomic<WindowWrapPtr<T>> array_[];
 
   int CalculateTimeIdx(/*@Valid*/ long time_millis) const;
   long CalculateWindowStart(/*@Valid*/ long time_millis) const;
