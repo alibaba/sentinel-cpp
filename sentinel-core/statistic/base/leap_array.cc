@@ -15,12 +15,12 @@ int LeapArray<T>::IntervalInMs() const {
 }
 
 template <typename T>
-WindowWrap<T> LeapArray<T>::CurrentWindow() {
+WindowWrapPtr<T> LeapArray<T>::CurrentWindow() {
   return this->CurrentWindow(Utils::TimeUtils::CurrentTimeMillis().count())
 }
 
 template <typename T>
-WindowWrap<T> LeapArray<T>::CurrentWindow(long time_millis) {
+WindowWrapPtr<T> LeapArray<T>::CurrentWindow(long time_millis) {
   // TODO: implement here
 }
 
@@ -49,8 +49,8 @@ std::vector<std::shared_ptr<T>> LeapArray<T>::Values(long time_millis) const {
   }
   int size = array_.size();
   std::vector<std::shared_ptr<T>> result{};
-  WindowWrap<T>& wrap;
-  if () }
+  return result;
+}
 
 }  // namespace Stat
 }  // namespace Sentinel

@@ -1,7 +1,9 @@
 #pragma once
 
-#include <sentinel-core/statistic/base/bucket.h>
+#include <memory>
+
 #include <sentinel-core/statistic/base/leap_array.h>
+#include <sentinel-core/statistic/base/metric_bucket.h>
 
 namespace Sentinel {
 namespace Stat {
@@ -12,9 +14,8 @@ class BucketLeapArray : public LeapArray<MetricBucket> {
       : LeapArray(sample_count, interval_ms) {}
   virtual ~BucketLeapArray() {}
 
-  MetricBucket NewEmptyBucket(long timeMillis) override;
-  WindowWrap<MetricBucket> ResetWindowTo(WindowWrap<MetricBucket> wrap,
-                                         long start_time) = 0;
+  std::shared_ptr<MetricBucket> NewEmptyBucket(long timeMillis) override;
+  void ResetWindowTo(WindowWrap<MetricBucket> wrap, long start_time) override;
 };
 
 }  // namespace Stat

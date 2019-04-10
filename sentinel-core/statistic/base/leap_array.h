@@ -25,8 +25,8 @@ class LeapArray {
   virtual std::shared_ptr<T> NewEmptyBucket(long time_millis) = 0;
   virtual void ResetWindowTo(WindowWrap<T> wrap, long start_time) = 0;
 
-  virtual WindowWrap<T> CurrentWindow();
-  virtual WindowWrap<T> CurrentWindow(long time_millis);
+  virtual WindowWrapPtr<T> CurrentWindow();
+  virtual WindowWrapPtr<T> CurrentWindow(long time_millis);
 
   std::vector<WindowWrapPtr<T>> Buckets() const;
   std::vector<WindowWrapPtr<T>> Buckets(long time_millis) const;
