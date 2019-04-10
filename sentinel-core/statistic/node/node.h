@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+#include <map>
+
+#include "sentinel-core/statistic/base/metric_item.h"
+
 namespace Sentinel {
 namespace Stat {
 
@@ -22,11 +27,11 @@ class Node {
 
   virtual double AvgRt() = 0;
   virtual double MinRt() = 0;
-  virtual uint32_t CurThreadNum() = 0;
+  virtual uint32_t CurThreadNum() const = 0;
 
   virtual double PreviousBlockQps() = 0;
   virtual double PreviousPassQps() = 0;
-  // virtual std::map&<long, MetricNode> metrics();
+  // virtual std::unique_ptr<std::map<long, MetricItem>> metrics();
 
   virtual void AddPassRequest(int count) = 0;
   virtual void AddRtAndCompleteRequest(long rt, int completeCount) = 0;

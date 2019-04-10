@@ -67,7 +67,7 @@ class Metric {
    *
    * @return window metric array
    */
-  virtual std::vector<MetricBucket> Windows() = 0;
+  // virtual std::vector<MetricBucket> Windows() = 0;
 
   /**
    * Add current exception count.
@@ -109,7 +109,9 @@ class Metric {
    *
    * @return the sliding window length
    */
-  virtual double GetWindowIntervalInSec() = 0;
+  virtual double WindowIntervalInSec() const = 0;
+
+  virtual int SampleCount() const = 0;
 };
 
 }  // namespace Stat

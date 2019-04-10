@@ -9,7 +9,7 @@ class MetricBucket {
   ~MetricBucket() = default;
 
   MetricBucket& Reset();
-  long Get(const MetricEvent& event);
+  long Get(const MetricEvent& event) const;
   void Add(const MetricEvent& event, long n);
   void AddRt(long rt);
 };
