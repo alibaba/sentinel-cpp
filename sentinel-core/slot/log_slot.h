@@ -11,7 +11,8 @@ class LogSlot : public Slot::StatsSlot {
   ~LogSlot() = default;
 
   TokenResultSharedPtr Entry(Context& context, const ResourceWrapper& resource,
-                             const Stat::NodePtr& node, int count, int flag);
+                             /*const*/ Stat::NodePtr& node, int count,
+                             int flag);
   void Exit(Context& context, const ResourceWrapper& resource, int count);
 };
 

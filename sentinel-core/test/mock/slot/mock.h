@@ -15,7 +15,7 @@ class MockRuleCheckerSlot : public RuleCheckerSlot {
   MockRuleCheckerSlot();
   ~MockRuleCheckerSlot();
   MOCK_METHOD5(Entry, TokenResultSharedPtr(Context&, const ResourceWrapper&,
-                                           const Stat::NodePtr&, int, int));
+                                           Stat::NodePtr&, int, int));
   MOCK_METHOD3(Exit, void(Context&, const ResourceWrapper&, int));
   MOCK_CONST_METHOD0(Name, const std::string&(void));
 };
@@ -25,7 +25,7 @@ class MockStatsSlot : public StatsSlot {
   MockStatsSlot();
   ~MockStatsSlot();
   MOCK_METHOD5(Entry, TokenResultSharedPtr(Context&, const ResourceWrapper&,
-                                           const Stat::NodePtr&, int, int));
+                                           Stat::NodePtr&, int, int));
   MOCK_METHOD3(Exit, void(Context&, const ResourceWrapper&, int));
   MOCK_CONST_METHOD0(Name, const std::string&(void));
 };

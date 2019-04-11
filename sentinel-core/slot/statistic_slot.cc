@@ -59,8 +59,8 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 
 TokenResultSharedPtr StatisticSlot::Entry(Context& context,
                                           const ResourceWrapper& resource,
-                                          const Stat::NodePtr& node, int count,
-                                          int flag) {
+                                          /*const*/ Stat::NodePtr& node,
+                                          int count, int flag) {
   TokenResultSharedPtr prev_result = this->LastTokenResult();
   switch (prev_result->status()) {
     case TokenStatus::RESULT_STATUS_BLOCKED:

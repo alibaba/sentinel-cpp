@@ -11,7 +11,7 @@ class StatisticSlot : public StatsSlot {
   ~StatisticSlot() = default;
 
   TokenResultSharedPtr Entry(Context& context, const ResourceWrapper& resource,
-                             const Stat::NodePtr&, int count,
+                             /*const*/ Stat::NodePtr&, int count,
                              int flag) override;
   void Exit(Context& context, const ResourceWrapper& resource,
             int count) override;

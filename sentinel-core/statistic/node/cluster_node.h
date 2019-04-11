@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 #include "sentinel-core/statistic/node/statistic_node.h"
 
@@ -22,6 +21,8 @@ class ClusterNode : public StatisticNode {
  private:
   const absl::flat_hash_map<std::string, Stat::StatisticNode> origin_node_map_;
 };
+
+using ClusterNodePtr = std::shared_ptr<ClusterNode>;
 
 }  // namespace Stat
 }  // namespace Sentinel
