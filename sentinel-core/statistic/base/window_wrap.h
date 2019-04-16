@@ -8,21 +8,21 @@ namespace Stat {
 template <typename T>
 class WindowWrap {
  public:
-  explicit WindowWrap(long length_ms, long start,
+  explicit WindowWrap(int64_t length_ms, int64_t start,
                       const std::shared_ptr<T>& value)
       : bucket_length_ms_(length_ms), bucket_start_(start), value_(value) {}
   ~WindowWrap() = default;
 
-  long BucketLengthInMs() const;
-  long BucketStart() const;
+  int64_t BucketLengthInMs() const;
+  int64_t BucketStart() const;
   std::shared_ptr<T> Value() const;
 
-  void ResetTo(long start_time);
-  bool IsTimeInBucket(long time_millis) const;
+  void ResetTo(int64_t start_time);
+  bool IsTimeInBucket(int64_t time_millis) const;
 
  private:
-  long bucket_start_;
-  const long bucket_length_ms_;
+  int64_t bucket_start_;
+  const int64_t bucket_length_ms_;
   const std::shared_ptr<T> value_;
 };
 

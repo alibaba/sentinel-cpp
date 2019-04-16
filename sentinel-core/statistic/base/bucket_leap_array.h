@@ -14,8 +14,9 @@ class BucketLeapArray : public LeapArray<MetricBucket> {
       : LeapArray(sample_count, interval_ms) {}
   virtual ~BucketLeapArray() {}
 
-  std::shared_ptr<MetricBucket> NewEmptyBucket(long timeMillis) override;
-  void ResetWindowTo(WindowWrap<MetricBucket> wrap, long start_time) override;
+  std::shared_ptr<MetricBucket> NewEmptyBucket(int64_t time_millis) override;
+  void ResetWindowTo(const WindowWrapPtr<MetricBucket>& wrap,
+                     int64_t start_time) override;
 };
 
 }  // namespace Stat

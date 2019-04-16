@@ -9,6 +9,8 @@ enum class MetricEvent {
   EXCEPTION,
   COMPLETE,
   RT,
+
+  Count,  // hack for getting length of enum
 };
 
 }  // namespace Stat

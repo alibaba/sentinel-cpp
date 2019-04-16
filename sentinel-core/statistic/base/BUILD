@@ -14,9 +14,11 @@ cc_library(
   name = "metric_bucket_lib",
   srcs = [
     "metric_bucket.h",
+    "metric_bucket.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    "//sentinel-core/common:constants",
     ":metric_event_enum",
   ]
 )
