@@ -1,7 +1,7 @@
 #pragma once
 
-#include <atomic>
 #include <chrono>
+#include <memory>
 #include <vector>
 
 #include "sentinel-core/statistic/base/window_wrap.h"
@@ -15,7 +15,8 @@ class LeapArray {
   explicit LeapArray(const int sample_count, int interval_ms)
       : interval_ms_(interval_ms),
         sample_count_(sample_count),
-        bucket_length_ms_(interval_ms / sample_count) {}
+        bucket_length_ms_(interval_ms / sample_count),
+        array_(std::make_unique<WindowWrapPtr<T>[]>(sample_count)) {}
 
   virtual ~LeapArray() = default;
 
@@ -33,13 +34,15 @@ class LeapArray {
   std::vector<std::shared_ptr<T>> Values() const;
   std::vector<std::shared_ptr<T>> Values(long time_millis) const;
 
+  bool IsWindowDeprecated(const WindowWrapPtr<T>&) const;
+  bool IsWindowDeprecated(long time_millis, const WindowWrapPtr<T>&) const;
+
  protected:
-  const int interval_ms_;   // total time length of the sliding window
-  const int sample_count_;  // sample count that divide the sliding window into
-                            // n parts
+  const int interval_ms_;       // total time length of the sliding window
+  const int sample_count_;      // divide the sliding window into n parts
   const int bucket_length_ms_;  // time length of each bucket
  private:
-  // const std::atomic<WindowWrapPtr<T>> array_[];
+  const std::unique_ptr<WindowWrapPtr<T>[]> array_;
 
   int CalculateTimeIdx(/*@Valid*/ long time_millis) const;
   long CalculateWindowStart(/*@Valid*/ long time_millis) const;

@@ -1,4 +1,5 @@
 #include "sentinel-core/statistic/base/leap_array.h"
+#include "sentinel-core/statistic/base/window_wrap.h"
 #include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
@@ -35,6 +36,18 @@ int LeapArray<T>::CalculateTimeIdx(const long time_millis) const {
 template <typename T>
 long LeapArray<T>::CalculateWindowStart(long time_millis) const {
   return time_millis - time_millis % bucket_length_ms_;
+}
+
+template <typename T>
+bool LeapArray<T>::IsWindowDeprecated(const WindowWrapPtr<T>& wrap) const {
+  return this->isWindowDeprecated(Utils::TimeUtils::CurrentTimeMillis().count(),
+                                  wrap);
+}
+
+template <typename T>
+bool LeapArray<T>::IsWindowDeprecated(long time_millis,
+                                      const WindowWrapPtr<T>& wrap) const {
+  return time_millis - wrap->BucketStart() > interval_ms_;
 }
 
 template <typename T>
