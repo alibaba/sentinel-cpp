@@ -20,8 +20,8 @@ class MetricBucket {
   void AddRt(int64_t rt);
 
  private:
-  const std::unique_ptr<std::atomic_int64_t[]> counters_ =
-      std::make_unique<std::atomic_int64_t[]>((int)MetricEvent::Count);
+  const std::unique_ptr<std::atomic<int64_t>[]> counters_ =
+      std::make_unique<std::atomic<int64_t>[]>((int)MetricEvent::Count);
   long min_rt_;
 
   void InitMinRt();
