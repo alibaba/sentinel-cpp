@@ -10,7 +10,7 @@
 #include "sentinel-core/slot/base/default_slot_chain_impl.h"
 
 #include "sentinel-core/test/mock/slot/mock.h"
-#include "sentinel-core/test/mock/statistic/mock.h"
+#include "sentinel-core/test/mock/statistic/node/mock.h"
 
 using testing::_;
 using testing::InSequence;

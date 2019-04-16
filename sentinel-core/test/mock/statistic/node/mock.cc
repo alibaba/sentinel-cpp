@@ -1,4 +1,4 @@
-#include "sentinel-core/test/mock/statistic/mock.h"
+#include "sentinel-core/test/mock/statistic/node/mock.h"
 
 namespace Sentinel {
 namespace Stat {

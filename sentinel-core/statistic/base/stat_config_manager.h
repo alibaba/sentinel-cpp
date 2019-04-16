@@ -21,13 +21,15 @@ class StatConfigManager {
   void UpdateSampleCount(int32_t new_sample_count);
   void UpdateInterval(int32_t new_interval_ms);
 
-  void registerSampleCountProperty(const Property::SentinelPropertySharedPtr<int32_t>& property);
-  void registerIntervalProperty(const Property::SentinelPropertySharedPtr<int32_t>& property);
+  void registerSampleCountProperty(
+      const Property::SentinelPropertySharedPtr<int32_t>& property);
+  void registerIntervalProperty(
+      const Property::SentinelPropertySharedPtr<int32_t>& property);
 
  private:
   int32_t sample_count_ = Constants::kDefaultSampleCount;
   int32_t interval_ms_ = Constants::kDefaultIntervalMs;
-  
+
   StatConfigManager() = default;
 };
 

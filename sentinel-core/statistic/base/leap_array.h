@@ -31,10 +31,10 @@ class LeapArray {
   virtual WindowWrapPtr<T> CurrentWindow();
   virtual WindowWrapPtr<T> CurrentWindow(int64_t time_millis);
 
-  std::vector<WindowWrapPtr<T>> Buckets() const;
-  std::vector<WindowWrapPtr<T>> Buckets(int64_t time_millis) const;
-  std::vector<std::shared_ptr<T>> Values() const;
-  std::vector<std::shared_ptr<T>> Values(int64_t time_millis) const;
+  virtual std::vector<WindowWrapPtr<T>> Buckets() const;
+  virtual std::vector<WindowWrapPtr<T>> Buckets(int64_t time_millis) const;
+  virtual std::vector<std::shared_ptr<T>> Values() const;
+  virtual std::vector<std::shared_ptr<T>> Values(int64_t time_millis) const;
 
   bool IsBucketDeprecated(const WindowWrapPtr<T>& wrap) const;
   bool IsBucketDeprecated(int64_t time_millis,
