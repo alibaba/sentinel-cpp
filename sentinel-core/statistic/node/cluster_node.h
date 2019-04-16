@@ -16,7 +16,7 @@ class ClusterNode : public StatisticNode {
   virtual ~ClusterNode() {}
 
   StatisticNodeSharedPtr GetOrCreateOriginNode(std::string& origin);
-  void TraceException(int count);
+  void TraceException(int32_t count);
 
  private:
   const absl::flat_hash_map<std::string, Stat::StatisticNode> origin_node_map_;

@@ -12,7 +12,7 @@ namespace Stat {
 
 class SlidingWindowMetric : public Metric {
  public:
-  explicit SlidingWindowMetric(int sample_count, int interval_ms)
+  explicit SlidingWindowMetric(int32_t sample_count, int32_t interval_ms)
       : sliding_window_(
             std::make_unique<BucketLeapArray>(sample_count, interval_ms)) {}
   virtual ~SlidingWindowMetric() = default;

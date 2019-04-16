@@ -31,10 +31,10 @@ class Node {
   virtual double PreviousPassQps() = 0;
   // virtual std::unique_ptr<std::map<long, MetricItem>> metrics();
 
-  virtual void AddPassRequest(int count) = 0;
-  virtual void AddRtAndCompleteRequest(long rt, int completeCount) = 0;
-  virtual void AddBlockRequest(int count) = 0;
-  virtual void AddExceptionRequest(int count) = 0;
+  virtual void AddPassRequest(int32_t count) = 0;
+  virtual void AddRtAndCompleteRequest(int32_t rt, int32_t completeCount) = 0;
+  virtual void AddBlockRequest(int32_t count) = 0;
+  virtual void AddExceptionRequest(int32_t count) = 0;
   virtual void IncreaseThreadNum() = 0;
   virtual void DecreaseThreadNum() = 0;
 

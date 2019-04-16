@@ -5,6 +5,8 @@
 #include <memory>
 
 #include "sentinel-core/statistic/base/metric.h"
+#include "sentinel-core/statistic/base/sliding_window_metric.h"
+#include "sentinel-core/statistic/base/stat_config_manager.h"
 #include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
@@ -12,6 +14,7 @@ namespace Stat {
 
 class StatisticNode : public Node {
  public:
+  explicit StatisticNode() = default;
   virtual ~StatisticNode() = default;
   // Node
   virtual int64_t TotalCountInMinute() override;
@@ -34,19 +37,24 @@ class StatisticNode : public Node {
   virtual double PreviousBlockQps() override;
   virtual double PreviousPassQps() override;
 
-  virtual void AddPassRequest(int count) override;
-  virtual void AddRtAndCompleteRequest(long rt, int completeCount) override;
-  virtual void AddBlockRequest(int count) override;
-  virtual void AddExceptionRequest(int count) override;
+  virtual void AddPassRequest(int32_t count) override;
+  virtual void AddRtAndCompleteRequest(int32_t rt,
+                                       int32_t completeCount) override;
+  virtual void AddBlockRequest(int32_t count) override;
+  virtual void AddExceptionRequest(int32_t count) override;
   virtual void IncreaseThreadNum() override;
   virtual void DecreaseThreadNum() override;
 
   virtual void Reset() override;
 
  private:
-  std::unique_ptr<Metric> rolling_counter_second_;
-  std::unique_ptr<Metric> rolling_counter_minute_;
-  std::atomic_int cur_thread_num_;
+  std::unique_ptr<Metric> rolling_counter_second_ =
+      std::make_unique<SlidingWindowMetric>(
+          StatConfigManager::GetInstance().SampleCount(),
+          StatConfigManager::GetInstance().IntervalMs());
+  std::unique_ptr<Metric> rolling_counter_minute_ =
+      std::make_unique<SlidingWindowMetric>(60, 60 * 1000);
+  std::atomic<uint32_t> cur_thread_num_{0};
   std::chrono::milliseconds last_fetch_timestamp_;
 };
 

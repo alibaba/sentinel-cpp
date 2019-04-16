@@ -10,7 +10,7 @@ namespace Stat {
 
 class BucketLeapArray : public LeapArray<MetricBucket> {
  public:
-  explicit BucketLeapArray(int sample_count, int interval_ms)
+  explicit BucketLeapArray(int32_t sample_count, int32_t interval_ms)
       : LeapArray(sample_count, interval_ms) {}
   virtual ~BucketLeapArray() {}
 

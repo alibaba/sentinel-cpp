@@ -33,10 +33,10 @@ class MockNode : public Node {
   MOCK_METHOD0(PreviousBlockQps, double(void));
   MOCK_METHOD0(PreviousPassQps, double(void));
 
-  MOCK_METHOD1(AddPassRequest, void(int));
-  MOCK_METHOD2(AddRtAndCompleteRequest, void(long, int));
-  MOCK_METHOD1(AddBlockRequest, void(int));
-  MOCK_METHOD1(AddExceptionRequest, void(int));
+  MOCK_METHOD1(AddPassRequest, void(int32_t));
+  MOCK_METHOD2(AddRtAndCompleteRequest, void(int32_t, int));
+  MOCK_METHOD1(AddBlockRequest, void(int32_t));
+  MOCK_METHOD1(AddExceptionRequest, void(int32_t));
   MOCK_METHOD0(IncreaseThreadNum, void(void));
   MOCK_METHOD0(DecreaseThreadNum, void(void));
   MOCK_METHOD0(Reset, void(void));

@@ -9,3 +9,17 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
 )
+
+cc_library(
+  name = "statistic_node_lib",
+  srcs = [
+    "statistic_node.h",
+    "statistic_node.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":node_interface",
+    "//sentinel-core/statistic/base:sliding_window_metric_lib",
+    "//sentinel-core/statistic/base:stat_config_manager_lib",
+  ]
+)

@@ -72,12 +72,13 @@ double StatisticNode::PreviousPassQps() {
   return 0;  // TODO
 }
 
-void StatisticNode::AddPassRequest(int count) {
+void StatisticNode::AddPassRequest(int32_t count) {
   this->rolling_counter_second_->AddPass(count);
   this->rolling_counter_minute_->AddPass(count);
 }
 
-void StatisticNode::AddRtAndCompleteRequest(long rt, int complete_count) {
+void StatisticNode::AddRtAndCompleteRequest(int32_t rt,
+                                            int32_t complete_count) {
   this->rolling_counter_second_->AddComplete(complete_count);
   this->rolling_counter_second_->AddRt(rt);
 
@@ -85,12 +86,12 @@ void StatisticNode::AddRtAndCompleteRequest(long rt, int complete_count) {
   this->rolling_counter_minute_->AddRt(rt);
 }
 
-void StatisticNode::AddBlockRequest(int count) {
+void StatisticNode::AddBlockRequest(int32_t count) {
   this->rolling_counter_second_->AddBlock(count);
   this->rolling_counter_minute_->AddBlock(count);
 }
 
-void StatisticNode::AddExceptionRequest(int count) {
+void StatisticNode::AddExceptionRequest(int32_t count) {
   this->rolling_counter_second_->AddException(count);
   this->rolling_counter_minute_->AddException(count);
 }

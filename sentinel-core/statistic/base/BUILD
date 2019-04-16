@@ -3,6 +3,19 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+  name = "stat_config_manager_lib",
+  srcs = [
+    "stat_config_manager.h",
+    "stat_config_manager.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/common:constants",
+    "//sentinel-core/property:sentinel_property_interface",
+  ]
+)
+
+cc_library(
   name = "metric_event_enum",
   srcs = [
     "metric_event.h",
