@@ -44,6 +44,7 @@ cc_library(
   name = "entry_lib",
   srcs = [
     "entry.h",
+    "entry.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
@@ -69,5 +70,32 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":entry_lib",
+  ]
+)
+
+cc_library(
+  name = "tracer_lib",
+  srcs = [
+    "tracer.h",
+    "tracer.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":entry_lib",
+  ]
+)
+
+cc_test(
+  name = "tracer_lib_unittests",
+  srcs = [
+    "tracer_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":tracer_lib",
+    ":entry_lib",
+    ":string_resource_wrapper_lib",
+    "//sentinel-core/test/mock/statistic/node:mock_lib",
+    "@com_google_googletest//:gtest_main",
   ]
 )

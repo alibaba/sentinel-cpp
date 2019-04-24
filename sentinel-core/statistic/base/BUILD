@@ -104,3 +104,15 @@ cc_library(
     "//sentinel-core/common:constants"
   ]
 )
+
+# cc_test(
+#   name = "sliding_window_metric_unittests",
+#   srcs = [
+#     "sliding_window_metric_test.cc",
+#   ],
+#   copts = TEST_COPTS,
+#   deps = [
+#     ":sliding_window_metric_lib",
+#     "@com_google_googletest//:gtest_main",
+#   ]
+# )

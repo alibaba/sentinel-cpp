@@ -78,7 +78,7 @@ void StatisticSlot::Exit(Context& context, const ResourceWrapper& resource,
   if (node == nullptr) {
     return;  // Should not happen.
   }
-  if (entry->IsError()) {
+  if (entry->HasError()) {
     return;
   }
   long rt = Utils::TimeUtils::CurrentTimeMillis().count() -
