@@ -40,7 +40,6 @@ cc_library(
   name = "window_wrap_lib",
   srcs = [
     "window_wrap.h",
-    "window_wrap.cc",
   ],
   copts = DEFAULT_COPTS
 )
@@ -57,7 +56,6 @@ cc_library(
   name = "leap_array_lib",
   srcs = [
     "leap_array.h",
-    "leap_array.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
@@ -105,26 +103,26 @@ cc_library(
   ]
 )
 
-# cc_test(
-#   name = "sliding_window_metric_unittests",
-#   srcs = [
-#     "sliding_window_metric_test.cc",
-#   ],
-#   copts = TEST_COPTS,
-#   deps = [
-#     ":sliding_window_metric_lib",
-#     "@com_google_googletest//:gtest_main",
-#   ]
-# )
+cc_test(
+  name = "sliding_window_metric_unittests",
+  srcs = [
+    "sliding_window_metric_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":sliding_window_metric_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
 
-# cc_test(
-#   name = "bucket_leap_array_unittests",
-#   srcs = [
-#     "bucket_leap_array_test.cc",
-#   ],
-#   copts = TEST_COPTS,
-#   deps = [
-#     ":bucket_leap_array_lib",
-#     "@com_google_googletest//:gtest_main",
-#   ]
-# )
+cc_test(
+  name = "bucket_leap_array_unittests",
+  srcs = [
+    "bucket_leap_array_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":bucket_leap_array_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)

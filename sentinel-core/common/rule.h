@@ -9,6 +9,7 @@ class Rule {
   Rule() = default;
   virtual ~Rule() = default;
 
+  explicit Rule(const std::string& resource) : resource_(resource) {}
   Rule(const std::string& resource, const std::string& limit_app)
       : resource_(resource), limit_app_(limit_app) {}
   const std::string& resource() const { return resource_; }

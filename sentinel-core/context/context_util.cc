@@ -13,7 +13,7 @@ void ContextUtil::Enter(const std::string&, const std::string&) {}
 void ContextUtil::Exit() {}
 
 Context& ContextUtil::ReplaceContext(Context& new_context) {
-  context_ = new_context;
+  // TODO: implement here.
   return context_;
 }
 

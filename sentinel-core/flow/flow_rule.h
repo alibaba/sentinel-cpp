@@ -3,35 +3,44 @@
 #include <string>
 #include <vector>
 
-#include <common/rule.hpp>
+#include "sentinel-core/common/rule.h"
 
 namespace Sentinel {
 namespace Flow {
 
 struct FlowRule : public Rule {
  public:
-  FlowRule() {}
-  explicit FlowRule(std::string& resource) : Rule(resource) {}
+  FlowRule() = default;
+  explicit FlowRule(const std::string& resource) : Rule(resource) {}
 
-  std::string& GetLimitApp();
-  int GetGrade();
-  double GetCount();
-  int GetStrategy();
-  int GetControlBehavior();
-  int GetWarmUpPeriodSec();
-  int GetMaxQueueingTimeMs();
-  bool IsClusterMode();
+  std::string limit_app() const;
+  int grade() const;
+  double count() const;
+  int strategy() const;
+  int control_behavior() const;
+  int warm_up_period_sec() const;
+  int max_queueing_time_ms_() const;
+  bool cluster_mode() const;
+
+  void set_limit_app(const std::string& limit_app) const;
+  set_grade(int) const;
+  set_count(double) const;
+  set_strategy(int) const;
+  set_control_behavior(int) const;
+  set_warm_up_period_sec(int) const;
+  set_max_queueing_time_ms_(int) const;
+  set_cluster_mode(bool) const;
 
  private:
-  std::string limit_app;
-  int grade;
-  double count;
-  int strategy;
-  int control_behavior;
+  std::string limit_app_;  // limitApp
+  int grade_;              // grade
+  double count_;           // count
+  int strategy_;           // strategy
+  int control_behavior_;   // controlBehavior
 
-  int warm_up_periodSec = 10;
-  int max_queueing_time_ms = 500;
-  bool cluster_mode = false;
+  int warm_up_period_sec_ = 10;     // warmUpPeriodSec
+  int max_queueing_time_ms_ = 500;  // maxQueueingTimeMs
+  bool cluster_mode_ = false;       // clusterMode
 };
 
 }  // namespace Flow
