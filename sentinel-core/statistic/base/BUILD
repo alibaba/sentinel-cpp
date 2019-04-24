@@ -116,3 +116,15 @@ cc_library(
 #     "@com_google_googletest//:gtest_main",
 #   ]
 # )
+
+# cc_test(
+#   name = "bucket_leap_array_unittests",
+#   srcs = [
+#     "bucket_leap_array_test.cc",
+#   ],
+#   copts = TEST_COPTS,
+#   deps = [
+#     ":bucket_leap_array_lib",
+#     "@com_google_googletest//:gtest_main",
+#   ]
+# )
