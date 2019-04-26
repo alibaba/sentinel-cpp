@@ -28,11 +28,15 @@ class TokenResult {
   static TokenResultSharedPtr Blocked(const std::string& blocked_reason);
   static TokenResultSharedPtr ShouldWait(std::chrono::milliseconds wait_ms);
   TokenStatus status() const { return status_; }
-  absl::optional<std::string> blocked_reason() const;
-  absl::optional<std::chrono::milliseconds> wait_ms() const;
+  absl::optional<std::string> blocked_reason() const {
+    return blocked_reason_;
+  };
+  absl::optional<std::chrono::milliseconds> wait_ms() const {
+    return wait_ms_;
+  };
 
  private:
-  TokenStatus status_;
+  const TokenStatus status_;
   absl::optional<std::string> blocked_reason_;
   absl::optional<std::chrono::milliseconds> wait_ms_;
 };

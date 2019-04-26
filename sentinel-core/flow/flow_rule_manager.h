@@ -2,23 +2,30 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
-#include <flow/flow_rule.hpp>
+#include "sentinel-core/flow/flow_rule.h"
 
 namespace Sentinel {
 namespace Flow {
 
 class FlowRuleManager {
  public:
-  FlowRuleManager() = delete;
+  static FlowRuleManager& GetInstance() {
+    static FlowRuleManager instance;
+    return instance;
+  }
 
-  static bool LoadRules(std::vector<FlowRule>& rules);
-  static bool HasRules(std::string& resource);
-  static std::vector<FlowRule> GetRules();
+  bool LoadRules(const std::unordered_set<FlowRule>& rules);
+  bool HasRules(const std::string& resource);
+  std::vector<FlowRule> GetRules() const;
+  std::vector<FlowRule> GetRulesForResource(const std::string& resource) const;
 
  private:
-  static std::unordered_map<std::string, std::vector<FlowRule>> rule_map_;
+  FlowRuleManager() = default;
+
+  const std::unordered_map<std::string, std::vector<FlowRule>> rule_map_{};
 };
 
 }  // namespace Flow

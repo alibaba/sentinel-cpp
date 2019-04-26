@@ -22,6 +22,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":token_result_lib",
+    ":slot_interface",
     "//sentinel-core/common:resource_wrapper_interface",
     "//sentinel-core/context:context_interface",
     "//sentinel-core/statistic/node:node_interface"

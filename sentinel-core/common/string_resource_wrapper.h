@@ -11,8 +11,8 @@ class StringResourceWrapper : public ResourceWrapper {
       : name_(name), entry_type_(type) {}
   virtual ~StringResourceWrapper() = default;
 
-  const std::string& name() override { return name_; }
-  EntryType entry_type() override { return entry_type_; }
+  const std::string& name() const override { return name_; }
+  EntryType entry_type() const override { return entry_type_; }
 
  private:
   std::string name_;
