@@ -6,7 +6,12 @@
 namespace Sentinel {
 
 void Entry::Exit(int count) {
-  // chain.exit(context, resourceWrapper, count);
+  if (!is_exit_) {
+    // chain.exit(context, resourceWrapper, count);
+    is_exit_ = true;
+  }
 }
+
+void Entry::Exit() { Exit(1); }
 
 }  // namespace Sentinel

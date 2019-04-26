@@ -11,10 +11,10 @@
 namespace Sentinel {
 namespace Slot {
 
-class ClusterNodeBuilderSlot : public Slot::RuleCheckerSlot {
+class ClusterNodeBuilderSlot : public RuleCheckerSlot {
  public:
   ClusterNodeBuilderSlot();
-  ~ClusterNodeBuilderSlot();
+  ~ClusterNodeBuilderSlot() = default;
 
   static Stat::ClusterNodePtr GetClusterNode(const std::string& resource_name);
   static Stat::ClusterNodePtr GetClusterNode(const std::string& resource_name,

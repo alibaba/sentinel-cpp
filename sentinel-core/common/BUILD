@@ -44,12 +44,15 @@ cc_library(
   name = "entry_lib",
   srcs = [
     "entry.h",
+    "entry_context.h",
     "entry.cc",
+    "entry_context.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
     ":resource_wrapper_interface",
     "//sentinel-core/statistic/node:node_interface",
+    "//sentinel-core/utils:utils_lib",
   ]
 )
 
@@ -65,11 +68,11 @@ cc_library(
   name = "entry_result_lib",
   srcs = [
     "entry_result.h",
-    "entry_result.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
     ":entry_lib",
+    "@com_google_absl//absl/types:optional",
   ]
 )
 

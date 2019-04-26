@@ -16,7 +16,7 @@ class TrafficShapingController {
       std::unique_ptr<TrafficShapingChecker>&& checker)
       : calculator_(std::move(calculator)),
         action_checker_(std::move(checker)) {}
-  virtual ~TrafficShapingController() = default;
+  ~TrafficShapingController() = default;
 
   Slot::TokenResultSharedPtr CanPass(const Stat::NodePtr& node,
                                      int acquire_count, int flag);

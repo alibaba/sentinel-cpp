@@ -10,18 +10,20 @@ class StatisticSlot : public StatsSlot {
   StatisticSlot() = default;
   ~StatisticSlot() = default;
 
-  TokenResultSharedPtr Entry(Context& context, const ResourceWrapper& resource,
+  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+                             const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodePtr&, int count,
                              int flag) override;
-  void Exit(Context& context, const ResourceWrapper& resource,
-            int count) override;
+  void Exit(const EntryContextPtr& context,
+            const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:
-  TokenResultSharedPtr OnPass(Context& context, const ResourceWrapper& resource,
+  TokenResultSharedPtr OnPass(const EntryContextPtr& context,
+                              const ResourceWrapperSharedPtr& resource,
                               const Stat::NodePtr& node, int count, int flag);
   TokenResultSharedPtr OnBlock(const TokenResultSharedPtr& prev_result,
-                               Context& context,
-                               const ResourceWrapper& resource,
+                               const EntryContextPtr& context,
+                               const ResourceWrapperSharedPtr& resource,
                                const Stat::NodePtr&, int count, int flag);
 
   void RecordPassFor(const Stat::NodePtr& node, int count);

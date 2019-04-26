@@ -18,7 +18,6 @@ namespace Flow {
 
 TEST(TrafficShapingControllerTest, TestBasicPassCheck) {
   auto node = std::make_shared<Stat::MockNode>();
-  InSequence s;
 
   TrafficShapingController always_pass_controller{
       std::make_unique<MockTrafficShapingCalculator>(),

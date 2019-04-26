@@ -15,8 +15,8 @@ void DefaultSlotChainImpl::AddLast(std::unique_ptr<Slot>&& slot) {
 }
 
 TokenResultSharedPtr DefaultSlotChainImpl::Entry(
-    Context& context, const ResourceWrapper& resource, Stat::NodePtr& node,
-    int count, int flag) {
+    const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
+    Stat::NodePtr& node, int count, int flag) {
   auto token_result = TokenResult::Ok();
   for (auto elem = slots_.begin(); elem != slots_.end(); ++elem) {
     if ((*elem)->IsContinue(token_result)) {
@@ -26,8 +26,9 @@ TokenResultSharedPtr DefaultSlotChainImpl::Entry(
   return token_result;
 }
 
-void DefaultSlotChainImpl::Exit(Context& context,
-                                const ResourceWrapper& resource, int count) {
+void DefaultSlotChainImpl::Exit(const EntryContextPtr& context,
+                                const ResourceWrapperSharedPtr& resource,
+                                int count) {
   for (auto elem = slots_.begin(); elem != slots_.end(); ++elem) {
     (*elem)->Exit(context, resource, count);
   }

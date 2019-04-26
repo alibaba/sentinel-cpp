@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "sentinel-core/context/context.h"
+#include "sentinel-core/common/entry_context.h"
 
 namespace Sentinel {
 

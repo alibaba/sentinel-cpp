@@ -15,5 +15,7 @@ class SlotChain : public SlotBase {
   virtual void AddLast(std::unique_ptr<Slot>&& slot) = 0;
 };
 
+using SlotChainSharedPtr = std::shared_ptr<SlotChain>;
+
 }  // namespace Slot
 }  // namespace Sentinel

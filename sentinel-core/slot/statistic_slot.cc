@@ -32,10 +32,9 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodePtr& node, int rt,
   }
 }
 
-TokenResultSharedPtr StatisticSlot::OnPass(Context& context,
-                                           const ResourceWrapper& resource,
-                                           const Stat::NodePtr& node, int count,
-                                           int flag) {
+TokenResultSharedPtr StatisticSlot::OnPass(
+    const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
+    const Stat::NodePtr& node, int count, int flag) {
   EntrySharedPtr entry;  // TODO: get entry from somewhere
 
   this->RecordPassFor(node, count);
@@ -45,9 +44,9 @@ TokenResultSharedPtr StatisticSlot::OnPass(Context& context,
 }
 
 TokenResultSharedPtr StatisticSlot::OnBlock(
-    const TokenResultSharedPtr& prev_result, Context& context,
-    const ResourceWrapper& resource, const Stat::NodePtr& node, int count,
-    int flag) {
+    const TokenResultSharedPtr& prev_result, const EntryContextPtr& context,
+    const ResourceWrapperSharedPtr& resource, const Stat::NodePtr& node,
+    int count, int flag) {
   EntrySharedPtr entry;  // TODO: get entry from somewhere
   // TODO: mark the entry as blocked (error) and put into it.
 
@@ -57,10 +56,9 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
   return prev_result;
 }
 
-TokenResultSharedPtr StatisticSlot::Entry(Context& context,
-                                          const ResourceWrapper& resource,
-                                          /*const*/ Stat::NodePtr& node,
-                                          int count, int flag) {
+TokenResultSharedPtr StatisticSlot::Entry(
+    const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
+    /*const*/ Stat::NodePtr& node, int count, int flag) {
   TokenResultSharedPtr prev_result = this->LastTokenResult();
   switch (prev_result->status()) {
     case TokenStatus::RESULT_STATUS_BLOCKED:
@@ -71,8 +69,8 @@ TokenResultSharedPtr StatisticSlot::Entry(Context& context,
   }
 }
 
-void StatisticSlot::Exit(Context& context, const ResourceWrapper& resource,
-                         int count) {
+void StatisticSlot::Exit(const EntryContextPtr& context,
+                         const ResourceWrapperSharedPtr& resource, int count) {
   EntrySharedPtr entry;  // TODO: get entry from somewhere
   Stat::NodePtr node = entry->GetCurrentNode();
   if (node == nullptr) {

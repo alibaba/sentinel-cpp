@@ -11,10 +11,11 @@ class FlowSlot : public RuleCheckerSlot {
   FlowSlot() = default;
   virtual ~FlowSlot() = default;
 
-  TokenResultSharedPtr Entry(Context& context, const ResourceWrapper& resource,
+  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+                             const ResourceWrapperSharedPtr& resource,
                              Stat::NodePtr& node, int count, int flag) override;
-  void Exit(Context& context, const ResourceWrapper& resource,
-            int count) override;
+  void Exit(const EntryContextPtr& context,
+            const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:
   Flow::FlowRuleChecker checker_{};

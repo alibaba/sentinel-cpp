@@ -5,19 +5,23 @@
 
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/statistic/node/node.h"
+#include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
 
 class Entry {
  public:
+  explicit Entry(ResourceWrapperSharedPtr&& resource)
+      : resource_(std::move(resource)),
+        create_time_(Utils::TimeUtils::CurrentTimeMillis()) {}
   explicit Entry(const ResourceWrapperSharedPtr& resource)
       : resource_(resource),
-        create_time_(std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch())) {}
+        create_time_(Utils::TimeUtils::CurrentTimeMillis()) {}
 
-  ~Entry() = default;
+  virtual ~Entry() = default;
 
   virtual void Exit(int count);
+  virtual void Exit();
   ResourceWrapperSharedPtr GetResourceWrapper() const { return resource_; }
   std::chrono::milliseconds GetCreateTime() const { return create_time_; }
   Stat::NodePtr GetCurrentNode() const { return cur_node_; }

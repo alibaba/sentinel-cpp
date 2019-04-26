@@ -5,15 +5,17 @@
 namespace Sentinel {
 namespace Slot {
 
-class LogSlot : public Slot::StatsSlot {
+class LogSlot : public StatsSlot {
  public:
   LogSlot();
   ~LogSlot() = default;
 
-  TokenResultSharedPtr Entry(Context& context, const ResourceWrapper& resource,
+  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+                             const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodePtr& node, int count,
                              int flag);
-  void Exit(Context& context, const ResourceWrapper& resource, int count);
+  void Exit(const EntryContextPtr& context,
+            const ResourceWrapperSharedPtr& resource, int count);
 };
 
 }  // namespace Slot
