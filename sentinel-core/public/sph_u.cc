@@ -10,13 +10,14 @@ namespace Sentinel {
 
 EntryResult SphU::Entry(const EntryContextPtr& context, const std::string& r,
                         EntryType t, int count, int flag) {
-  ResourceWrapperSharedPtr resource =
-      std::make_shared<StringResourceWrapper>(r, t);
+  auto resource = std::make_shared<StringResourceWrapper>(r, t);
   EntrySharedPtr e = std::make_shared<Sentinel::Entry>(resource);
+  // Set current entry to new created context.
+  context->set_cur_entry(e);
+
   Slot::SlotChainSharedPtr chain;  // TODO: get the global chain
   Stat::NodePtr empty_node = nullptr;
-  Slot::TokenResultSharedPtr result =
-      chain->Entry(context, resource, empty_node, count, flag);
+  auto result = chain->Entry(context, resource, empty_node, count, flag);
   if (result->status() == Slot::TokenStatus::RESULT_STATUS_BLOCKED) {
     e->Exit(count);
     return EntryResult{result->blocked_reason().value()};

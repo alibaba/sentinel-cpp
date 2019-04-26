@@ -35,7 +35,7 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodePtr& node, int rt,
 TokenResultSharedPtr StatisticSlot::OnPass(
     const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
     const Stat::NodePtr& node, int count, int flag) {
-  EntrySharedPtr entry;  // TODO: get entry from somewhere
+  EntrySharedPtr entry = context->cur_entry();
 
   this->RecordPassFor(node, count);
   this->RecordPassFor(entry->GetOriginNode(), count);
@@ -47,8 +47,8 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
     const TokenResultSharedPtr& prev_result, const EntryContextPtr& context,
     const ResourceWrapperSharedPtr& resource, const Stat::NodePtr& node,
     int count, int flag) {
-  EntrySharedPtr entry;  // TODO: get entry from somewhere
-  // TODO: mark the entry as blocked (error) and put into it.
+  EntrySharedPtr entry = context->cur_entry();
+  entry->SetError(prev_result->blocked_reason().value_or("unexpected_blocked"));
 
   this->RecordBlockFor(node, count);
   this->RecordBlockFor(entry->GetOriginNode(), count);
@@ -71,7 +71,7 @@ TokenResultSharedPtr StatisticSlot::Entry(
 
 void StatisticSlot::Exit(const EntryContextPtr& context,
                          const ResourceWrapperSharedPtr& resource, int count) {
-  EntrySharedPtr entry;  // TODO: get entry from somewhere
+  EntrySharedPtr entry = context->cur_entry();
   Stat::NodePtr node = entry->GetCurrentNode();
   if (node == nullptr) {
     return;  // Should not happen.
