@@ -91,6 +91,37 @@ void SlidingWindowMetric::AddRt(long rt) {
   wrap->Value()->AddRt(rt);
 }
 
+std::vector<MetricItemPtr> SlidingWindowMetric::Details() {
+  std::vector<MetricItemPtr> items;
+  sliding_window_->CurrentWindow();
+  std::vector<WindowWrapPtr<MetricBucket>> list =
+      std::move(sliding_window_->Buckets());
+  for (const auto &wrap : list) {
+    if (wrap == nullptr) {
+      continue;
+    }
+    auto bucket = wrap->Value();
+    if (bucket == nullptr) {
+      continue;
+    }
+
+    MetricItemPtr item = std::make_shared<MetricItem>();
+    item->set_block_qps(bucket->Get(MetricEvent::BLOCK));
+    item->set_pass_qps(bucket->Get(MetricEvent::PASS));
+    item->set_exception_qps(bucket->Get(MetricEvent::EXCEPTION));
+    auto complete = bucket->Get(MetricEvent::COMPLETE);
+    if (complete <= 0) {
+      item->set_rt(bucket->Get(MetricEvent::RT));
+    } else {
+      item->set_rt(bucket->Get(MetricEvent::RT) / complete);
+    }
+    item->set_timestamp(wrap->BucketStart());
+
+    items.push_back(std::move(item));
+  }
+  return items;
+}
+
 double SlidingWindowMetric::WindowIntervalInSec() const {
   return sliding_window_->IntervalInMs() / 1000.0;
 }

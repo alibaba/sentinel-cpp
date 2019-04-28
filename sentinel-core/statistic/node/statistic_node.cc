@@ -1,4 +1,9 @@
+#include <algorithm>
+#include <unordered_map>
+#include <vector>
+
 #include "sentinel-core/statistic/node/statistic_node.h"
+#include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -64,6 +69,31 @@ uint32_t StatisticNode::CurThreadNum() const {
   return this->cur_thread_num_.load();
 }
 
+bool StatisticNode::IsValidMetricItem(const MetricItemPtr& item) const {
+  return item != nullptr && (item->pass_qps() > 0 || item->block_qps() > 0 ||
+                             item->complete_qps() > 0 ||
+                             item->exception_qps() > 0 || item->rt() > 0);
+}
+
+std::unordered_map<long, MetricItemPtr> StatisticNode::Metrics() {
+  int64_t cur_time = Utils::TimeUtils::CurrentTimeMillis().count();
+  cur_time = cur_time - cur_time % 1000;
+  std::unordered_map<long, MetricItemPtr> map;
+  std::vector<MetricItemPtr> items_of_second =
+      std::move(rolling_counter_minute_->Details());
+  int64_t new_last_fetch_time = last_fetch_timestamp_;
+  // Iterate metrics of all resources, filter valid metrics (not-empty and
+  // up-to-date).
+  for (const auto& item : items_of_second) {
+    if (item->IsInTime(cur_time) && IsValidMetricItem(item)) {
+      new_last_fetch_time = std::max(new_last_fetch_time, item->timestamp());
+      map.insert(std::make_pair(item->timestamp(), item));
+    }
+  }
+  this->last_fetch_timestamp_ = new_last_fetch_time;
+  return map;
+}
+
 double StatisticNode::PreviousBlockQps() {
   return 0;  // TODO
 }
@@ -101,7 +131,9 @@ void StatisticNode::IncreaseThreadNum() { this->cur_thread_num_++; }
 void StatisticNode::DecreaseThreadNum() { this->cur_thread_num_--; }
 
 void StatisticNode::Reset() {
-  // TODO
+  StatConfigManager& m = StatConfigManager::GetInstance();
+  this->rolling_counter_second_ =
+      std::make_unique<SlidingWindowMetric>(m.SampleCount(), m.IntervalMs());
 }
 
 }  // namespace Stat

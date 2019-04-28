@@ -1,7 +1,5 @@
 #pragma once
 
-#include <atomic>
-#include <chrono>
 #include <memory>
 
 #include "sentinel-core/statistic/base/metric.h"
@@ -37,9 +35,11 @@ class StatisticNode : public Node {
   virtual double PreviousBlockQps() override;
   virtual double PreviousPassQps() override;
 
+  virtual std::unordered_map<long, MetricItemPtr> Metrics() override;
+
   virtual void AddPassRequest(int32_t count) override;
   virtual void AddRtAndCompleteRequest(int32_t rt,
-                                       int32_t completeCount) override;
+                                       int32_t complete_count) override;
   virtual void AddBlockRequest(int32_t count) override;
   virtual void AddExceptionRequest(int32_t count) override;
   virtual void IncreaseThreadNum() override;
@@ -55,7 +55,9 @@ class StatisticNode : public Node {
   std::unique_ptr<Metric> rolling_counter_minute_ =
       std::make_unique<SlidingWindowMetric>(60, 60 * 1000);
   std::atomic<uint32_t> cur_thread_num_{0};
-  std::chrono::milliseconds last_fetch_timestamp_;
+  uint64_t last_fetch_timestamp_ = -1;
+
+  bool IsValidMetricItem(const MetricItemPtr& item) const;
 };
 
 using StatisticNodeSharedPtr = std::shared_ptr<StatisticNode>;

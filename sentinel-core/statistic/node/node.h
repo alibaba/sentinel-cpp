@@ -1,7 +1,9 @@
 #pragma once
 
-#include <map>
 #include <memory>
+#include <unordered_map>
+
+#include "sentinel-core/statistic/base/metric_item.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -29,7 +31,8 @@ class Node {
 
   virtual double PreviousBlockQps() = 0;
   virtual double PreviousPassQps() = 0;
-  // virtual std::unique_ptr<std::map<long, MetricItem>> metrics();
+
+  virtual std::unordered_map<long, MetricItemPtr> Metrics() = 0;
 
   virtual void AddPassRequest(int32_t count) = 0;
   virtual void AddRtAndCompleteRequest(int32_t rt, int32_t completeCount) = 0;

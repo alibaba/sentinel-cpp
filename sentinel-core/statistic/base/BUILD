@@ -85,6 +85,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":metric_bucket_lib",
+    ":metric_item_lib",
   ]
 )
 

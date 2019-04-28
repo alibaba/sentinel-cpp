@@ -30,6 +30,8 @@ class MockNode : public Node {
   MOCK_METHOD0(MinRt, double(void));
   MOCK_CONST_METHOD0(CurThreadNum, uint32_t(void));
 
+  MOCK_METHOD0(Metrics, std::unordered_map<long, MetricItemPtr>(void));
+
   MOCK_METHOD0(PreviousBlockQps, double(void));
   MOCK_METHOD0(PreviousPassQps, double(void));
 

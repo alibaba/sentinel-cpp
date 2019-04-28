@@ -8,14 +8,14 @@ namespace Stat {
 
 class MetricItem;
 
-using MetricItemSharedPtr = std::shared_ptr<MetricItem>;
+using MetricItemPtr = std::shared_ptr<MetricItem>;
 
 class MetricItem {
  public:
   MetricItem() = default;
 
-  static MetricItemSharedPtr FromThinString(const std::string& thin_str);
-  static MetricItemSharedPtr FromFatString(const std::string& fat_str);
+  static MetricItemPtr FromThinString(const std::string& thin_str);
+  static MetricItemPtr FromFatString(const std::string& fat_str);
 
   const std::string& resource() const { return resource_; };
   int64_t timestamp() const { return timestamp_; };
@@ -35,6 +35,7 @@ class MetricItem {
 
   std::string ToThinString() const;
   std::string ToFatString() const;
+  bool IsInTime(int64_t cur_time) const;
 
  private:
   std::string resource_;

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "sentinel-core/statistic/base/metric_bucket.h"
+#include "sentinel-core/statistic/base/metric_item.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -60,14 +61,7 @@ class Metric {
    *
    * @return metric node list of all resources
    */
-  // virtual List<MetricNode> details() = 0;
-
-  /**
-   * Get the raw window array.
-   *
-   * @return window metric array
-   */
-  // virtual std::vector<MetricBucket> Windows() = 0;
+  virtual std::vector<MetricItemPtr> Details() = 0;
 
   /**
    * Add current exception count.
