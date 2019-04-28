@@ -48,6 +48,7 @@ cc_library(
   name = "metric_item_lib",
   srcs = [
     "metric_item.h",
+    "metric_item.cc",
   ],
   copts = DEFAULT_COPTS
 )

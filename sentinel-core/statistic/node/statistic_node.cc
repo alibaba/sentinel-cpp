@@ -75,17 +75,23 @@ bool StatisticNode::IsValidMetricItem(const MetricItemPtr& item) const {
                              item->exception_qps() > 0 || item->rt() > 0);
 }
 
+bool StatisticNode::IsNodeInTime(const MetricItemPtr& item,
+                                 int64_t cur_time) const {
+  return item != nullptr && item->timestamp() > last_fetch_timestamp_ &&
+         item->timestamp() < cur_time;
+}
+
 std::unordered_map<long, MetricItemPtr> StatisticNode::Metrics() {
   int64_t cur_time = Utils::TimeUtils::CurrentTimeMillis().count();
   cur_time = cur_time - cur_time % 1000;
   std::unordered_map<long, MetricItemPtr> map;
   std::vector<MetricItemPtr> items_of_second =
-      std::move(rolling_counter_minute_->Details());
+      rolling_counter_minute_->Details();
   int64_t new_last_fetch_time = last_fetch_timestamp_;
   // Iterate metrics of all resources, filter valid metrics (not-empty and
   // up-to-date).
   for (const auto& item : items_of_second) {
-    if (item->IsInTime(cur_time) && IsValidMetricItem(item)) {
+    if (IsNodeInTime(item, cur_time) && IsValidMetricItem(item)) {
       new_last_fetch_time = std::max(new_last_fetch_time, item->timestamp());
       map.insert(std::make_pair(item->timestamp(), item));
     }

@@ -58,6 +58,7 @@ class StatisticNode : public Node {
   uint64_t last_fetch_timestamp_ = -1;
 
   bool IsValidMetricItem(const MetricItemPtr& item) const;
+  bool IsNodeInTime(const MetricItemPtr& item, int64_t cur_time) const;
 };
 
 using StatisticNodeSharedPtr = std::shared_ptr<StatisticNode>;

@@ -94,8 +94,7 @@ void SlidingWindowMetric::AddRt(long rt) {
 std::vector<MetricItemPtr> SlidingWindowMetric::Details() {
   std::vector<MetricItemPtr> items;
   sliding_window_->CurrentWindow();
-  std::vector<WindowWrapPtr<MetricBucket>> list =
-      std::move(sliding_window_->Buckets());
+  std::vector<WindowWrapPtr<MetricBucket>> list = sliding_window_->Buckets();
   for (const auto &wrap : list) {
     if (wrap == nullptr) {
       continue;

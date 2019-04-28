@@ -35,7 +35,6 @@ class MetricItem {
 
   std::string ToThinString() const;
   std::string ToFatString() const;
-  bool IsInTime(int64_t cur_time) const;
 
  private:
   std::string resource_;

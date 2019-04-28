@@ -10,7 +10,7 @@ class WindowWrap {
  public:
   explicit WindowWrap(int64_t length_ms, int64_t start,
                       const std::shared_ptr<T>& value)
-      : bucket_length_ms_(length_ms), bucket_start_(start), value_(value) {}
+      : bucket_start_(start), bucket_length_ms_(length_ms), value_(value) {}
   ~WindowWrap() = default;
 
   int64_t BucketLengthInMs() const;
