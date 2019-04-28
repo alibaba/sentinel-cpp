@@ -23,3 +23,16 @@ cc_library(
     "//sentinel-core/statistic/base:stat_config_manager_lib",
   ]
 )
+
+cc_library(
+  name = "cluster_node_lib",
+  srcs = [
+    "cluster_node.h",
+    "cluster_node.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":statistic_node_lib",
+    "@com_google_absl//absl/container:flat_hash_map",
+  ]
+)
