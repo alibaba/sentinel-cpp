@@ -5,11 +5,14 @@
 namespace Sentinel {
 namespace Slot {
 
+constexpr auto kStatisticSlotName = "StatisticSlot";
+
 class StatisticSlot : public StatsSlot {
  public:
   StatisticSlot() = default;
   ~StatisticSlot() = default;
 
+  const std::string& Name() const override;
   TokenResultSharedPtr Entry(const EntryContextPtr& context,
                              const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodePtr&, int count,
@@ -18,6 +21,8 @@ class StatisticSlot : public StatsSlot {
             const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:
+  const std::string name_{kStatisticSlotName};
+
   TokenResultSharedPtr OnPass(const EntryContextPtr& context,
                               const ResourceWrapperSharedPtr& resource,
                               const Stat::NodePtr& node, int count, int flag);

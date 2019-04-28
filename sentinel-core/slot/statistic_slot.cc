@@ -10,6 +10,8 @@
 namespace Sentinel {
 namespace Slot {
 
+const std::string& StatisticSlot::Name() const { return name_; }
+
 void StatisticSlot::RecordPassFor(const Stat::NodePtr& node, int count) {
   if (node != nullptr) {
     node->IncreaseThreadNum();
@@ -38,7 +40,9 @@ TokenResultSharedPtr StatisticSlot::OnPass(
   EntrySharedPtr entry = context->cur_entry();
 
   this->RecordPassFor(node, count);
-  this->RecordPassFor(entry->GetOriginNode(), count);
+  if (entry != nullptr) {
+    this->RecordPassFor(entry->GetOriginNode(), count);
+  }
 
   return TokenResult::Ok();
 }
@@ -48,6 +52,9 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
     const ResourceWrapperSharedPtr& resource, const Stat::NodePtr& node,
     int count, int flag) {
   EntrySharedPtr entry = context->cur_entry();
+  if (entry == nullptr) {
+    return prev_result;
+  }
   entry->SetError(prev_result->blocked_reason().value_or("unexpected_blocked"));
 
   this->RecordBlockFor(node, count);
@@ -60,6 +67,9 @@ TokenResultSharedPtr StatisticSlot::Entry(
     const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
     /*const*/ Stat::NodePtr& node, int count, int flag) {
   TokenResultSharedPtr prev_result = this->LastTokenResult();
+  if (prev_result == nullptr) {
+    return OnPass(context, resource, node, count, flag);
+  }
   switch (prev_result->status()) {
     case TokenStatus::RESULT_STATUS_BLOCKED:
       return OnBlock(prev_result, context, resource, node, count, flag);
@@ -72,6 +82,9 @@ TokenResultSharedPtr StatisticSlot::Entry(
 void StatisticSlot::Exit(const EntryContextPtr& context,
                          const ResourceWrapperSharedPtr& resource, int count) {
   EntrySharedPtr entry = context->cur_entry();
+  if (entry == nullptr) {
+    return;
+  }
   Stat::NodePtr node = entry->GetCurrentNode();
   if (node == nullptr) {
     return;  // Should not happen.

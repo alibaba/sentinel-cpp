@@ -42,3 +42,17 @@ cc_library(
     "//sentinel-core/utils:utils_lib",
   ]
 )
+
+cc_test(
+  name = "statistic_slot_unittests",
+  srcs = [
+    "statistic_slot_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":statistic_slot_lib",
+    "//sentinel-core/common:string_resource_wrapper_lib",
+    "//sentinel-core/statistic/node:cluster_node_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)

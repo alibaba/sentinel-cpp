@@ -26,7 +26,7 @@ class Entry {
   std::chrono::milliseconds GetCreateTime() const { return create_time_; }
   Stat::NodePtr GetCurrentNode() const { return cur_node_; }
   Stat::NodePtr GetOriginNode() const { return origin_node_; }
-  bool HasError() const { return error_.empty(); };
+  bool HasError() const { return !error_.empty(); };
 
   void SetError(const std::string message) { error_ = message; }
   void SetCurNode(const Stat::NodePtr node) { cur_node_ = node; }
