@@ -8,9 +8,7 @@ cc_library(
     "property_listener.h",
   ],
   copts = DEFAULT_COPTS,
-  deps = [
-    "//sentinel-core/common:rule_lib",
-  ]
+  deps = []
 )
 
 cc_library(

@@ -62,6 +62,9 @@ cc_library(
     "rule.h",
   ],
   copts = DEFAULT_COPTS,
+  deps = [
+    ":constants",
+  ]
 )
 
 cc_library(

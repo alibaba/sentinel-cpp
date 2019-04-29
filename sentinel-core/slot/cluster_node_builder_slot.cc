@@ -10,7 +10,7 @@ const std::string& ClusterNodeBuilderSlot::Name() const { return name_; }
 
 Stat::ClusterNodePtr ClusterNodeBuilderSlot::GetClusterNode(
     const std::string& resource_name) const {
-  absl::ReaderMutexLock(*mtx_);
+  absl::ReaderMutexLock lck(&mtx_);
   auto got = node_map_.find(resource_name);
   if (got == node_map_.end()) {
     return nullptr;
@@ -19,7 +19,8 @@ Stat::ClusterNodePtr ClusterNodeBuilderSlot::GetClusterNode(
 }
 
 void ClusterNodeBuilderSlot::ResetClusterNodes() {
-  absl::WriterMutexLock(*mtx_);
+  absl::WriterMutexLock lck(&mtx_);
+  // TODO
 }
 
 TokenResultSharedPtr ClusterNodeBuilderSlot::Entry(
@@ -27,7 +28,7 @@ TokenResultSharedPtr ClusterNodeBuilderSlot::Entry(
     Stat::NodePtr& node, int count, int flag) {
   auto cluster_node = GetClusterNode(resource->name());
   if (cluster_node == nullptr) {
-    absl::WriterMutexLock(*mtx_);
+    absl::WriterMutexLock lck(&mtx_);
     cluster_node = GetClusterNode(resource->name());
     if (cluster_node == nullptr) {
       cluster_node = std::make_shared<Stat::ClusterNode>();

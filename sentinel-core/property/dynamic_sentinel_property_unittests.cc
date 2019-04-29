@@ -17,13 +17,13 @@ namespace Sentinel {
 namespace Property {
 
 TEST(DynamicSentinelPropertyTest, Basic) {
-  FakeRule rule("test_resource", "test_app");
+  FakeRule rule;
   rule.set_fake_rule_data("test");
   DynamicSentinelProperty<FakeRule> ds;
   auto pl = std::make_unique<MockPropertyListener<FakeRule>>();
   auto pl_point = pl.get();
 
-  EXPECT_CALL(*pl_point, ConfigUpdate(Matcher<const Rule&>(rule), false))
+  EXPECT_CALL(*pl_point, ConfigUpdate(Matcher<const FakeRule&>(rule), false))
       .Times(1);
 
   ds.AddListener(std::move(pl));

@@ -14,11 +14,9 @@ class MockPropertyListener : public PropertyListener<T> {
  public:
   MockPropertyListener() = default;
   ~MockPropertyListener() = default;
-  MOCK_METHOD2(ConfigUpdate, void(const Rule&, bool));
-  const std::string Name() override { return "MockPropertyListener"; }
 
- private:
   MOCK_METHOD2_T(ConfigUpdate, void(const T&, bool));
+  const std::string Name() const override { return "MockPropertyListener"; }
 };
 
 }  // namespace Property

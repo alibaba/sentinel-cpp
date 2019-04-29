@@ -30,7 +30,7 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
     }
 
     for (auto it = listeners_.begin(); it != listeners_.end(); ++it) {
-      it->second->ConfigUpdate(*static_cast<const Rule*>(&value), false);
+      it->second->ConfigUpdate(value, false);
     }
 
     return true;

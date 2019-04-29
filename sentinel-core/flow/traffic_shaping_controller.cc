@@ -1,5 +1,3 @@
-#pragma once
-
 #include <memory>
 
 #include "sentinel-core/flow/traffic_shaping_controller.h"

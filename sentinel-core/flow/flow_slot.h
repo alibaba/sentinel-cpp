@@ -6,6 +6,8 @@
 namespace Sentinel {
 namespace Slot {
 
+constexpr auto kFlowSlotName = "FlowSlot";
+
 class FlowSlot : public RuleCheckerSlot {
  public:
   FlowSlot() = default;
@@ -16,8 +18,10 @@ class FlowSlot : public RuleCheckerSlot {
                              Stat::NodePtr& node, int count, int flag) override;
   void Exit(const EntryContextPtr& context,
             const ResourceWrapperSharedPtr& resource, int count) override;
+  const std::string& Name() const override;
 
  private:
+  const std::string name_{kFlowSlotName};
   Flow::FlowRuleChecker checker_{};
 };
 

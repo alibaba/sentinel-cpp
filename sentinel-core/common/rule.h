@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "sentinel-core/common/constants.h"
+
 namespace Sentinel {
 
 class Rule {
@@ -9,21 +11,15 @@ class Rule {
   Rule() = default;
   virtual ~Rule() = default;
 
-  explicit Rule(const std::string& resource) : resource_(resource) {}
-  Rule(const std::string& resource, const std::string& limit_app)
-      : resource_(resource), limit_app_(limit_app) {}
-  const std::string& resource() const { return resource_; }
-  void set_resource(const std::string& resource) { resource_ = resource; }
-  const std::string& limit_app() const { return limit_app_; }
-  void set_limit_app(const std::string& limit_app) { limit_app_ = limit_app; }
-
-  bool operator==(const Rule& rule) const {
-    return resource_ == rule.resource() && limit_app_ == rule.limit_app();
+  static bool LimitOriginEquals(const std::string& lhs,
+                                const std::string& rhs) {
+    if (lhs.empty()) {
+      return rhs.empty() || rhs == Constants::kLimitOriginDefault;
+    } else if (lhs == Constants::kLimitOriginDefault) {
+      return rhs.empty() || rhs == Constants::kLimitOriginDefault;
+    }
+    return lhs == rhs;
   }
-
- protected:
-  std::string resource_;
-  std::string limit_app_;
 };
 
 }  // namespace Sentinel

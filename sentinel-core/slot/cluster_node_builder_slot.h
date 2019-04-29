@@ -39,7 +39,7 @@ class ClusterNodeBuilderSlot : public StatsSlot {
   const std::string name_{kClusterNodeBuilderSlotName};
 
   absl::flat_hash_map<std::string, Stat::ClusterNodePtr> node_map_{};
-  absl::Mutex mtx_{};
+  mutable absl::Mutex mtx_;
 };
 
 }  // namespace Slot

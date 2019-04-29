@@ -1,5 +1,3 @@
-#pragma once
-
 #include "sentinel-core/flow/default_traffic_shaping_calculator.h"
 
 namespace Sentinel {

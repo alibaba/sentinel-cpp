@@ -26,5 +26,7 @@ class TrafficShapingController {
   const std::unique_ptr<TrafficShapingChecker> action_checker_;
 };
 
+using TrafficShapingControllerPtr = std::shared_ptr<TrafficShapingController>;
+
 }  // namespace Flow
 }  // namespace Sentinel
