@@ -1,5 +1,7 @@
-#include "sentinel-core/flow/flow_slot.h"
+#include <thread>
+
 #include "sentinel-core/flow/flow_rule_manager.h"
+#include "sentinel-core/flow/flow_slot.h"
 
 namespace Sentinel {
 namespace Slot {
@@ -21,8 +23,8 @@ TokenResultSharedPtr FlowSlot::Entry(const EntryContextPtr& context,
         return res;
       }
       if (res->status() == TokenStatus::RESULT_STATUS_SHOULD_WAIT) {
-        if (res->wait_ms().has_value()) {
-          // TODO: sleep for wait_ms.
+        if (res->wait_ms().has_value() && res->wait_ms().value().count() > 0) {
+          std::this_thread::sleep_for(res->wait_ms().value());
           continue;
         }
       }

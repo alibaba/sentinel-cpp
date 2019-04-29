@@ -122,6 +122,20 @@ cc_library(
 )
 
 cc_library(
+  name = "throttling_traffic_shaping_checker_lib",
+  srcs = [
+    "throttling_traffic_shaping_checker.h",
+    "throttling_traffic_shaping_checker.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":flow_rule_constants_lib",
+    ":traffic_shaping_checker_interface",
+    "//sentinel-core/utils:utils_lib",
+  ]
+)
+
+cc_library(
   name = "traffic_shaping_controller_lib",
   srcs = [
     "traffic_shaping_controller.h",
