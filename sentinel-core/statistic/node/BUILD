@@ -40,3 +40,17 @@ cc_library(
     "@com_google_absl//absl/container:flat_hash_map",
   ]
 )
+
+cc_library(
+  name = "resource_node_storage_lib",
+  srcs = [
+    "resource_node_storage.h",
+    "resource_node_storage.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/statistic/node:cluster_node_lib",
+    "@com_google_absl//absl/container:flat_hash_map",
+    "@com_google_absl//absl/synchronization",
+  ]
+)

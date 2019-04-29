@@ -54,8 +54,8 @@ cc_library(
     ":flow_rule_manager_lib",
     "//sentinel-core/common:entry_lib",
     "//sentinel-core/slot/base:token_result_lib",
-    "//sentinel-core/slot:cluster_node_builder_slot_lib",
     "//sentinel-core/statistic/node:node_interface",
+    "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
 

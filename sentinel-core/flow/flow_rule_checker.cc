@@ -1,7 +1,7 @@
 #include "sentinel-core/flow/flow_rule_checker.h"
 #include "sentinel-core/flow/flow_rule_constants.h"
 #include "sentinel-core/flow/flow_rule_manager.h"
-#include "sentinel-core/slot/cluster_node_builder_slot.h"
+#include "sentinel-core/statistic/node/resource_node_storage.h"
 
 namespace Sentinel {
 namespace Flow {
@@ -46,8 +46,7 @@ Stat::NodePtr FlowRuleChecker::SelectNodeByRelStrategy(
   int rel_strategy = rule.strategy();
   if (!ref_resource.empty() &&
       rel_strategy == (int)FlowRelationStrategy::kAssociatedResource) {
-    return Slot::ClusterNodeBuilderSlot::GetInstance().GetClusterNode(
-        ref_resource);
+    return Stat::ResourceNodeStorageInstance.GetClusterNode(ref_resource);
   }
   return node;
 }

@@ -14,17 +14,16 @@ cc_library(
 )
 
 cc_library(
-  name = "cluster_node_builder_slot_lib",
+  name = "resource_node_builder_slot_lib",
   srcs = [
-    "cluster_node_builder_slot.h",
-    "cluster_node_builder_slot.cc",
+    "resource_node_builder_slot.h",
+    "resource_node_builder_slot.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
     "//sentinel-core/slot/base:stats_slot_interface",
     "//sentinel-core/statistic/node:cluster_node_lib",
-    "@com_google_absl//absl/container:flat_hash_map",
-    "@com_google_absl//absl/synchronization",
+    "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
 
@@ -40,6 +39,21 @@ cc_library(
     "//sentinel-core/common:entry_lib",
     "//sentinel-core/slot/base:stats_slot_interface",
     "//sentinel-core/utils:utils_lib",
+  ]
+)
+
+cc_test(
+  name = "resource_node_builder_slot_unittests",
+  srcs = [
+    "resource_node_builder_slot_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":resource_node_builder_slot_lib",
+    "//sentinel-core/common:string_resource_wrapper_lib",
+    "//sentinel-core/statistic/node:cluster_node_lib",
+    "//sentinel-core/slot/base:default_slot_chain_impl_lib",
+    "@com_google_googletest//:gtest_main",
   ]
 )
 
