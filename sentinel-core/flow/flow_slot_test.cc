@@ -27,14 +27,14 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   entry->SetCurNode(node);
   context->set_cur_entry(entry);
 
-  InSequence s;
-
   FlowSlot slot;
-  // Test flow checking when no rule exists.
-  ON_CALL(*(reinterpret_cast<Stat::MockNode*>(node.get())), PassQps())
-      .WillByDefault(Return(100));
-  EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-            slot.Entry(context, resource, node, 10, 0)->status());
+  {
+    // Test flow checking when no rule exists.
+    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillByDefault(Return(100));
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(context, resource, node, 10, 0)->status());
+  }
 
   Flow::FlowRule rule{resource_name};
   rule.set_count(1);
@@ -42,16 +42,25 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   Flow::FlowRuleManager& m = Flow::FlowRuleManager::GetInstance();
   m.LoadRules(rules);
 
-  ON_CALL(*(reinterpret_cast<Stat::MockNode*>(node.get())), PassQps())
-      .WillByDefault(Return(0));
-  EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-            slot.Entry(context, resource, node, 1, 0)->status());
-  EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-            slot.Entry(context, resource, node, 2, 0)->status());
-  ON_CALL(*(reinterpret_cast<Stat::MockNode*>(node.get())), PassQps())
-      .WillByDefault(Return(1));
-  EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-            slot.Entry(context, resource, node, 1, 0)->status());
+  {
+    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillByDefault(Return(0));
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(context, resource, node, 1, 0)->status());
+  }
+  {
+    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillByDefault(Return(0));
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+              slot.Entry(context, resource, node, 2, 0)->status());
+  }
+
+  {
+    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillByDefault(Return(1));
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+              slot.Entry(context, resource, node, 1, 0)->status());
+  }
 
   m.LoadRules({});
 }
