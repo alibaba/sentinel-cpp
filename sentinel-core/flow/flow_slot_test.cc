@@ -27,6 +27,8 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   entry->SetCurNode(node);
   context->set_cur_entry(entry);
 
+  InSequence s;
+
   FlowSlot slot;
   // Test flow checking when no rule exists.
   ON_CALL(*(reinterpret_cast<Stat::MockNode*>(node.get())), PassQps())
