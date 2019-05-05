@@ -1,7 +1,7 @@
 #pragma once
 
-#include <map>
 #include <string>
+#include <unordered_map>
 
 #include "sentinel-core/init/init_target.h"
 #include "sentinel-core/utils/utils.h"
@@ -11,37 +11,32 @@ namespace Config {
 
 class LocalConfig : Init::Target {
  public:
-  static const char kCharsetKey[];
-  static const char kSingleMetricFileSizeKey[];
-  static const char kTotalMetricFileCountKey[];
-  static const char kColdFactorKey[];
-  static const char kStatisticMaxRtKey[];
-  static const char kDefaultCharset[];
-  static const uint64_t kDefaultSingleMetricFileSize;
-  static const uint32_t kDefaultTotalMetricFileCount;
-  static const uint32_t kDefaultColdFactor;
-  static const uint32_t kDefaultStatisticMaxRt;
+  LocalConfig() = default;
+  ~LocalConfig() = default;
 
-  ~LocalConfig();
-  LocalConfig();
-  const std::string GetConfig(const std::string& key);
+  const std::string GetConfig(const std::string& key) const;
   void SetConfig(const std::string& key, const std::string& value);
   void SetConfigIfNotExists(const std::string& key, const std::string& value);
   void RemoveConfig(const std::string& key);
 
   // InitTarget
   void Initialize() override;
-  const std::string& app_name() { return app_name_; }
+  const std::string& app_name() const { return app_name_; }
 
-  uint32_t ColdFactor();
-  uint32_t StatisticMaxRt();
-  uint32_t TotalMetricFileCount();
-  uint64_t SingleMetricFileSize();
-  const std::string& Charset();
+  int32_t WarmUpColdFactor() const;
+  int32_t StatisticMaxRt() const;
+  int32_t TotalMetricFileCount() const;
+  int64_t SingleMetricFileSize() const;
+  const std::string Charset() const;
+
+  int32_t GetInt(const std::string& key, int32_t default_value) const;
+  int64_t GetLong(const std::string& key, int64_t default_value) const;
 
  private:
-  std::map<std::string, std::string> config_map_;
+  std::unordered_map<std::string, std::string> config_map_;
   std::string app_name_;
+
+  void ResolveAppName();
 };
 
 using LocalConfigSingleton = Utils::Singleton<LocalConfig>;
