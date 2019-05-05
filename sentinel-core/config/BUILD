@@ -23,3 +23,15 @@ cc_library(
     "//sentinel-core/utils:utils_lib",
   ]
 )
+
+cc_test(
+  name = "local_config_unittests",
+  srcs = [
+    "local_config_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":local_config_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
