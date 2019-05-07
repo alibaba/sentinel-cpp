@@ -4,7 +4,7 @@ namespace Sentinel {
 namespace Flow {
 
 double DefaultTrafficShapingCalculator::CalculateAllowedTokens(
-    const Stat::NodePtr& node, int acquire_count, int flag) {
+    const Stat::NodeSharedPtr& node, int acquire_count, int flag) {
   return threshold_;
 }
 

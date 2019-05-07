@@ -20,8 +20,9 @@ namespace Slot {
 
 TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   std::string resource_name{"test_resource"};
-  EntryContextPtr context = std::make_shared<EntryContext>("test_context");
-  Stat::NodePtr node = std::make_shared<Stat::MockNode>();
+  EntryContextSharedPtr context =
+      std::make_shared<EntryContext>("test_context");
+  Stat::NodeSharedPtr node = std::make_shared<Stat::MockNode>();
   auto resource =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);

@@ -9,8 +9,9 @@
 
 namespace Sentinel {
 
-EntryResult SphU::Entry(const EntryContextPtr& context, const std::string& r,
-                        EntryType t, int count, int flag) {
+EntryResult SphU::Entry(const EntryContextSharedPtr& context,
+                        const std::string& r, EntryType t, int count,
+                        int flag) {
   auto resource = std::make_shared<StringResourceWrapper>(r, t);
   EntrySharedPtr e = std::make_shared<Sentinel::Entry>(resource, context);
 
@@ -19,7 +20,7 @@ EntryResult SphU::Entry(const EntryContextPtr& context, const std::string& r,
     // TODO: should warn here.
     return EntryResult{e};
   }
-  Stat::NodePtr empty_node = nullptr;
+  Stat::NodeSharedPtr empty_node = nullptr;
   auto result = chain->Entry(e, resource, empty_node, count, flag);
   if (result->status() == Slot::TokenStatus::RESULT_STATUS_BLOCKED) {
     EntryResult{e}.Exit();

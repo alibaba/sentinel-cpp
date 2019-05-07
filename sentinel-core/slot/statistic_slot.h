@@ -15,7 +15,7 @@ class StatisticSlot : public StatsSlot {
   const std::string& Name() const override;
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             /*const*/ Stat::NodePtr&, int count,
+                             /*const*/ Stat::NodeSharedPtr&, int count,
                              int flag) override;
   void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
@@ -25,15 +25,16 @@ class StatisticSlot : public StatsSlot {
 
   TokenResultSharedPtr OnPass(const EntrySharedPtr& entry,
                               const ResourceWrapperSharedPtr& resource,
-                              const Stat::NodePtr& node, int count, int flag);
+                              const Stat::NodeSharedPtr& node, int count,
+                              int flag);
   TokenResultSharedPtr OnBlock(const TokenResultSharedPtr& prev_result,
                                const EntrySharedPtr& entry,
                                const ResourceWrapperSharedPtr& resource,
-                               const Stat::NodePtr&, int count, int flag);
+                               const Stat::NodeSharedPtr&, int count, int flag);
 
-  void RecordPassFor(const Stat::NodePtr& node, int count);
-  void RecordBlockFor(const Stat::NodePtr& node, int count);
-  void RecordCompleteFor(const Stat::NodePtr& node, int rt, int count);
+  void RecordPassFor(const Stat::NodeSharedPtr& node, int count);
+  void RecordBlockFor(const Stat::NodeSharedPtr& node, int count);
+  void RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt, int count);
 };
 
 }  // namespace Slot

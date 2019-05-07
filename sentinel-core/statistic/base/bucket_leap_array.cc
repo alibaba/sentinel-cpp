@@ -8,7 +8,7 @@ std::shared_ptr<MetricBucket> BucketLeapArray::NewEmptyBucket(
   return std::make_shared<MetricBucket>();
 }
 
-void BucketLeapArray::ResetWindowTo(const WindowWrapPtr<MetricBucket>& w,
+void BucketLeapArray::ResetWindowTo(const WindowWrapSharedPtr<MetricBucket>& w,
                                     int64_t start_time) {
   // Update the start time and reset value.
   w->ResetTo(start_time);

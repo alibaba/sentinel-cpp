@@ -22,8 +22,9 @@ class SphU {
  private:
   SphU() = default;
   // Will be public after Sentinel C++ supports invocation chain.
-  static EntryResult Entry(const EntryContextPtr& context, const std::string& r,
-                           EntryType t, int count, int flag);
+  static EntryResult Entry(const EntryContextSharedPtr& context,
+                           const std::string& r, EntryType t, int count,
+                           int flag);
 };
 
 }  // namespace Sentinel

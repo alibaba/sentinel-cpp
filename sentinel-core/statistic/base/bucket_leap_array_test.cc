@@ -23,7 +23,7 @@ TEST(BucketLeapArrayTest, TestNewWindow) {
       std::make_shared<BucketLeapArray>(kSampleCount, kIntervalInMs);
   int64_t t = Utils::TimeUtils::CurrentTimeMillis().count();
 
-  WindowWrapPtr<MetricBucket> bucket = leap_array->CurrentWindow(t);
+  WindowWrapSharedPtr<MetricBucket> bucket = leap_array->CurrentWindow(t);
 
   EXPECT_EQ(kBucketLengthInMs, bucket->BucketLengthInMs());
   EXPECT_EQ(bucket->BucketStart(), t - t % kBucketLengthInMs);
@@ -36,7 +36,8 @@ TEST(BucketLeapArrayTest, TestLeapArrayWindowStart) {
       std::make_shared<BucketLeapArray>(kSampleCount, kIntervalInMs);
   int64_t first_time = Utils::TimeUtils::CurrentTimeMillis().count();
   int64_t previous_window_start = first_time - first_time % kBucketLengthInMs;
-  WindowWrapPtr<MetricBucket> bucket = leap_array->CurrentWindow(first_time);
+  WindowWrapSharedPtr<MetricBucket> bucket =
+      leap_array->CurrentWindow(first_time);
 
   EXPECT_EQ(kBucketLengthInMs, bucket->BucketLengthInMs());
   EXPECT_EQ(previous_window_start, bucket->BucketStart());
@@ -47,7 +48,7 @@ TEST(BucketLeapArrayTest, TestWindowAfterOneInterval) {
       std::make_shared<BucketLeapArray>(kIntervalInSec, kIntervalInMs);
   int64_t first_time = Utils::TimeUtils::CurrentTimeMillis().count();
   int64_t previous_window_start = first_time - first_time % kBucketLengthInMs;
-  WindowWrapPtr<MetricBucket> bucket =
+  WindowWrapSharedPtr<MetricBucket> bucket =
       leap_array->CurrentWindow(previous_window_start);
 
   EXPECT_EQ(kBucketLengthInMs, bucket->BucketLengthInMs());

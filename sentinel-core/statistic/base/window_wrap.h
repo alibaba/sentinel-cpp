@@ -27,7 +27,7 @@ class WindowWrap {
 };
 
 template <typename T>
-using WindowWrapPtr = std::shared_ptr<WindowWrap<T>>;
+using WindowWrapSharedPtr = std::shared_ptr<WindowWrap<T>>;
 
 template <typename T>
 int64_t WindowWrap<T>::BucketLengthInMs() const {

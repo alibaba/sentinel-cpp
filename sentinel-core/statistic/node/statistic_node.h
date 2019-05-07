@@ -35,7 +35,7 @@ class StatisticNode : public Node {
   virtual double PreviousBlockQps() override;
   virtual double PreviousPassQps() override;
 
-  virtual std::unordered_map<long, MetricItemPtr> Metrics() override;
+  virtual std::unordered_map<long, MetricItemSharedPtr> Metrics() override;
 
   virtual void AddPassRequest(int32_t count) override;
   virtual void AddRtAndCompleteRequest(int32_t rt,
@@ -57,8 +57,8 @@ class StatisticNode : public Node {
   std::atomic<uint32_t> cur_thread_num_{0};
   uint64_t last_fetch_timestamp_ = -1;
 
-  bool IsValidMetricItem(const MetricItemPtr& item) const;
-  bool IsNodeInTime(const MetricItemPtr& item, int64_t cur_time) const;
+  bool IsValidMetricItem(const MetricItemSharedPtr& item) const;
+  bool IsNodeInTime(const MetricItemSharedPtr& item, int64_t cur_time) const;
 };
 
 using StatisticNodeSharedPtr = std::shared_ptr<StatisticNode>;

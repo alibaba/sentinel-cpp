@@ -67,34 +67,35 @@ long SlidingWindowMetric::MinRt() {
 }
 
 void SlidingWindowMetric::AddException(int n) {
-  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  WindowWrapSharedPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
   wrap->Value()->Add(MetricEvent::EXCEPTION, n);
 }
 
 void SlidingWindowMetric::AddBlock(int n) {
-  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  WindowWrapSharedPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
   wrap->Value()->Add(MetricEvent::BLOCK, n);
 }
 
 void SlidingWindowMetric::AddComplete(int n) {
-  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  WindowWrapSharedPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
   wrap->Value()->Add(MetricEvent::COMPLETE, n);
 }
 
 void SlidingWindowMetric::AddPass(int n) {
-  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  WindowWrapSharedPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
   wrap->Value()->Add(MetricEvent::PASS, n);
 }
 
 void SlidingWindowMetric::AddRt(long rt) {
-  WindowWrapPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
+  WindowWrapSharedPtr<MetricBucket> wrap = sliding_window_->CurrentWindow();
   wrap->Value()->AddRt(rt);
 }
 
-std::vector<MetricItemPtr> SlidingWindowMetric::Details() {
-  std::vector<MetricItemPtr> items;
+std::vector<MetricItemSharedPtr> SlidingWindowMetric::Details() {
+  std::vector<MetricItemSharedPtr> items;
   sliding_window_->CurrentWindow();
-  std::vector<WindowWrapPtr<MetricBucket>> list = sliding_window_->Buckets();
+  std::vector<WindowWrapSharedPtr<MetricBucket>> list =
+      sliding_window_->Buckets();
   for (const auto &wrap : list) {
     if (wrap == nullptr) {
       continue;
@@ -104,7 +105,7 @@ std::vector<MetricItemPtr> SlidingWindowMetric::Details() {
       continue;
     }
 
-    MetricItemPtr item = std::make_shared<MetricItem>();
+    MetricItemSharedPtr item = std::make_shared<MetricItem>();
     item->set_block_qps(bucket->Get(MetricEvent::BLOCK));
     item->set_pass_qps(bucket->Get(MetricEvent::PASS));
     item->set_exception_qps(bucket->Get(MetricEvent::EXCEPTION));

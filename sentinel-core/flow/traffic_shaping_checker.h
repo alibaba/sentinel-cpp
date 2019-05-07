@@ -11,7 +11,7 @@ class TrafficShapingChecker {
   TrafficShapingChecker() = default;
   virtual ~TrafficShapingChecker() = default;
 
-  virtual Slot::TokenResultSharedPtr DoCheck(const Stat::NodePtr& node,
+  virtual Slot::TokenResultSharedPtr DoCheck(const Stat::NodeSharedPtr& node,
                                              int acquire_count,
                                              double threshold) = 0;
 };

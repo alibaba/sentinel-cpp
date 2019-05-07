@@ -18,7 +18,7 @@ class LeapArray {
       : interval_ms_(interval_ms),
         sample_count_(sample_count),
         bucket_length_ms_(interval_ms / sample_count),
-        array_(std::make_unique<WindowWrapPtr<T>[]>(sample_count)) {}
+        array_(std::make_unique<WindowWrapSharedPtr<T>[]>(sample_count)) {}
 
   virtual ~LeapArray() = default;
 
@@ -26,27 +26,27 @@ class LeapArray {
   int32_t IntervalInMs() const;
 
   virtual std::shared_ptr<T> NewEmptyBucket(int64_t time_millis) = 0;
-  virtual void ResetWindowTo(const WindowWrapPtr<T>& wrap,
+  virtual void ResetWindowTo(const WindowWrapSharedPtr<T>& wrap,
                              int64_t start_time) = 0;
 
-  virtual WindowWrapPtr<T> CurrentWindow();
-  virtual WindowWrapPtr<T> CurrentWindow(int64_t time_millis);
+  virtual WindowWrapSharedPtr<T> CurrentWindow();
+  virtual WindowWrapSharedPtr<T> CurrentWindow(int64_t time_millis);
 
-  std::vector<WindowWrapPtr<T>> Buckets() const;
-  std::vector<WindowWrapPtr<T>> Buckets(int64_t time_millis) const;
+  std::vector<WindowWrapSharedPtr<T>> Buckets() const;
+  std::vector<WindowWrapSharedPtr<T>> Buckets(int64_t time_millis) const;
   std::vector<std::shared_ptr<T>> Values() const;
   std::vector<std::shared_ptr<T>> Values(int64_t time_millis) const;
 
-  bool IsBucketDeprecated(const WindowWrapPtr<T>& wrap) const;
+  bool IsBucketDeprecated(const WindowWrapSharedPtr<T>& wrap) const;
   bool IsBucketDeprecated(int64_t time_millis,
-                          const WindowWrapPtr<T>& wrap) const;
+                          const WindowWrapSharedPtr<T>& wrap) const;
 
  protected:
   const int32_t interval_ms_;       // total time length of the sliding window
   const int32_t sample_count_;      // divide the sliding window into n parts
   const int32_t bucket_length_ms_;  // time length of each bucket
  private:
-  const std::unique_ptr<WindowWrapPtr<T>[]> array_;
+  const std::unique_ptr<WindowWrapSharedPtr<T>[]> array_;
   std::mutex mtx_;
 
   int32_t CalculateTimeIdx(/*@Valid*/ int64_t time_millis) const;
@@ -64,12 +64,12 @@ int32_t LeapArray<T>::IntervalInMs() const {
 }
 
 template <typename T>
-WindowWrapPtr<T> LeapArray<T>::CurrentWindow() {
+WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow() {
   return this->CurrentWindow(Utils::TimeUtils::CurrentTimeMillis().count());
 }
 
 template <typename T>
-WindowWrapPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
+WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
   if (time_millis < 0) {
     return nullptr;
   }
@@ -77,11 +77,11 @@ WindowWrapPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
   int64_t bucket_start = CalculateWindowStart(time_millis);
 
   while (true) {
-    WindowWrapPtr<T> old = array_[idx];
+    WindowWrapSharedPtr<T> old = array_[idx];
     if (old == nullptr) {
       std::unique_lock<std::mutex> lck(mtx_, std::defer_lock);
       if (lck.try_lock() && array_[idx] == nullptr) {
-        WindowWrapPtr<T> bucket = std::make_shared<WindowWrap<T>>(
+        WindowWrapSharedPtr<T> bucket = std::make_shared<WindowWrap<T>>(
             bucket_length_ms_, bucket_start, NewEmptyBucket(time_millis));
         array_[idx] = bucket;
         return bucket;
@@ -116,19 +116,20 @@ int64_t LeapArray<T>::CalculateWindowStart(int64_t time_millis) const {
 }
 
 template <typename T>
-bool LeapArray<T>::IsBucketDeprecated(const WindowWrapPtr<T>& wrap) const {
+bool LeapArray<T>::IsBucketDeprecated(
+    const WindowWrapSharedPtr<T>& wrap) const {
   return this->IsBucketDeprecated(Utils::TimeUtils::CurrentTimeMillis().count(),
                                   wrap);
 }
 
 template <typename T>
-bool LeapArray<T>::IsBucketDeprecated(int64_t time_millis,
-                                      const WindowWrapPtr<T>& wrap) const {
+bool LeapArray<T>::IsBucketDeprecated(
+    int64_t time_millis, const WindowWrapSharedPtr<T>& wrap) const {
   return time_millis - wrap->BucketStart() > interval_ms_;
 }
 
 template <typename T>
-std::vector<WindowWrapPtr<T>> LeapArray<T>::Buckets() const {
+std::vector<WindowWrapSharedPtr<T>> LeapArray<T>::Buckets() const {
   return this->Buckets(Utils::TimeUtils::CurrentTimeMillis().count());
 }
 
@@ -138,8 +139,9 @@ std::vector<std::shared_ptr<T>> LeapArray<T>::Values() const {
 }
 
 template <typename T>
-std::vector<WindowWrapPtr<T>> LeapArray<T>::Buckets(int64_t time_millis) const {
-  std::vector<WindowWrapPtr<T>> result{};
+std::vector<WindowWrapSharedPtr<T>> LeapArray<T>::Buckets(
+    int64_t time_millis) const {
+  std::vector<WindowWrapSharedPtr<T>> result{};
   if (time_millis < 0) {
     return result;
   }
@@ -163,7 +165,7 @@ std::vector<std::shared_ptr<T>> LeapArray<T>::Values(
   }
   int size = sample_count_;  // array_.size()
   for (int i = 0; i < size; i++) {
-    WindowWrapPtr<T> w = array_[i];
+    WindowWrapSharedPtr<T> w = array_[i];
     if (w == nullptr || IsBucketDeprecated(time_millis, w)) {
       continue;
     }

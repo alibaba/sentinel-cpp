@@ -12,7 +12,7 @@ class LogSlot : public StatsSlot {
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             /*const*/ Stat::NodePtr& node, int count,
+                             /*const*/ Stat::NodeSharedPtr& node, int count,
                              int flag);
   void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count);

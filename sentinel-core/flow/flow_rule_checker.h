@@ -15,21 +15,22 @@ class FlowRuleChecker {
 
   Slot::TokenResultSharedPtr CanPassCheck(const FlowRule& rule,
                                           const EntrySharedPtr& entry,
-                                          const Stat::NodePtr& node, int count);
+                                          const Stat::NodeSharedPtr& node,
+                                          int count);
   Slot::TokenResultSharedPtr CanPassCheck(const FlowRule& rule,
                                           const EntrySharedPtr& entry,
-                                          const Stat::NodePtr& node, int count,
-                                          int flag);
+                                          const Stat::NodeSharedPtr& node,
+                                          int count, int flag);
 
  private:
   Slot::TokenResultSharedPtr PassLocalCheck(const FlowRule& rule,
                                             const EntrySharedPtr& entry,
-                                            const Stat::NodePtr& node,
+                                            const Stat::NodeSharedPtr& node,
                                             int count, int flag);
 
-  Stat::NodePtr SelectNodeByRelStrategy(const FlowRule& rule,
-                                        const EntrySharedPtr& entry,
-                                        const Stat::NodePtr& node);
+  Stat::NodeSharedPtr SelectNodeByRelStrategy(const FlowRule& rule,
+                                              const EntrySharedPtr& entry,
+                                              const Stat::NodeSharedPtr& node);
 };
 
 }  // namespace Flow

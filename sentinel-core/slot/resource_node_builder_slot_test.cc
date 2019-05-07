@@ -25,7 +25,7 @@ class RequireNodeFakeStatsSlot : public StatsSlot {
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodePtr& node, int count, int flag) {
+                             Stat::NodeSharedPtr& node, int count, int flag) {
     if (node == nullptr) {
       return TokenResult::Blocked("null");
     }
@@ -50,14 +50,15 @@ TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
 
   std::string resource_name{
       "ResourceNodeBuilderSlotTest:TestEntrySingleThread"};
-  EntryContextPtr context = std::make_shared<EntryContext>("test_context");
+  EntryContextSharedPtr context =
+      std::make_shared<EntryContext>("test_context");
   auto resource =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);
 
   Stat::ResourceNodeStorage& s = Stat::ResourceNodeStorageInstance;
   EXPECT_TRUE(s.GetClusterNode(resource_name) == nullptr);
-  Stat::NodePtr empty_node = nullptr;
+  Stat::NodeSharedPtr empty_node = nullptr;
   auto result = slot_chain.Entry(entry, resource, empty_node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
 

@@ -8,7 +8,7 @@ namespace Flow {
 
 Slot::TokenResultSharedPtr FlowRuleChecker::CanPassCheck(
     const FlowRule& rule, const EntrySharedPtr& entry,
-    const Stat::NodePtr& node, int count, int flag) {
+    const Stat::NodeSharedPtr& node, int count, int flag) {
   if (rule.limit_origin().empty()) {
     return Slot::TokenResult::Ok();
   }
@@ -20,14 +20,15 @@ Slot::TokenResultSharedPtr FlowRuleChecker::CanPassCheck(
 
 Slot::TokenResultSharedPtr FlowRuleChecker::CanPassCheck(
     const FlowRule& rule, const EntrySharedPtr& entry,
-    const Stat::NodePtr& node, int count) {
+    const Stat::NodeSharedPtr& node, int count) {
   return CanPassCheck(rule, entry, node, count, 0);
 }
 
 Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
     const FlowRule& rule, const EntrySharedPtr& entry,
-    const Stat::NodePtr& node, int count, int flag) {
-  Stat::NodePtr selected_node = SelectNodeByRelStrategy(rule, entry, node);
+    const Stat::NodeSharedPtr& node, int count, int flag) {
+  Stat::NodeSharedPtr selected_node =
+      SelectNodeByRelStrategy(rule, entry, node);
   if (selected_node == nullptr) {
     return Slot::TokenResult::Ok();
   }
@@ -39,9 +40,9 @@ Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
   return controller->CanPass(selected_node, count, flag);
 }
 
-Stat::NodePtr FlowRuleChecker::SelectNodeByRelStrategy(
+Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
     const FlowRule& rule, const EntrySharedPtr& entry,
-    const Stat::NodePtr& node) {
+    const Stat::NodeSharedPtr& node) {
   const std::string& ref_resource = rule.ref_resource();
   int rel_strategy = rule.strategy();
   if (!ref_resource.empty() &&

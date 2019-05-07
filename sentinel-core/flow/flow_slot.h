@@ -15,7 +15,8 @@ class FlowSlot : public RuleCheckerSlot {
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodePtr& node, int count, int flag) override;
+                             Stat::NodeSharedPtr& node, int count,
+                             int flag) override;
   void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
   const std::string& Name() const override;
