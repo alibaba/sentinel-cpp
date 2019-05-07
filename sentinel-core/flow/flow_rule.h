@@ -62,16 +62,16 @@ struct FlowRule : public Rule {
   }
 
  private:
-  std::string resource_;                         // resource
-  std::string limit_origin_;                     // limitApp
-  int metric_type_ = (int)FlowMetricType::kQps;  // grade
-  double count_;                                 // count
-  int strategy_;                                 // strategy
-  int control_behavior_;                         // controlBehavior
-  std::string ref_resource_;                     // refResource
-  int warm_up_period_sec_ = 10;                  // warmUpPeriodSec
-  int max_queueing_time_ms_ = 500;               // maxQueueingTimeMs
-  bool cluster_mode_ = false;                    // clusterMode
+  std::string resource_;                                      // resource
+  std::string limit_origin_{Constants::kLimitOriginDefault};  // limitApp
+  int metric_type_ = (int)FlowMetricType::kQps;               // grade
+  double count_ = 0;                                          // count
+  int strategy_ = 0;                                          // strategy
+  int control_behavior_ = 0;                                  // controlBehavior
+  std::string ref_resource_{};                                // refResource
+  int warm_up_period_sec_ = 10;                               // warmUpPeriodSec
+  int max_queueing_time_ms_ = 500;  // maxQueueingTimeMs
+  bool cluster_mode_ = false;       // clusterMode
 };
 
 using FlowRulePtr = std::shared_ptr<FlowRule>;

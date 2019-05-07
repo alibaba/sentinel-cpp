@@ -30,9 +30,9 @@ class Entry {
   bool exited() const { return exited_; }
   bool HasError() const { return !error_.empty(); };
 
-  void set_error(const std::string message) { error_ = message; }
-  void set_cur_node(const Stat::NodePtr node) { cur_node_ = node; }
-  void set_origin_node(const Stat::NodePtr node) { origin_node_ = node; }
+  void set_error(const std::string& message) { error_ = message; }
+  void set_cur_node(const Stat::NodePtr& node) { cur_node_ = node; }
+  void set_origin_node(const Stat::NodePtr& node) { origin_node_ = node; }
 
  private:
   const ResourceWrapperSharedPtr resource_;

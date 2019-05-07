@@ -10,7 +10,10 @@ bool EntryResult::Exit(int count) {
     return false;
   }
   if (!entry_->exited()) {
-    Slot::GlobalSlotChain->Exit(entry_, entry_->resource(), count);
+    Slot::SlotChainSharedPtr& chain = Slot::GlobalSlotChain;
+    if (chain != nullptr) {
+      chain->Exit(entry_, entry_->resource(), count);
+    }
     entry_->exited_ = true;
     return true;
   }
