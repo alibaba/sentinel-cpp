@@ -19,6 +19,9 @@ class LocalConfig : Init::Target {
   void SetConfigIfNotExists(const std::string& key, const std::string& value);
   void RemoveConfig(const std::string& key);
 
+  int32_t GetInt32(const std::string& key, int32_t default_value) const;
+  int64_t GetInt64(const std::string& key, int64_t default_value) const;
+
   // InitTarget
   void Initialize() override;
   const std::string& app_name() const { return app_name_; }
@@ -28,9 +31,6 @@ class LocalConfig : Init::Target {
   int32_t TotalMetricFileCount() const;
   int64_t SingleMetricFileSize() const;
   const std::string Charset() const;
-
-  int32_t GetInt(const std::string& key, int32_t default_value) const;
-  int64_t GetLong(const std::string& key, int64_t default_value) const;
 
  private:
   std::unordered_map<std::string, std::string> config_map_;

@@ -23,7 +23,10 @@ EntryResult SphU::Entry(const EntryContextSharedPtr& context,
   Stat::NodeSharedPtr empty_node = nullptr;
   auto result = chain->Entry(e, resource, empty_node, count, flag);
   if (result->status() == Slot::TokenStatus::RESULT_STATUS_BLOCKED) {
-    EntryResult{e}.Exit();
+    // NOTE: keep consistent with EntryResult::exit.
+    if (chain != nullptr) {
+      chain->Exit(e, e->resource(), count);
+    }
     return EntryResult{result->blocked_reason().value()};
   }
   return EntryResult{e};

@@ -31,7 +31,7 @@ TEST(LocalConfigTest, TestGetIntOfInvalidValue) {
   constexpr auto key = "some_key_bad";
   config.SetConfig(key, "a32");
   constexpr int32_t d = 32;
-  EXPECT_EQ(d, config.GetInt(key, d));
+  EXPECT_EQ(d, config.GetInt32(key, d));
 }
 
 TEST(LocalConfigTest, TestGetIntOfNormalValue) {
@@ -39,7 +39,7 @@ TEST(LocalConfigTest, TestGetIntOfNormalValue) {
   constexpr auto key = "some_key_good";
   config.SetConfig(key, "64");
   constexpr int32_t d = 32;
-  EXPECT_EQ(64, config.GetInt(key, d));
+  EXPECT_EQ(64, config.GetInt32(key, d));
 }
 
 }  // namespace Config
