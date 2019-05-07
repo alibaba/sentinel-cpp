@@ -23,3 +23,20 @@ cc_library(
     "//sentinel-core/property:dynamic_sentinel_property_lib"
   ]
 )
+
+cc_test(
+  name = "abstract_readable_data_source_unittests",
+  srcs = [
+    "abstract_readable_data_source_unittests.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":readable_data_source_interface",
+    ":converter_interface",
+    "//sentinel-core/test/mock/common:mock_lib",
+    "//sentinel-core/test/mock/property:mock_lib",
+    "//sentinel-core/property:dynamic_sentinel_property_lib",
+    "//sentinel-datasource-extension/test/mock/datasource:mock_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)

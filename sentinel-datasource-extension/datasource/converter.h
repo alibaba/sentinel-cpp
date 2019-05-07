@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace Sentinel {
 namespace DataSource {
 
@@ -9,6 +11,9 @@ class Converter {
   virtual ~Converter() = default;
   virtual T Convert(S source) = 0;
 };
+
+template <typename S, typename T>
+using ConverterSharedPtr = std::shared_ptr<Converter<S, T>>;
 
 }  // namespace DataSource
 }  // namespace Sentinel
