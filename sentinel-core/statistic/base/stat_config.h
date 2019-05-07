@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdlib>
+#include <cstdint>
 
 #include "sentinel-core/common/constants.h"
 

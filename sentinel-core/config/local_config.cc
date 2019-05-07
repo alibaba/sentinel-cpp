@@ -1,4 +1,4 @@
-#include <cstdlib>
+#include <cstdint>
 
 #include "sentinel-core/config/config_constants.h"
 #include "sentinel-core/config/local_config.h"
