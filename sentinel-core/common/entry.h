@@ -22,8 +22,6 @@ class Entry {
 
   friend class EntryResult;
 
-  // virtual void Exit(int count);
-  // virtual void Exit();
   ResourceWrapperSharedPtr resource() const { return resource_; }
   std::chrono::milliseconds create_time() const { return create_time_; }
   EntryContextPtr context() const { return context_; }

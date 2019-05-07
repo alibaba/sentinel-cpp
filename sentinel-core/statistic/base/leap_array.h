@@ -70,7 +70,6 @@ WindowWrapPtr<T> LeapArray<T>::CurrentWindow() {
 
 template <typename T>
 WindowWrapPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
-  // TODO: implement here
   if (time_millis < 0) {
     return nullptr;
   }
