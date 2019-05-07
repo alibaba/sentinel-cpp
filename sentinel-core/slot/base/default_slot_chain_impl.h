@@ -18,10 +18,10 @@ class DefaultSlotChainImpl : public SlotChain {
   // SlotChain<RuleCheckerSlot>
   void AddFirst(std::unique_ptr<Slot>&& slot) override;
   void AddLast(std::unique_ptr<Slot>&& slot) override;
-  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              Stat::NodePtr& node, int count, int flag) override;
-  void Exit(const EntryContextPtr& context,
+  void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:

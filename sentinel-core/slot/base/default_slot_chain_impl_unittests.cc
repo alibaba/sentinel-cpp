@@ -6,7 +6,7 @@
 
 #include "sentinel-core/common/string_resource_wrapper.h"
 
-#include "sentinel-core/common/entry_context.h"
+#include "sentinel-core/common/entry.h"
 #include "sentinel-core/slot/base/default_slot_chain_impl.h"
 
 #include "sentinel-core/test/mock/slot/mock.h"
@@ -33,11 +33,12 @@ TEST(DefaultSlotChainImplTest, Basic) {
 
     slot_chain.AddLast(std::move(mock_rule_checker_slot));
     slot_chain.AddLast(std::move(mock_stat_slot));
-    auto context = std::make_shared<Context>("my_context");
+    auto context = std::make_shared<EntryContext>("my_context");
     ResourceWrapperSharedPtr test_resource =
         std::make_shared<StringResourceWrapper>("test_resource", EntryType::IN);
+    auto entry = std::make_shared<Entry>(test_resource, context);
 
-    slot_chain.Entry(context, test_resource, node, 1, 1);
+    slot_chain.Entry(entry, test_resource, node, 1, 1);
   }
 
   {
@@ -59,11 +60,12 @@ TEST(DefaultSlotChainImplTest, Basic) {
     slot_chain.AddLast(std::move(mock_rule_checker_slot2));
     slot_chain.AddLast(std::move(mock_stat_slot1));
     slot_chain.AddLast(std::move(mock_stat_slot2));
-    auto context = std::make_shared<Context>("my_context");
+    auto context = std::make_shared<EntryContext>("my_context");
     ResourceWrapperSharedPtr test_resource =
         std::make_shared<StringResourceWrapper>("test_resource", EntryType::IN);
+    auto entry = std::make_shared<Entry>(test_resource, context);
 
-    slot_chain.Entry(context, test_resource, node, 1, 1);
+    slot_chain.Entry(entry, test_resource, node, 1, 1);
   }
 }
 

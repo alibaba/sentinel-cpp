@@ -42,6 +42,20 @@ cc_library(
   ]
 )
 
+cc_library(
+  name = "global_slot_chain_header",
+  srcs = [
+    "global_slot_chain.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":resource_node_builder_slot_lib",
+    ":statistic_slot_lib",
+    "//sentinel-core/flow:flow_slot_lib",
+    "//sentinel-core/slot/base:default_slot_chain_impl_lib",
+  ]
+)
+
 cc_test(
   name = "resource_node_builder_slot_unittests",
   srcs = [

@@ -23,7 +23,7 @@ class RequireNodeFakeStatsSlot : public StatsSlot {
   RequireNodeFakeStatsSlot() = default;
   ~RequireNodeFakeStatsSlot() = default;
 
-  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              Stat::NodePtr& node, int count, int flag) {
     if (node == nullptr) {
@@ -32,10 +32,13 @@ class RequireNodeFakeStatsSlot : public StatsSlot {
     return TokenResult::Ok();
   };
 
-  void Exit(const EntryContextPtr& context,
+  void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count){};
 
-  const std::string& Name() const { return "RequireNodeStatsSlot"; };
+  const std::string& Name() const { return name_; };
+
+ private:
+  const std::string name_{"RequireNodeFakeStatsSlot"};
 };
 
 TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
@@ -47,22 +50,21 @@ TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
 
   std::string resource_name{
       "ResourceNodeBuilderSlotTest:TestEntrySingleThread"};
-  EntryContextPtr context = std::make_shared<Context>("test_context");
+  EntryContextPtr context = std::make_shared<EntryContext>("test_context");
   auto resource =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
-  auto entry = std::make_shared<Entry>(resource);
-  context->set_cur_entry(entry);
+  auto entry = std::make_shared<Entry>(resource, context);
 
   Stat::ResourceNodeStorage& s = Stat::ResourceNodeStorageInstance;
   EXPECT_TRUE(s.GetClusterNode(resource_name) == nullptr);
   Stat::NodePtr empty_node = nullptr;
-  auto result = slot_chain.Entry(context, resource, empty_node, 1, 0);
+  auto result = slot_chain.Entry(entry, resource, empty_node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
 
   auto res_node = s.GetClusterNode(resource_name);
   EXPECT_FALSE(res_node == nullptr);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-            slot_chain.Entry(context, resource, empty_node, 1, 0)->status());
+            slot_chain.Entry(entry, resource, empty_node, 1, 0)->status());
   EXPECT_EQ(res_node, s.GetClusterNode(resource_name));
 }
 
