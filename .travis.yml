@@ -15,11 +15,14 @@ addons:
         key_url: 'https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg'
       - llvm-toolchain-xenial-7
     packages:
-      - bazel
       - clang-format-7
       - clang-7
 
-script: 
+before_install:
+  - wget https://github.com/bazelbuild/bazel/releases/download/0.23.2/bazel_0.23.2-linux-x86_64.deb
+  - sudo dpkg -i bazel_0.23.2-linux-x86_64.deb
+
+script:
   - bash format.sh
   - bazel clean && bazel build //...
   - bazel clean && bazel test --test_output=errors --strategy=TestRunner=standalone //...
