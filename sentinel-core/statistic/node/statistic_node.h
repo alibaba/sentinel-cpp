@@ -4,7 +4,7 @@
 
 #include "sentinel-core/statistic/base/metric.h"
 #include "sentinel-core/statistic/base/sliding_window_metric.h"
-#include "sentinel-core/statistic/base/stat_config_manager.h"
+#include "sentinel-core/statistic/base/stat_config.h"
 #include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
@@ -50,8 +50,8 @@ class StatisticNode : public Node {
  private:
   std::unique_ptr<Metric> rolling_counter_second_ =
       std::make_unique<SlidingWindowMetric>(
-          StatConfigManager::GetInstance().SampleCount(),
-          StatConfigManager::GetInstance().IntervalMs());
+          StatConfig::GetInstance().SampleCount(),
+          StatConfig::GetInstance().IntervalMs());
   std::unique_ptr<Metric> rolling_counter_minute_ =
       std::make_unique<SlidingWindowMetric>(60, 60 * 1000);
   std::atomic<uint32_t> cur_thread_num_{0};
