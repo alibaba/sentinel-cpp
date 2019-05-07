@@ -1,5 +1,7 @@
 #include <cstdint>
 
+#include "absl/strings/numbers.h"
+
 #include "sentinel-core/config/config_constants.h"
 #include "sentinel-core/config/local_config.h"
 
@@ -32,36 +34,35 @@ const std::string LocalConfig::GetConfig(const std::string& key) const {
   return iter->second;
 }
 
-int32_t LocalConfig::GetInt(const std::string& key,
-                            int32_t default_value) const {
-  try {
-    auto v = GetConfig(key);
-    if (v.empty()) {
-      return default_value;
-    }
-    return std::stoi(v);
-  } catch (std::exception& e) {
-    // TODO: RecordLog.warn()
+int32_t LocalConfig::GetInt32(const std::string& key,
+                              int32_t default_value) const {
+  auto v = GetConfig(key);
+  if (v.empty()) {
     return default_value;
   }
+  int32_t x;
+  if (!absl::SimpleAtoi(v, &x)) {
+    x = default_value;
+  }
+  return x;
 }
 
-int64_t LocalConfig::GetLong(const std::string& key,
-                             int64_t default_value) const {
-  try {
-    auto v = GetConfig(key);
-    if (v.empty()) {
-      return default_value;
-    }
-    return std::stoll(v);
-  } catch (std::exception& e) {
-    // TODO: RecordLog.warn()
+int64_t LocalConfig::GetInt64(const std::string& key,
+                              int64_t default_value) const {
+  auto v = GetConfig(key);
+  if (v.empty()) {
     return default_value;
   }
+  int64_t x;
+  if (!absl::SimpleAtoi(v, &x)) {
+    x = default_value;
+  }
+  return x;
 }
 
 int32_t LocalConfig::WarmUpColdFactor() const {
-  int cold_factor = GetInt(Env::kWarmUpColdFactorKey, kDefaultWarmUpColdFactor);
+  int cold_factor =
+      GetInt32(Env::kWarmUpColdFactorKey, kDefaultWarmUpColdFactor);
   if (cold_factor <= 1) {
     // TODO: warn
     cold_factor = kDefaultWarmUpColdFactor;
@@ -70,7 +71,7 @@ int32_t LocalConfig::WarmUpColdFactor() const {
 }
 
 int32_t LocalConfig::StatisticMaxRt() const {
-  int max_rt = GetInt(Env::kStatisticMaxRtKey, kDefaultStatisticMaxRt);
+  int max_rt = GetInt32(Env::kStatisticMaxRtKey, kDefaultStatisticMaxRt);
   if (max_rt < 0) {
     max_rt = kDefaultStatisticMaxRt;
   }
@@ -78,11 +79,11 @@ int32_t LocalConfig::StatisticMaxRt() const {
 }
 
 int32_t LocalConfig::TotalMetricFileCount() const {
-  return GetInt(Env::kTotalMetricFileCountKey, kDefaultTotalMetricFileCount);
+  return GetInt32(Env::kTotalMetricFileCountKey, kDefaultTotalMetricFileCount);
 }
 
 int64_t LocalConfig::SingleMetricFileSize() const {
-  return GetLong(Env::kSingleMetricFileSizeKey, kDefaultSingleMetricFileSize);
+  return GetInt64(Env::kSingleMetricFileSizeKey, kDefaultSingleMetricFileSize);
 }
 
 const std::string LocalConfig::Charset() const {
@@ -100,17 +101,17 @@ void LocalConfig::ResolveAppName() {
 
 void LocalConfig::Initialize() {
   ResolveAppName();
-  config_map_.emplace(std::make_pair<>(Env::kCharsetKey, kDefaultCharset));
+  config_map_.emplace(std::make_pair(Env::kCharsetKey, kDefaultCharset));
   config_map_.emplace(
-      std::make_pair<>(Env::kSingleMetricFileSizeKey,
-                       std::to_string(kDefaultSingleMetricFileSize)));
+      std::make_pair(Env::kSingleMetricFileSizeKey,
+                     std::to_string(kDefaultSingleMetricFileSize)));
   config_map_.emplace(
-      std::make_pair<>(Env::kTotalMetricFileCountKey,
-                       std::to_string(kDefaultTotalMetricFileCount)));
-  config_map_.emplace(std::make_pair<>(
-      Env::kWarmUpColdFactorKey, std::to_string(kDefaultWarmUpColdFactor)));
-  config_map_.emplace(std::make_pair<>(Env::kStatisticMaxRtKey,
-                                       std::to_string(kDefaultStatisticMaxRt)));
+      std::make_pair(Env::kTotalMetricFileCountKey,
+                     std::to_string(kDefaultTotalMetricFileCount)));
+  config_map_.emplace(std::make_pair(Env::kWarmUpColdFactorKey,
+                                     std::to_string(kDefaultWarmUpColdFactor)));
+  config_map_.emplace(std::make_pair(Env::kStatisticMaxRtKey,
+                                     std::to_string(kDefaultStatisticMaxRt)));
 }
 
 }  // namespace Config

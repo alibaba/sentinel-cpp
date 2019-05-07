@@ -9,7 +9,7 @@ namespace Sentinel {
 
 class EntryContext {
  public:
-  explicit EntryContext(const std::string& name) : name_(name), origin_() {}
+  explicit EntryContext(const std::string& name) : EntryContext(name, "") {}
   EntryContext(const std::string& name, const std::string& origin)
       : name_(name), origin_(origin) {}
 

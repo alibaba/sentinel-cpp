@@ -12,6 +12,7 @@ bool EntryResult::Exit(int count) {
   if (!entry_->exited()) {
     Slot::SlotChainSharedPtr& chain = Slot::GlobalSlotChain;
     if (chain != nullptr) {
+      // NOTE: keep consistent with exit operation in SphU::Entry when blocked.
       chain->Exit(entry_, entry_->resource(), count);
     }
     entry_->exited_ = true;

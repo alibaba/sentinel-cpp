@@ -10,7 +10,7 @@ class InitTargetRegister {
  public:
   InitTargetRegister() { instance_.Initialize(); }
 
-  const T& GetInstance() const { return instance_; }
+  T& GetInstance() { return instance_; }
 
  private:
   T instance_{};
