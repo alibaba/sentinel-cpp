@@ -56,7 +56,6 @@ cc_library(
   name = "entry_lib",
   srcs = [
     "entry.h",
-    "entry.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
