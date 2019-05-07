@@ -1,4 +1,4 @@
-#include <cstdlib>
+#include <cstdint>
 #include <string>
 
 #include "gmock/gmock.h"
