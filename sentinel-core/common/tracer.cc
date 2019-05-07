@@ -11,7 +11,7 @@ void Tracer::Trace(const EntrySharedPtr entry, const std::string& message,
     return;
   }
   // TODO: check BlockException?
-  Stat::NodePtr node = entry->cur_node();
+  Stat::NodeSharedPtr node = entry->cur_node();
   if (node != nullptr) {
     node->AddExceptionRequest(count);
   }

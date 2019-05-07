@@ -15,7 +15,7 @@ class SlotBase {
  public:
   virtual TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
-                                     Stat::NodePtr& node, int count,
+                                     Stat::NodeSharedPtr& node, int count,
                                      int flag) = 0;
   virtual void Exit(const EntrySharedPtr& entry,
                     const ResourceWrapperSharedPtr& resource, int count) = 0;

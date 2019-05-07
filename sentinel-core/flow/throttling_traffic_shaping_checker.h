@@ -14,7 +14,7 @@ class ThrottlingTrafficShapingChecker : public TrafficShapingChecker {
       : max_timeout_(timeout) {}
   virtual ~ThrottlingTrafficShapingChecker() = default;
 
-  Slot::TokenResultSharedPtr DoCheck(const Stat::NodePtr& node,
+  Slot::TokenResultSharedPtr DoCheck(const Stat::NodeSharedPtr& node,
                                      int acquire_count,
                                      double threshold) override;
 

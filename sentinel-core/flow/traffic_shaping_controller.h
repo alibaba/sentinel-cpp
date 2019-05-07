@@ -18,15 +18,13 @@ class TrafficShapingController {
         action_checker_(std::move(checker)) {}
   ~TrafficShapingController() = default;
 
-  Slot::TokenResultSharedPtr CanPass(const Stat::NodePtr& node,
+  Slot::TokenResultSharedPtr CanPass(const Stat::NodeSharedPtr& node,
                                      int acquire_count, int flag);
 
  private:
   const std::unique_ptr<TrafficShapingCalculator> calculator_;
   const std::unique_ptr<TrafficShapingChecker> action_checker_;
 };
-
-using TrafficShapingControllerPtr = std::shared_ptr<TrafficShapingController>;
 
 }  // namespace Flow
 }  // namespace Sentinel

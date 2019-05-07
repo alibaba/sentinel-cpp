@@ -32,13 +32,13 @@ std::string MetricItem::ToFatString() const {
   return ss.str();
 }
 
-MetricItemPtr MetricItem::FromThinString(const std::string& thin_str) {
+MetricItemSharedPtr MetricItem::FromThinString(const std::string& thin_str) {
   try {
     std::vector<std::string> vec = absl::StrSplit(thin_str, '|');
     if (vec.size() < 7) {
       return nullptr;
     }
-    MetricItemPtr item = std::make_shared<MetricItem>();
+    MetricItemSharedPtr item = std::make_shared<MetricItem>();
     item->set_timestamp(std::stoll(vec[0]));
     item->set_resource(vec[1]);
     item->set_pass_qps(std::stoll(vec[2]));
@@ -52,13 +52,13 @@ MetricItemPtr MetricItem::FromThinString(const std::string& thin_str) {
   }
 }
 
-MetricItemPtr MetricItem::FromFatString(const std::string& fat_str) {
+MetricItemSharedPtr MetricItem::FromFatString(const std::string& fat_str) {
   try {
     std::vector<std::string> vec = absl::StrSplit(fat_str, '|');
     if (vec.size() < 8) {
       return nullptr;
     }
-    MetricItemPtr item = std::make_shared<MetricItem>();
+    MetricItemSharedPtr item = std::make_shared<MetricItem>();
     item->set_timestamp(std::stoll(vec[0]));
     item->set_resource(vec[2]);
     item->set_pass_qps(std::stoll(vec[3]));

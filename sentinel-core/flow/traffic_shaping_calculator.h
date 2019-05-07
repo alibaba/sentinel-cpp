@@ -10,7 +10,7 @@ class TrafficShapingCalculator {
   TrafficShapingCalculator() = default;
   virtual ~TrafficShapingCalculator() = default;
 
-  virtual double CalculateAllowedTokens(const Stat::NodePtr& node,
+  virtual double CalculateAllowedTokens(const Stat::NodeSharedPtr& node,
                                         int acquire_count, int flag) = 0;
 };
 

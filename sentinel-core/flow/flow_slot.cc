@@ -10,7 +10,8 @@ const std::string& FlowSlot::Name() const { return name_; }
 
 TokenResultSharedPtr FlowSlot::Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
-                                     Stat::NodePtr& node, int count, int flag) {
+                                     Stat::NodeSharedPtr& node, int count,
+                                     int flag) {
   std::vector<Flow::FlowRule> rules =
       Flow::FlowRuleManager::GetInstance().GetRulesForResource(
           resource->name());

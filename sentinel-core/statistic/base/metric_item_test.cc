@@ -21,7 +21,7 @@ TEST(MetricItemTest, TestToThinString) {
 
 TEST(MetricItemTest, TestFromThinString) {
   auto str = "1529998908000|MetricItemTest::TestFromThinString|10|1|10|0|3";
-  MetricItemPtr item = MetricItem::FromThinString(str);
+  MetricItemSharedPtr item = MetricItem::FromThinString(str);
   EXPECT_TRUE(item != nullptr);
   EXPECT_EQ(item->resource(), "MetricItemTest::TestFromThinString");
   EXPECT_EQ(item->timestamp(), 1529998908000);
@@ -36,7 +36,7 @@ TEST(MetricItemTest, TestFromFatString) {
   auto str =
       "1529998913000|2018-06-26 "
       "15:41:53|MetricItemTest::TestFromFatString|10|1|10|2|25";
-  MetricItemPtr item = MetricItem::FromFatString(str);
+  MetricItemSharedPtr item = MetricItem::FromFatString(str);
   EXPECT_TRUE(item != nullptr);
   EXPECT_EQ(item->resource(), "MetricItemTest::TestFromFatString");
   EXPECT_EQ(item->timestamp(), 1529998913000);

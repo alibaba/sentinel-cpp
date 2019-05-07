@@ -40,7 +40,8 @@ bool IsValidRule(const FlowRule& rule) {
   return rel_valid && cb_valid;
 }
 
-TrafficShapingControllerPtr CreateDefaultController(const FlowRule& rule) {
+std::shared_ptr<TrafficShapingController> CreateDefaultController(
+    const FlowRule& rule) {
   return std::make_shared<TrafficShapingController>(
       std::make_unique<DefaultTrafficShapingCalculator>(rule.count()),
       std::make_unique<DefaultTrafficShapingChecker>(rule.metric_type()));
@@ -82,8 +83,8 @@ FlowRuleList FlowRuleManager::GetRulesForResource(
   return it->second;
 }
 
-TrafficShapingControllerPtr FlowRuleManager::GetTrafficControllerFor(
-    const FlowRule& rule) const {
+std::shared_ptr<TrafficShapingController>
+FlowRuleManager::GetTrafficControllerFor(const FlowRule& rule) const {
   absl::ReaderMutexLock lck(&update_mtx_);
   auto it = traffic_controller_map_.find(rule);
   if (it == traffic_controller_map_.end()) {
@@ -92,7 +93,8 @@ TrafficShapingControllerPtr FlowRuleManager::GetTrafficControllerFor(
   return it->second;
 }
 
-void FlowRuleManager::RegisterToProperty(const FlowRulePropertyPtr& property) {
+void FlowRuleManager::RegisterToProperty(
+    const FlowRulePropertySharedPtr& property) {
   if (property == nullptr) {
     return;
   }
@@ -103,7 +105,7 @@ void FlowRuleManager::RegisterToProperty(const FlowRulePropertyPtr& property) {
   cur_property_->AddListener(std::make_unique<FlowPropertyListener>());
 }
 
-TrafficShapingControllerPtr FlowRuleManager::GenerateController(
+std::shared_ptr<TrafficShapingController> FlowRuleManager::GenerateController(
     const FlowRule& rule) {
   if (rule.metric_type() == (int)FlowMetricType::kQps) {
     switch (rule.control_behavior()) {

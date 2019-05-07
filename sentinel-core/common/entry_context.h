@@ -21,6 +21,6 @@ class EntryContext {
   const std::string origin_;
 };
 
-using EntryContextPtr = std::shared_ptr<EntryContext>;
+using EntryContextSharedPtr = std::shared_ptr<EntryContext>;
 
 }  // namespace Sentinel

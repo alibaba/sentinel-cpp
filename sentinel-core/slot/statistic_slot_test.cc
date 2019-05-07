@@ -18,8 +18,9 @@ namespace Sentinel {
 namespace Slot {
 
 TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
-  EntryContextPtr context = std::make_shared<EntryContext>("test_context");
-  Stat::NodePtr node = std::make_shared<Stat::ClusterNode>();
+  EntryContextSharedPtr context =
+      std::make_shared<EntryContext>("test_context");
+  Stat::NodeSharedPtr node = std::make_shared<Stat::ClusterNode>();
   auto resource =
       std::make_shared<StringResourceWrapper>("test_resource", EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);

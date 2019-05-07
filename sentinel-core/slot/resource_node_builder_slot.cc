@@ -10,7 +10,7 @@ const std::string& ResourceNodeBuilderSlot::Name() const { return name_; }
 
 TokenResultSharedPtr ResourceNodeBuilderSlot::Entry(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    Stat::NodePtr& node, int count, int flag) {
+    Stat::NodeSharedPtr& node, int count, int flag) {
   auto cluster_node = node_storage_.GetOrCreateClusterNode(resource->name());
 
   entry->set_cur_node(cluster_node);

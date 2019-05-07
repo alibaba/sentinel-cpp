@@ -12,20 +12,20 @@ namespace Slot {
 
 const std::string& StatisticSlot::Name() const { return name_; }
 
-void StatisticSlot::RecordPassFor(const Stat::NodePtr& node, int count) {
+void StatisticSlot::RecordPassFor(const Stat::NodeSharedPtr& node, int count) {
   if (node != nullptr) {
     node->IncreaseThreadNum();
     node->AddPassRequest(count);
   }
 }
 
-void StatisticSlot::RecordBlockFor(const Stat::NodePtr& node, int count) {
+void StatisticSlot::RecordBlockFor(const Stat::NodeSharedPtr& node, int count) {
   if (node != nullptr) {
     node->AddBlockRequest(count);
   }
 }
 
-void StatisticSlot::RecordCompleteFor(const Stat::NodePtr& node, int rt,
+void StatisticSlot::RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
                                       int count) {
   if (node != nullptr) {
     // Record response time and success count.
@@ -36,7 +36,7 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodePtr& node, int rt,
 
 TokenResultSharedPtr StatisticSlot::OnPass(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    const Stat::NodePtr& node, int count, int flag) {
+    const Stat::NodeSharedPtr& node, int count, int flag) {
   this->RecordPassFor(node, count);
   if (entry != nullptr) {
     this->RecordPassFor(entry->origin_node(), count);
@@ -47,7 +47,7 @@ TokenResultSharedPtr StatisticSlot::OnPass(
 
 TokenResultSharedPtr StatisticSlot::OnBlock(
     const TokenResultSharedPtr& prev_result, const EntrySharedPtr& entry,
-    const ResourceWrapperSharedPtr& resource, const Stat::NodePtr& node,
+    const ResourceWrapperSharedPtr& resource, const Stat::NodeSharedPtr& node,
     int count, int flag) {
   if (entry == nullptr) {
     return prev_result;
@@ -63,7 +63,7 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 
 TokenResultSharedPtr StatisticSlot::Entry(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    /*const*/ Stat::NodePtr& node, int count, int flag) {
+    /*const*/ Stat::NodeSharedPtr& node, int count, int flag) {
   TokenResultSharedPtr prev_result = this->LastTokenResult();
   if (prev_result == nullptr) {
     return OnPass(entry, resource, node, count, flag);
@@ -82,7 +82,7 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry,
   if (entry == nullptr) {
     return;
   }
-  Stat::NodePtr node = entry->cur_node();
+  Stat::NodeSharedPtr node = entry->cur_node();
   if (node == nullptr) {
     return;  // Should not happen.
   }
