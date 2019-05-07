@@ -13,13 +13,16 @@ class EntryResult {
   explicit EntryResult(const EntrySharedPtr& entry) : entry_(entry) {}
   explicit EntryResult(const std::string& reason)
       : entry_(nullptr), blocked_reason_(reason) {}
-  ~EntryResult();
+  ~EntryResult() = default;
 
   EntrySharedPtr entry() const { return entry_; };
   absl::optional<std::string> blocked_reason() const {
     return blocked_reason_;
   };
-  bool IsBlocked() { return blocked_reason_.has_value(); };
+
+  bool IsBlocked() const;
+  bool Exit();
+  bool Exit(int count);
 
  private:
   const EntrySharedPtr entry_;

@@ -50,7 +50,10 @@ cc_library(
     "metric_item.h",
     "metric_item.cc",
   ],
-  copts = DEFAULT_COPTS
+  copts = DEFAULT_COPTS,
+  deps = [
+    "@com_google_absl//absl/strings",
+  ]
 )
 
 cc_library(
@@ -125,6 +128,18 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":bucket_leap_array_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
+
+cc_test(
+  name = "metric_item_unittests",
+  srcs = [
+    "metric_item_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":metric_item_lib",
     "@com_google_googletest//:gtest_main",
   ]
 )

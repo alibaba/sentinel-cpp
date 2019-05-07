@@ -8,7 +8,7 @@ namespace Slot {
 
 const std::string& FlowSlot::Name() const { return name_; }
 
-TokenResultSharedPtr FlowSlot::Entry(const EntryContextPtr& context,
+TokenResultSharedPtr FlowSlot::Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
                                      Stat::NodePtr& node, int count, int flag) {
   std::vector<Flow::FlowRule> rules =
@@ -18,7 +18,7 @@ TokenResultSharedPtr FlowSlot::Entry(const EntryContextPtr& context,
     for (const auto& rule : rules) {
       // check in order
       const TokenResultSharedPtr res =
-          checker_.CanPassCheck(rule, context, node, count, flag);
+          checker_.CanPassCheck(rule, entry, node, count, flag);
       if (res->status() == TokenStatus::RESULT_STATUS_BLOCKED) {
         return res;
       }
@@ -33,7 +33,7 @@ TokenResultSharedPtr FlowSlot::Entry(const EntryContextPtr& context,
   return TokenResult::Ok();
 }
 
-void FlowSlot::Exit(const EntryContextPtr& context,
+void FlowSlot::Exit(const EntrySharedPtr& entry,
                     const ResourceWrapperSharedPtr& resource, int count) {
   // Do nothing
 }

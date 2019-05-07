@@ -13,21 +13,21 @@ class StatisticSlot : public StatsSlot {
   ~StatisticSlot() = default;
 
   const std::string& Name() const override;
-  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodePtr&, int count,
                              int flag) override;
-  void Exit(const EntryContextPtr& context,
+  void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:
   const std::string name_{kStatisticSlotName};
 
-  TokenResultSharedPtr OnPass(const EntryContextPtr& context,
+  TokenResultSharedPtr OnPass(const EntrySharedPtr& entry,
                               const ResourceWrapperSharedPtr& resource,
                               const Stat::NodePtr& node, int count, int flag);
   TokenResultSharedPtr OnBlock(const TokenResultSharedPtr& prev_result,
-                               const EntryContextPtr& context,
+                               const EntrySharedPtr& entry,
                                const ResourceWrapperSharedPtr& resource,
                                const Stat::NodePtr&, int count, int flag);
 

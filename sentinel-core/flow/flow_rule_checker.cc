@@ -7,7 +7,7 @@ namespace Sentinel {
 namespace Flow {
 
 Slot::TokenResultSharedPtr FlowRuleChecker::CanPassCheck(
-    const FlowRule& rule, const EntryContextPtr context,
+    const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodePtr& node, int count, int flag) {
   if (rule.limit_origin().empty()) {
     return Slot::TokenResult::Ok();
@@ -15,19 +15,19 @@ Slot::TokenResultSharedPtr FlowRuleChecker::CanPassCheck(
   // if (rule.cluster_mode()) {
   //   return PassClusterCheck();
   // }
-  return PassLocalCheck(rule, context, node, count, flag);
+  return PassLocalCheck(rule, entry, node, count, flag);
 }
 
 Slot::TokenResultSharedPtr FlowRuleChecker::CanPassCheck(
-    const FlowRule& rule, const EntryContextPtr context,
+    const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodePtr& node, int count) {
-  return CanPassCheck(rule, context, node, count, 0);
+  return CanPassCheck(rule, entry, node, count, 0);
 }
 
 Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
-    const FlowRule& rule, const EntryContextPtr context,
+    const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodePtr& node, int count, int flag) {
-  Stat::NodePtr selected_node = SelectNodeByRelStrategy(rule, context, node);
+  Stat::NodePtr selected_node = SelectNodeByRelStrategy(rule, entry, node);
   if (selected_node == nullptr) {
     return Slot::TokenResult::Ok();
   }
@@ -40,7 +40,7 @@ Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
 }
 
 Stat::NodePtr FlowRuleChecker::SelectNodeByRelStrategy(
-    const FlowRule& rule, const EntryContextPtr context,
+    const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodePtr& node) {
   const std::string& ref_resource = rule.ref_resource();
   int rel_strategy = rule.strategy();
