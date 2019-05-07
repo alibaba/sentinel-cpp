@@ -15,6 +15,10 @@ EntryResult SphU::Entry(const EntryContextPtr& context, const std::string& r,
   EntrySharedPtr e = std::make_shared<Sentinel::Entry>(resource, context);
 
   Slot::SlotChainSharedPtr chain = Slot::GlobalSlotChain;
+  if (chain == nullptr) {
+    // TODO: should warn here.
+    return EntryResult{e};
+  }
   Stat::NodePtr empty_node = nullptr;
   auto result = chain->Entry(e, resource, empty_node, count, flag);
   if (result->status() == Slot::TokenStatus::RESULT_STATUS_BLOCKED) {

@@ -32,31 +32,32 @@ TEST(SphUTest, TestEntryBlockSimple) {
   EXPECT_DOUBLE_EQ(0, node->CompleteQps());
 }
 
-TEST(SphUTest, TestEntryPassWithoutRules) {
-  Flow::FlowRuleManager& m = Flow::FlowRuleManager::GetInstance();
-  m.LoadRules({});
+// TEST(SphUTest, TestEntryPassWithoutRules) {
+//   Flow::FlowRuleManager& m = Flow::FlowRuleManager::GetInstance();
+//   m.LoadRules({});
 
-  auto resource_name = "SphUTest::TestEntryPassWithoutRules";
-  EntryResult r = SphU::Entry(resource_name);
-  EXPECT_FALSE(r.IsBlocked());
-  auto entry = r.entry();
-  EXPECT_FALSE(entry == nullptr);
-  EXPECT_FALSE(entry->exited());
+//   auto resource_name = "SphUTest::TestEntryPassWithoutRules";
+//   EntryResult r = SphU::Entry(resource_name);
+//   EXPECT_FALSE(r.IsBlocked());
+//   auto entry = r.entry();
+//   EXPECT_FALSE(entry == nullptr);
+//   EXPECT_FALSE(entry->exited());
 
-  auto node = Stat::ResourceNodeStorageInstance.GetClusterNode(resource_name);
-  EXPECT_FALSE(node == nullptr);
-  EXPECT_DOUBLE_EQ(1, node->PassQps());
-  EXPECT_DOUBLE_EQ(0, node->BlockQps());
-  EXPECT_EQ(1, node->CurThreadNum());
-  EXPECT_DOUBLE_EQ(0, node->CompleteQps());
+//   auto node =
+//   Stat::ResourceNodeStorageInstance.GetClusterNode(resource_name);
+//   EXPECT_FALSE(node == nullptr);
+//   EXPECT_DOUBLE_EQ(1, node->PassQps());
+//   EXPECT_DOUBLE_EQ(0, node->BlockQps());
+//   EXPECT_EQ(1, node->CurThreadNum());
+//   EXPECT_DOUBLE_EQ(0, node->CompleteQps());
 
-  r.Exit();
-  EXPECT_TRUE(entry->exited());
+//   r.Exit();
+//   EXPECT_TRUE(entry->exited());
 
-  EXPECT_DOUBLE_EQ(1, node->PassQps());
-  EXPECT_DOUBLE_EQ(0, node->BlockQps());
-  EXPECT_EQ(0, node->CurThreadNum());
-  EXPECT_DOUBLE_EQ(1, node->CompleteQps());
-}
+//   EXPECT_DOUBLE_EQ(1, node->PassQps());
+//   EXPECT_DOUBLE_EQ(0, node->BlockQps());
+//   EXPECT_EQ(0, node->CurThreadNum());
+//   EXPECT_DOUBLE_EQ(1, node->CompleteQps());
+// }
 
 }  // namespace Sentinel
