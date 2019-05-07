@@ -137,9 +137,9 @@ void StatisticNode::IncreaseThreadNum() { this->cur_thread_num_++; }
 void StatisticNode::DecreaseThreadNum() { this->cur_thread_num_--; }
 
 void StatisticNode::Reset() {
-  StatConfigManager& m = StatConfigManager::GetInstance();
+  StatConfig& c = StatConfig::GetInstance();
   this->rolling_counter_second_ =
-      std::make_unique<SlidingWindowMetric>(m.SampleCount(), m.IntervalMs());
+      std::make_unique<SlidingWindowMetric>(c.SampleCount(), c.IntervalMs());
 }
 
 }  // namespace Stat

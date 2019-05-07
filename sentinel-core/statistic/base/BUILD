@@ -3,6 +3,17 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+  name = "stat_config_lib",
+  srcs = [
+    "stat_config.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/common:constants",
+  ]
+)
+
+cc_library(
   name = "stat_config_manager_lib",
   srcs = [
     "stat_config_manager.h",
@@ -10,8 +21,9 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/common:constants",
+    ":stat_config_lib",
     "//sentinel-core/property:sentinel_property_interface",
+    "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
 
