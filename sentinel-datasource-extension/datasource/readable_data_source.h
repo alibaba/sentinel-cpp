@@ -14,7 +14,7 @@ class ReadableDataSource {
   virtual ~ReadableDataSource() = default;
   virtual T LoadConfig() = 0;
   virtual S ReadSource() = 0;
-  virtual Property::SentinelPropertySharedPtr GetProperty() = 0;
+  virtual Property::SentinelPropertySharedPtr<T> GetProperty() = 0;
 };
 
 }  // namespace DataSource

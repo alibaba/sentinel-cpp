@@ -2,6 +2,7 @@
 
 #include "sentinel-core/property/dynamic_sentinel_property.h"
 #include "sentinel-datasource-extension/datasource/converter.h"
+#include "sentinel-datasource-extension/datasource/readable_data_source.h"
 
 #include <memory>
 #include <string>
@@ -12,17 +13,19 @@ namespace DataSource {
 template <typename S, typename T>
 class AbstractReadableDataSource : public ReadableDataSource<S, T> {
  public:
-  explicit AbstractReadableDataSource(Converter& converter);
+  explicit AbstractReadableDataSource(ConverterSharedPtr<S, T> converter)
+      : parser_(converter),
+        property_(std::make_shared<Property::DynamicSentinelProperty<T>>()) {}
   virtual ~AbstractReadableDataSource() = default;
 
-  T LoadConfig() override;
-  std::shared_ptr<Property::SentinelProperty> GetProperty() override;
+  T LoadConfig() override { return parser_->Convert(this->ReadSource()); }
+  Property::SentinelPropertySharedPtr<T> GetProperty() override {
+    return property_;
+  }
 
  private:
-  std::shared_ptr<Converter> parser_;
-  std::shared_ptr<SentinelProperty> property_;
-
-  T LoadConfig(S conf);
+  ConverterSharedPtr<S, T> parser_;
+  Property::SentinelPropertySharedPtr<T> property_;
 };
 
 }  // namespace DataSource
