@@ -24,7 +24,8 @@ class MetricNode {
    * To formatting string. All "|" in {@link MetricNode#resource} will be
    * replaced with "_", format is: <br/>
    * <code>
-   * timestamp|yyyy-MM-dd HH:mm:ss|resource|passQps|blockQps|successQps|exceptionQps|rt|occupiedPassQps\n
+   * timestamp|yyyy-MM-dd
+   * HH:mm:ss|resource|passQps|blockQps|successQps|exceptionQps|rt|occupiedPassQps\n
    * </code>
    *
    * @return string format of this.
@@ -77,5 +78,5 @@ class MetricNode {
   std::string resource_;
 };
 
-} // namespace Metric
-} // namespace Sentinel
+}  // namespace Metric
+}  // namespace Sentinel

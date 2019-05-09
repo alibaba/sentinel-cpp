@@ -25,7 +25,6 @@ std::vector<Metric::MetricNode> MetricReader::ReadMetrics(
 void MetricReader::ReadMetricsInOneFile(
     std::vector<Metric::MetricNode> &metric_vec, std::string file_name,
     int64_t offset, int recommend_lines) {
-
   int64_t last_second = -1;
   if (metric_vec.size() > 0) {
     last_second = metric_vec[metric_vec.size() - 1].GetTimestamp() / 1000;
