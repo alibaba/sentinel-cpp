@@ -9,6 +9,8 @@ cc_library(
     "utils.cc",
     "time_utils.h",
     "time_utils.cc",
+    "file_utils.h",
+    "file_utils.cc",
   ],
   copts = DEFAULT_COPTS,
 )

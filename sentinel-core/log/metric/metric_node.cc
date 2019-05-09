@@ -1,5 +1,6 @@
 #include "metric_node.h"
 
+#include <iomanip>
 #include <sstream>
 
 #include "absl/strings/str_replace.h"
@@ -25,8 +26,12 @@ std::string MetricNode::ToThinString() {
 
 
 std::string MetricNode::ToFatString() {
+  std::ostringstream data_ss;
+  std::time_t t(timestamp_ / 1000);
+  data_ss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
+
   std::stringstream ss;
-  ss << timestamp_ << "|"
+  ss << data_ss.str() << "|"
      << absl::StrReplaceAll(resource_, {{"|", "_"}}) << "|"
      << pass_qps_ << "|"
      << block_qps_ << "|"
@@ -56,7 +61,14 @@ MetricNode MetricNode::FromFatString(const std::string &line) {
     return node;
   }
 
-  PARSE_AND_SET_INT_FIELD(SetTimestamp, strs[0]);
+  std::tm tm = {};
+  std::istringstream ss(strs[0]);
+  ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+  auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+  auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch())
+                  .count();
+
+  node.SetTimestamp(timestamp);
   node.SetResource(strs[1]);
   PARSE_AND_SET_INT_FIELD(SetPassQps, strs[2]);
   PARSE_AND_SET_INT_FIELD(SetBlockQps, strs[3]);
