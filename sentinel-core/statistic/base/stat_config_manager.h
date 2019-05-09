@@ -11,8 +11,8 @@ namespace Stat {
 class StatConfigManager {
  public:
   static StatConfigManager& GetInstance() {
-    static StatConfigManager instance;
-    return instance;
+    static StatConfigManager* instance = new StatConfigManager();
+    return *instance;
   }
 
   void UpdateSampleCount(int32_t new_sample_count);

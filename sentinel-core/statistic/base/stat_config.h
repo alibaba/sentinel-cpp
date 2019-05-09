@@ -10,8 +10,8 @@ namespace Stat {
 class StatConfig {
  public:
   static StatConfig& GetInstance() {
-    static StatConfig instance;
-    return instance;
+    static StatConfig* instance = new StatConfig();
+    return *instance;
   }
 
   friend class StatConfigManager;

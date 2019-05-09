@@ -47,7 +47,8 @@ Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
   int rel_strategy = rule.strategy();
   if (!ref_resource.empty() &&
       rel_strategy == (int)FlowRelationStrategy::kAssociatedResource) {
-    return Stat::ResourceNodeStorageInstance.GetClusterNode(ref_resource);
+    return Stat::ResourceNodeStorage::GetInstance().GetClusterNode(
+        ref_resource);
   }
   return node;
 }

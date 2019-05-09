@@ -8,6 +8,11 @@
 namespace Sentinel {
 namespace Config {
 
+LocalConfig::LocalConfig() {
+  // Initialize on create.
+  this->Initialize();
+}
+
 void LocalConfig::SetConfig(const std::string& key, const std::string& value) {
   config_map_.emplace(std::make_pair(key, value));
 }
