@@ -24,7 +24,8 @@ TEST(SphUTest, TestEntryBlockSimple) {
   auto entry = r.entry();
   EXPECT_TRUE(entry == nullptr);
 
-  auto node = Stat::ResourceNodeStorageInstance.GetClusterNode(resource_name);
+  auto& s = Stat::ResourceNodeStorage::GetInstance();
+  auto node = s.GetClusterNode(resource_name);
   EXPECT_FALSE(node == nullptr);
   EXPECT_DOUBLE_EQ(0, node->PassQps());
   EXPECT_DOUBLE_EQ(1, node->BlockQps());
@@ -43,7 +44,8 @@ TEST(SphUTest, TestEntryPassWithoutRules) {
   EXPECT_FALSE(entry == nullptr);
   EXPECT_FALSE(entry->exited());
 
-  auto node = Stat::ResourceNodeStorageInstance.GetClusterNode(resource_name);
+  auto& s = Stat::ResourceNodeStorage::GetInstance();
+  auto node = s.GetClusterNode(resource_name);
   EXPECT_FALSE(node == nullptr);
   EXPECT_DOUBLE_EQ(1, node->PassQps());
   EXPECT_DOUBLE_EQ(0, node->BlockQps());

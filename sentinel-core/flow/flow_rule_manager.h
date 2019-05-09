@@ -24,8 +24,8 @@ using FlowRulePropertySharedPtr =
 class FlowRuleManager {
  public:
   static FlowRuleManager& GetInstance() {
-    static FlowRuleManager instance;
-    return instance;
+    static FlowRuleManager* instance = new FlowRuleManager();
+    return *instance;
   }
 
   friend class FlowPropertyListener;

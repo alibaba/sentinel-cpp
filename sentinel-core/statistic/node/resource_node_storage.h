@@ -16,8 +16,8 @@ class ResourceNodeStorage {
   ~ResourceNodeStorage() = default;
 
   static ResourceNodeStorage& GetInstance() {
-    static ResourceNodeStorage instance;
-    return instance;
+    static ResourceNodeStorage* instance = new ResourceNodeStorage();
+    return *instance;
   }
 
   Stat::ClusterNodePtr GetClusterNode(const std::string& resource_name) const;
@@ -30,8 +30,6 @@ class ResourceNodeStorage {
   absl::flat_hash_map<std::string, Stat::ClusterNodePtr> node_map_;
   mutable absl::Mutex mtx_;
 };
-
-auto& ResourceNodeStorageInstance = ResourceNodeStorage::GetInstance();
 
 }  // namespace Stat
 }  // namespace Sentinel

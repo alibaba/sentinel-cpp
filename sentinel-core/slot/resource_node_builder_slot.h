@@ -27,7 +27,8 @@ class ResourceNodeBuilderSlot : public StatsSlot {
  private:
   const std::string name_{kResourceNodeBuilderSlotName};
 
-  Stat::ResourceNodeStorage& node_storage_ = Stat::ResourceNodeStorageInstance;
+  Stat::ResourceNodeStorage& node_storage_ =
+      Stat::ResourceNodeStorage::GetInstance();
 };
 
 }  // namespace Slot

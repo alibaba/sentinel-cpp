@@ -13,21 +13,13 @@ namespace Config {
 TEST(LocalConfigTest, TestResolveNormalAppName) {
   auto app_name = "test_app";
   setenv(Env::kAppNameKey, app_name, 1);
-  LocalConfig config;
-  config.Initialize();
+  LocalConfig config = LocalConfig::GetInstance();
   EXPECT_EQ(app_name, config.app_name());
   unsetenv(Env::kAppNameKey);
 }
 
-TEST(LocalConfigTest, TestResolveEmptyAppName) {
-  unsetenv(Env::kAppNameKey);
-  LocalConfig config;
-  config.Initialize();
-  EXPECT_EQ(kUnknownAppName, config.app_name());
-}
-
 TEST(LocalConfigTest, TestGetIntOfInvalidValue) {
-  LocalConfig config;
+  LocalConfig config = LocalConfig::GetInstance();
   constexpr auto key = "some_key_bad";
   config.SetConfig(key, "a32");
   constexpr int32_t d = 32;
@@ -35,7 +27,7 @@ TEST(LocalConfigTest, TestGetIntOfInvalidValue) {
 }
 
 TEST(LocalConfigTest, TestGetIntOfNormalValue) {
-  LocalConfig config;
+  LocalConfig config = LocalConfig::GetInstance();
   constexpr auto key = "some_key_good";
   config.SetConfig(key, "64");
   constexpr int32_t d = 32;

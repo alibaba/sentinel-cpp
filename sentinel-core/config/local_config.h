@@ -9,10 +9,14 @@
 namespace Sentinel {
 namespace Config {
 
-class LocalConfig : Init::Target {
+class LocalConfig {
  public:
-  LocalConfig() = default;
   ~LocalConfig() = default;
+
+  static LocalConfig& GetInstance() {
+    static LocalConfig* instance = new LocalConfig();
+    return *instance;
+  }
 
   const std::string GetConfig(const std::string& key) const;
   void SetConfig(const std::string& key, const std::string& value);
@@ -22,8 +26,6 @@ class LocalConfig : Init::Target {
   int32_t GetInt32(const std::string& key, int32_t default_value) const;
   int64_t GetInt64(const std::string& key, int64_t default_value) const;
 
-  // InitTarget
-  void Initialize() override;
   const std::string& app_name() const { return app_name_; }
 
   int32_t WarmUpColdFactor() const;
@@ -36,7 +38,10 @@ class LocalConfig : Init::Target {
   std::unordered_map<std::string, std::string> config_map_;
   std::string app_name_;
 
+  LocalConfig();
+
   void ResolveAppName();
+  void Initialize();
 };
 
 using LocalConfigSingleton = Utils::Singleton<LocalConfig>;

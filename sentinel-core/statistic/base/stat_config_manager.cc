@@ -14,7 +14,7 @@ void StatConfigManager::UpdateSampleCount(int32_t new_sample_count) {
     return;
   }
   config.sample_count_ = new_sample_count;
-  ResourceNodeStorageInstance.ResetClusterNodes();
+  Stat::ResourceNodeStorage::GetInstance().ResetClusterNodes();
 }
 
 void StatConfigManager::UpdateInterval(int32_t new_interval_ms) {
@@ -27,7 +27,7 @@ void StatConfigManager::UpdateInterval(int32_t new_interval_ms) {
     return;
   }
   config.interval_ms_ = new_interval_ms;
-  ResourceNodeStorageInstance.ResetClusterNodes();
+  Stat::ResourceNodeStorage::GetInstance().ResetClusterNodes();
 }
 
 void StatConfigManager::RegisterSampleCountProperty(

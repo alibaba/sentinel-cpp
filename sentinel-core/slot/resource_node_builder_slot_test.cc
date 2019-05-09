@@ -56,7 +56,7 @@ TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);
 
-  Stat::ResourceNodeStorage& s = Stat::ResourceNodeStorageInstance;
+  Stat::ResourceNodeStorage& s = Stat::ResourceNodeStorage::GetInstance();
   EXPECT_TRUE(s.GetClusterNode(resource_name) == nullptr);
   Stat::NodeSharedPtr empty_node = nullptr;
   auto result = slot_chain.Entry(entry, resource, empty_node, 1, 0);
