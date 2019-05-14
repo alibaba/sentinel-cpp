@@ -13,6 +13,7 @@ namespace Slot {
 
 class SlotBase {
  public:
+  virtual ~SlotBase() = default;
   virtual TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
                                      Stat::NodeSharedPtr& node, int count,

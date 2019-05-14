@@ -107,7 +107,7 @@ int32_t LeapArray<T>::CalculateTimeIdx(int64_t time_millis) const {
   int64_t time_id = time_millis / bucket_length_ms_;
   // Calculate current index so we can map the timestamp to the leap array.
   int32_t size = sample_count_;  // array_.size()
-  return (int32_t)(time_id % size);
+  return static_cast<int32_t>(time_id % size);
 }
 
 template <typename T>

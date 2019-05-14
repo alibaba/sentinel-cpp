@@ -22,11 +22,11 @@ struct FlowRule : public Rule {
 
   const std::string& resource() const { return resource_; }
   const std::string& limit_origin() const { return limit_origin_; }
-  int metric_type() const { return metric_type_; }
+  FlowMetricType metric_type() const { return metric_type_; }
   double count() const { return count_; }
-  int strategy() const { return strategy_; }
+  FlowRelationStrategy strategy() const { return strategy_; }
   const std::string& ref_resource() const { return ref_resource_; }
-  int control_behavior() const { return control_behavior_; }
+  FlowControlBehavior control_behavior() const { return control_behavior_; }
   int warm_up_period_sec() const { return warm_up_period_sec_; }
   int max_queueing_time_ms() const { return max_queueing_time_ms_; }
   bool cluster_mode() const { return cluster_mode_; }
@@ -40,11 +40,13 @@ struct FlowRule : public Rule {
       limit_origin_ = limit_origin;
     }
   }
-  void set_metric_type(int metric_type) { metric_type_ = metric_type; }
+  void set_metric_type(FlowMetricType metric_type) {
+    metric_type_ = metric_type;
+  }
   void set_count(double count) { count_ = count; }
-  void set_strategy(int strategy) { strategy_ = strategy; }
+  void set_strategy(FlowRelationStrategy strategy) { strategy_ = strategy; }
   void set_ref_resource(const std::string& r) { ref_resource_ = r; }
-  void set_control_behavior(int cb) { control_behavior_ = cb; }
+  void set_control_behavior(FlowControlBehavior cb) { control_behavior_ = cb; }
   void set_warm_up_period_sec(int w) { warm_up_period_sec_ = w; }
   void set_max_queueing_time_ms_(int q) { max_queueing_time_ms_ = q; }
   void set_cluster_mode(bool cluster_mode) { cluster_mode_ = cluster_mode; }
@@ -62,16 +64,17 @@ struct FlowRule : public Rule {
   }
 
  private:
-  std::string resource_;                                      // resource
-  std::string limit_origin_{Constants::kLimitOriginDefault};  // limitApp
-  int metric_type_ = (int)FlowMetricType::kQps;               // grade
-  double count_ = 0;                                          // count
-  int strategy_ = 0;                                          // strategy
-  int control_behavior_ = 0;                                  // controlBehavior
-  std::string ref_resource_{};                                // refResource
-  int warm_up_period_sec_ = 10;                               // warmUpPeriodSec
-  int max_queueing_time_ms_ = 500;  // maxQueueingTimeMs
-  bool cluster_mode_ = false;       // clusterMode
+  std::string resource_;                                          // resource
+  std::string limit_origin_{Constants::kLimitOriginDefault};      // limitApp
+  FlowMetricType metric_type_{FlowMetricType::kQps};              // grade
+  double count_ = 0;                                              // count
+  FlowRelationStrategy strategy_{FlowRelationStrategy::kDirect};  // strategy
+  FlowControlBehavior control_behavior_{
+      FlowControlBehavior::kReject};  // controlBehavior
+  std::string ref_resource_{};        // refResource
+  int warm_up_period_sec_ = 10;       // warmUpPeriodSec
+  int max_queueing_time_ms_ = 500;    // maxQueueingTimeMs
+  bool cluster_mode_ = false;         // clusterMode
 };
 
 using FlowRulePtr = std::shared_ptr<FlowRule>;
@@ -85,10 +88,10 @@ struct FlowRuleHash {
         limit_origin != Constants::kLimitOriginDefault) {
       result = 31 * result + std::hash<std::string>{}(limit_origin);
     }
-    result = 31 * result + rule.metric_type();
+    result = 31 * result + static_cast<int>(rule.metric_type());
     result = 31 * result + std::hash<double>{}(rule.count());
-    result = 31 * result + rule.strategy();
-    result = 31 * result + rule.control_behavior();
+    result = 31 * result + static_cast<int>(rule.strategy());
+    result = 31 * result + static_cast<int>(rule.control_behavior());
     result = 31 * result + std::hash<std::string>{}(rule.ref_resource());
     result = 31 * result + rule.warm_up_period_sec();
     result = 31 * result + rule.max_queueing_time_ms();

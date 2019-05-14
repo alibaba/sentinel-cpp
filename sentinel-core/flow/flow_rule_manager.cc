@@ -14,24 +14,21 @@ namespace Flow {
 constexpr auto kFlowPropertyListenerName = "FlowPropertyListener";
 
 bool IsValidRule(const FlowRule& rule) {
-  bool base_valid = !rule.resource().empty() && rule.count() >= 0 &&
-                    rule.metric_type() >= 0 && rule.strategy() >= 0 &&
-                    rule.control_behavior() >= 0;
+  bool base_valid = !rule.resource().empty() && rule.count() >= 0;
   if (!base_valid) {
     return false;
   }
   // Check rel strategy.
-  bool rel =
-      rule.strategy() == (int)FlowRelationStrategy::kAssociatedResource ||
-      rule.strategy() == (int)FlowRelationStrategy::kInvocationChainEntrance;
+  bool rel = rule.strategy() == FlowRelationStrategy::kAssociatedResource ||
+             rule.strategy() == FlowRelationStrategy::kInvocationChainEntrance;
   bool rel_valid = !rel || !rule.ref_resource().empty();
   // Check control behavior.
   bool cb_valid;
   switch (rule.control_behavior()) {
-    case (int)FlowControlBehavior::kWarmUp:
+    case FlowControlBehavior::kWarmUp:
       cb_valid = rule.warm_up_period_sec() > 0;
       break;
-    case (int)FlowControlBehavior::kThrotting:
+    case FlowControlBehavior::kThrotting:
       cb_valid = rule.max_queueing_time_ms() > 0;
       break;
     default:
@@ -107,11 +104,11 @@ void FlowRuleManager::RegisterToProperty(
 
 std::shared_ptr<TrafficShapingController> FlowRuleManager::GenerateController(
     const FlowRule& rule) {
-  if (rule.metric_type() == (int)FlowMetricType::kQps) {
+  if (rule.metric_type() == FlowMetricType::kQps) {
     switch (rule.control_behavior()) {
-      case (int)FlowControlBehavior::kWarmUp:
+      case FlowControlBehavior::kWarmUp:
         // return (WarmUpCalculator, DefaultChecker);
-      case (int)FlowControlBehavior::kThrotting:
+      case FlowControlBehavior::kThrotting:
         // return (DefaultCalculator, ThrottlingChecker);
       default:
         // Default mode or unknown mode: default traffic shaping controller
