@@ -29,4 +29,6 @@ class EntryResult {
   const absl::optional<std::string> blocked_reason_;
 };
 
+using EntryResultPtr = std::unique_ptr<EntryResult>;
+
 }  // namespace Sentinel
