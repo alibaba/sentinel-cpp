@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 #include "sentinel-core/property/sentinel_property.h"
-
-#include "absl/container/flat_hash_map.h"
 
 namespace Sentinel {
 namespace Property {
