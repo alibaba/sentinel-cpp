@@ -13,7 +13,7 @@ namespace Slot {
 class DefaultSlotChainImpl : public SlotChain {
  public:
   DefaultSlotChainImpl() = default;
-  ~DefaultSlotChainImpl() = default;
+  virtual ~DefaultSlotChainImpl() = default;
 
   // SlotChain<RuleCheckerSlot>
   void AddFirst(std::unique_ptr<Slot>&& slot) override;

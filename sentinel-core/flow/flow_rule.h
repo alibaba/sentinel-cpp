@@ -15,6 +15,7 @@ namespace Flow {
 struct FlowRule : public Rule {
  public:
   FlowRule() = default;
+  virtual ~FlowRule() = default;
   explicit FlowRule(const std::string& resource)
       : resource_(resource), limit_origin_(Constants::kLimitOriginDefault) {}
   FlowRule(const std::string& resource, const std::string& limit_origin)

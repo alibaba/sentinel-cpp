@@ -13,7 +13,7 @@ template <typename T>
 class DynamicSentinelProperty : public SentinelProperty<T> {
  public:
   DynamicSentinelProperty() = default;
-  ~DynamicSentinelProperty() = default;
+  virtual ~DynamicSentinelProperty() = default;
   void AddListener(PropertyListenerPtr<T>&& listener) override {
     auto name = listener->Name();
     listeners_.emplace(std::make_pair(std::string(name), std::move(listener)));

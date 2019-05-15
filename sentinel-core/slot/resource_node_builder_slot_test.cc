@@ -21,7 +21,7 @@ namespace Slot {
 class RequireNodeFakeStatsSlot : public StatsSlot {
  public:
   RequireNodeFakeStatsSlot() = default;
-  ~RequireNodeFakeStatsSlot() = default;
+  virtual ~RequireNodeFakeStatsSlot() = default;
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,

@@ -10,7 +10,7 @@ constexpr auto kStatisticSlotName = "StatisticSlot";
 class StatisticSlot : public StatsSlot {
  public:
   StatisticSlot() = default;
-  ~StatisticSlot() = default;
+  virtual ~StatisticSlot() = default;
 
   const std::string& Name() const override;
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,

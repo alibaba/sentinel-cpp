@@ -8,7 +8,7 @@ namespace Slot {
 class LogSlot : public StatsSlot {
  public:
   LogSlot();
-  ~LogSlot() = default;
+  virtual ~LogSlot() = default;
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,

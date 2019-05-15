@@ -4,7 +4,7 @@ namespace Sentinel {
 namespace Init {
 class Target {
  public:
-  virtual ~Target() {}
+  virtual ~Target() = default;
   virtual void Initialize() = 0;
 };
 
