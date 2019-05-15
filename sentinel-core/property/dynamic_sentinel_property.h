@@ -41,6 +41,5 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
   T laste_value;
   std::unordered_map<std::string, PropertyListenerPtr<T>> listeners_;
 };
-
 }  // namespace Property
 }  // namespace Sentinel
