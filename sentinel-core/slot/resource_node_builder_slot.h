@@ -14,7 +14,7 @@ constexpr auto kResourceNodeBuilderSlotName = "ResourceNodeBuilderSlot";
 class ResourceNodeBuilderSlot : public StatsSlot {
  public:
   ResourceNodeBuilderSlot() = default;
-  ~ResourceNodeBuilderSlot() = default;
+  virtual ~ResourceNodeBuilderSlot() = default;
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,

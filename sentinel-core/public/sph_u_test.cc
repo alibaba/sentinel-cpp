@@ -18,10 +18,10 @@ TEST(SphUTest, TestEntryBlockSimple) {
   Flow::FlowRuleManager& m = Flow::FlowRuleManager::GetInstance();
   m.LoadRules({rule});
 
-  EntryResult r = SphU::Entry(resource_name);
+  auto r = SphU::Entry(resource_name);
 
-  EXPECT_TRUE(r.IsBlocked());
-  auto entry = r.entry();
+  EXPECT_TRUE(r->IsBlocked());
+  auto entry = r->entry();
   EXPECT_TRUE(entry == nullptr);
 
   auto& s = Stat::ResourceNodeStorage::GetInstance();
@@ -38,9 +38,9 @@ TEST(SphUTest, TestEntryPassWithoutRules) {
   m.LoadRules({});
 
   auto resource_name = "SphUTest::TestEntryPassWithoutRules";
-  EntryResult r = SphU::Entry(resource_name);
-  EXPECT_FALSE(r.IsBlocked());
-  auto entry = r.entry();
+  auto r = SphU::Entry(resource_name);
+  EXPECT_FALSE(r->IsBlocked());
+  auto entry = r->entry();
   EXPECT_FALSE(entry == nullptr);
   EXPECT_FALSE(entry->exited());
 
@@ -52,7 +52,7 @@ TEST(SphUTest, TestEntryPassWithoutRules) {
   EXPECT_EQ(1, node->CurThreadNum());
   EXPECT_DOUBLE_EQ(0, node->CompleteQps());
 
-  r.Exit();
+  r->Exit();
   EXPECT_TRUE(entry->exited());
 
   EXPECT_DOUBLE_EQ(1, node->PassQps());

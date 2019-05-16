@@ -9,7 +9,7 @@ template <typename S, typename T>
 class Converter {
  public:
   virtual ~Converter() = default;
-  virtual T Convert(S source) = 0;
+  virtual T Convert(const S& source) = 0;
 };
 
 template <typename S, typename T>

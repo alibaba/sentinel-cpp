@@ -1,5 +1,3 @@
-#pragma once
-
 #include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
