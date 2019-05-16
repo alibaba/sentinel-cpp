@@ -10,7 +10,8 @@ namespace Slot {
 class RuleCheckerSlot : public Slot {
  public:
   virtual ~RuleCheckerSlot() = default;
-  bool IsContinue(const TokenResultSharedPtr& token) override {
+  bool IsContinue(const TokenResultSharedPtr& token,
+                  const EntryContextSharedPtr& context) override {
     if (token->status() != TokenStatus::RESULT_STATUS_OK) {
       return false;
     }
