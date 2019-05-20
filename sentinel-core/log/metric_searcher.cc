@@ -35,8 +35,8 @@ bool MetricSearcher::ValidPosition(int64_t begin_time_ms) {
 }
 
 int64_t MetricSearcher::FindOffset(int64_t begin_time_ms,
-                                   std::string metric_file_name,
-                                   std::string idx_file_name,
+                                   const std::string &metric_file_name,
+                                   const std::string &idx_file_name,
                                    int64_t offset_in_index) {
   last_pos_.metric_file_name = "";
   last_pos_.index_file_name = "";
@@ -75,11 +75,11 @@ int64_t MetricSearcher::FindOffset(int64_t begin_time_ms,
 }
 
 MetricSearcher::MetricSearcher(const std::string &base_dir,
-                               const std::string base_file_name)
+                               const std::string &base_file_name)
     : base_dir_(base_dir), base_file_name_(base_file_name) {}
 
-std::vector<Metric::MetricNode> MetricSearcher::Find(int64_t begin_time_ms,
-                                                     int recommend_lines) {
+std::vector<Stat::MetricItem> MetricSearcher::Find(int64_t begin_time_ms,
+                                                   int recommend_lines) {
   std::lock_guard<std::mutex> guard(lock_);
 
   auto file_names = MetricWriter::ListMetricFiles(base_dir_, base_file_name_);
@@ -107,7 +107,41 @@ std::vector<Metric::MetricNode> MetricSearcher::Find(int64_t begin_time_ms,
                                         offset, recommend_lines);
     }
   }
-  return std::vector<Metric::MetricNode>();
+  return std::vector<Stat::MetricItem>();
+}
+
+std::vector<Stat::MetricItem> MetricSearcher::FindByTimeAndResource(
+    int64_t begin_time_ms, int64_t end_time_ms, const std::string &identity) {
+  std::lock_guard<std::mutex> guard(lock_);
+
+  auto file_names = MetricWriter::ListMetricFiles(base_dir_, base_file_name_);
+
+  auto it = file_names.begin();
+  int64_t offset_in_index = 0;
+
+  if (ValidPosition(begin_time_ms)) {
+    auto lit = std::find(file_names.begin(), file_names.end(),
+                         last_pos_.metric_file_name);
+    if (lit != file_names.end()) {
+      it = lit;
+      offset_in_index = last_pos_.offset_in_index;
+    }
+  }
+
+  for (; it < file_names.end(); ++it) {
+    auto file_name = *it;
+
+    long offset =
+        FindOffset(begin_time_ms, file_name,
+                   MetricWriter::FormIndexFileName(file_name), offset_in_index);
+    offset_in_index = 0;
+    if (offset != -1) {
+      return metric_reader_.ReadMetricsByEndTime(
+          file_names, it - file_names.begin(), offset, begin_time_ms,
+          end_time_ms, identity);
+    }
+  }
+  return std::vector<Stat::MetricItem>();
 }
 
 }  // namespace Log

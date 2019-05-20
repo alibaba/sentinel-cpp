@@ -14,9 +14,8 @@ bool HttpCommandCenter::Start() {
     return false;
   }
 
-  http_server_.reset(new HttpServer(std::bind(&HttpCommandCenter::OnHttpRequest,
-                                              this, std::placeholders::_1)));
-
+  http_server_ = std::make_unique<HttpServer>(std::bind(
+      &HttpCommandCenter::OnHttpRequest, this, std::placeholders::_1));
   return http_server_->Start();
 }
 
@@ -43,7 +42,7 @@ bool HttpCommandCenter::RegisterCommand(const std::string& command_name,
 
 void HttpCommandCenter::OnHttpRequest(struct evhttp_request* http_req) {
   auto request = HttpCommandUtils::ParseHttpRequest(http_req);
-  auto target = request.GetMetadata(CommandRequest::kRequestTarget);
+  auto target = request.GetMetadata(kRequestTarget);
 
   auto it = handler_map_.find(target);
   if (it == handler_map_.end()) {

@@ -62,7 +62,7 @@ CommandRequest HttpCommandUtils::ParseHttpRequest(
 
 void HttpCommandUtils::ParseRequestUri(const std::string &uri,
                                        CommandRequest *request) {
-  request->SetBody(uri);
+  request->set_body(uri);
 
   // parse target
   auto start = uri.find('/');
@@ -70,7 +70,7 @@ void HttpCommandUtils::ParseRequestUri(const std::string &uri,
                                                 : uri.find('?');
   auto target = uri.substr(start != std::string::npos ? start + 1 : 0,
                            ask != std::string::npos ? ask - 1 : uri.length());
-  request->AddMetadata(CommandRequest::kRequestTarget, target);
+  request->AddMetadata(kRequestTarget, target);
 
   // parse params
   struct evkeyvalq params;

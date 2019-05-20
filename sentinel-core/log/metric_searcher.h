@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "sentinel-core/log/metric/metric_node.h"
 #include "sentinel-core/log/metric_reader.h"
+#include "sentinel-core/statistic/base/metric_item.h"
 
 namespace Sentinel {
 namespace Log {
@@ -13,26 +13,23 @@ namespace Log {
 struct Position {
   std::string metric_file_name = "";
   std::string index_file_name = "";
-  /**
-   * 索引文件内的偏移
-   */
   int64_t offset_in_index = -1;
-  /**
-   * 索引文件中offsetInIndex位置上的数字，秒数。
-   */
   int64_t second = -1;
 };
 
 class MetricSearcher {
  public:
-  MetricSearcher(const std::string &base_dir, const std::string base_file_name);
-  std::vector<Metric::MetricNode> Find(int64_t begin_time_ms,
-                                       int recommend_lines);
+  MetricSearcher(const std::string &base_dir,
+                 const std::string &base_file_name);
+  std::vector<Stat::MetricItem> Find(int64_t begin_time_ms,
+                                     int recommend_lines);
+  std::vector<Stat::MetricItem> FindByTimeAndResource(
+      int64_t begin_time_ms, int64_t end_time_ms, const std::string &identity);
 
  private:
   bool ValidPosition(int64_t begin_time_ms);
-  int64_t FindOffset(int64_t begin_time, std::string metric_file_name,
-                     std::string idx_file_name, int64_t offset_in_index);
+  int64_t FindOffset(int64_t begin_time, const std::string &metric_file_name,
+                     const std::string &idx_file_name, int64_t offset_in_index);
 
  private:
   std::string base_dir_;

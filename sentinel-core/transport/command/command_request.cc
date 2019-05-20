@@ -3,17 +3,15 @@
 namespace Sentinel {
 namespace Transport {
 
-const std::string CommandRequest::kRequestTarget = "command-target";
+const std::string& CommandRequest::body() const { return body_; }
 
-const std::string& CommandRequest::GetBody() const { return body_; }
-
-CommandRequest& CommandRequest::SetBody(const std::string& body) {
+CommandRequest& CommandRequest::set_body(const std::string& body) {
   body_ = body;
   return *this;
 }
 
-const std::map<std::string, std::string>& CommandRequest::GetParameters()
-    const {
+const std::unordered_map<std::string, std::string>&
+CommandRequest::GetParameters() const {
   return parameters_;
 }
 

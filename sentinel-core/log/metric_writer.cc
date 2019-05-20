@@ -23,6 +23,8 @@
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
 
+#include <iostream>
+
 using namespace Sentinel::Utils;
 
 namespace Sentinel {
@@ -56,18 +58,12 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
   pid_ = ::getpid();
 }
 
-/**
- * 如果传入了time，就认为nodes中所有的时间时间戳都是time.
- *
- * @param time
- * @param nodes
- */
-void MetricWriter::Write(int64_t time, std::vector<Metric::MetricNode> &nodes) {
+void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
   std::lock_guard<std::mutex> lk(lock_);
 
   if (time != -1) {
     for (auto &node : nodes) {
-      node.SetTimestamp(time);
+      node.set_timestamp(time);
     }
   }
 
@@ -82,7 +78,6 @@ void MetricWriter::Write(int64_t time, std::vector<Metric::MetricNode> &nodes) {
   auto second = time / 1000;
 
   if (second < last_second_) {
-    // 时间靠前的直接忽略，不应该发生。
   } else if (second == last_second_) {
     DoWrite(time, nodes);
   } else {
@@ -98,9 +93,9 @@ void MetricWriter::Write(int64_t time, std::vector<Metric::MetricNode> &nodes) {
 }
 
 void MetricWriter::DoWrite(int64_t time,
-                           std::vector<Metric::MetricNode> &nodes) {
+                           const std::vector<Stat::MetricItem> &nodes) {
   for (auto &node : nodes) {
-    metric_out_ << node.ToFatString();
+    metric_out_ << node.ToFatString() << "\n";
   }
   metric_out_.flush();
   if (IsExceedMaxSingleFileSize()) {
@@ -125,16 +120,18 @@ bool MetricWriter::IsExceedMaxSingleFileSize() {
   return size >= single_file_size_;
 }
 
-std::string MetricWriter::FormMetricFileName(std::string app_name, int pid) {
+std::string MetricWriter::FormMetricFileName(const std::string &app_name,
+                                             int pid) {
   // dot is special char that should be replaced.
   static std::string dot = ".";
   static std::string separator = "-";
 
+  auto form_app_name = app_name;
   if (app_name.find('.') != std::string::npos) {
-    app_name = absl::StrReplaceAll(app_name, {{dot, separator}});
+    form_app_name = absl::StrReplaceAll(app_name, {{dot, separator}});
   }
 
-  std::string file_name = app_name + separator + kMetricFile;
+  std::string file_name = form_app_name + separator + kMetricFile;
   if (LogBase::IsLogNameUsePid()) {
     file_name = file_name + ".pid" + std::to_string(pid);
   }
@@ -246,8 +243,8 @@ void MetricWriter::DoClose() {
   }
 }
 
-bool MetricWriter::FileNameMatches(std::string file_name,
-                                   std::string base_file_name) {
+bool MetricWriter::FileNameMatches(const std::string &file_name,
+                                   const std::string &base_file_name) {
   if (absl::StartsWith(file_name, base_file_name)) {
     auto part = file_name.substr(base_file_name.size());
     // part is like: ".yyyy-MM-dd.number", eg. ".2018-12-24.11"
@@ -259,7 +256,7 @@ bool MetricWriter::FileNameMatches(std::string file_name,
 }
 
 std::vector<std::string> MetricWriter::ListMetricFiles(
-    std::string base_dir, std::string base_file_name) {
+    const std::string &base_dir, const std::string &base_file_name) {
   std::vector<std::string> vec;
   auto files = Sentinel::Utils::FileUtils::ListFiles(base_dir);
 

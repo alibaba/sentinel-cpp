@@ -13,6 +13,7 @@ class CommandHandler {
   CommandHandler(const std::string& name) : command_name_(name) {}
   virtual ~CommandHandler() = default;
   virtual CommandResponse Handle(const CommandRequest& request) = 0;
+  std::string command_name() const { return command_name_; }
 
  protected:
   std::string command_name_;

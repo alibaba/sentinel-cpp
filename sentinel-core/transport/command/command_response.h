@@ -4,9 +4,8 @@
 
 class CommandResponse {
  private:
-  CommandResponse(bool success, const std::string& result) : result_(result) {
-    success_ = success;
-  }
+  CommandResponse(bool success, const std::string& result)
+      : success_(success), result_(result) {}
 
  public:
   static CommandResponse OfSuccess(const std::string& result) {
