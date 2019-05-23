@@ -46,7 +46,8 @@ void HttpCommandCenter::OnHttpRequest(struct evhttp_request* http_req) {
 
   auto it = handler_map_.find(target);
   if (it == handler_map_.end()) {
-    // log warn: can not find handler
+    HandleResponse(http_req,
+                   CommandResponse::OfFailure("Unknown command: " + target));
     return;
   }
 

@@ -12,7 +12,7 @@ class FileUtils {
 
   static bool FileExists(const std::string& path);
   static bool DirExists(const std::string& path);
-  static int CreateDir(const std::string& path);
+  static bool CreateDir(const std::string& path);
   static std::vector<std::string> ListFiles(const std::string& path);
   static std::string GetAbsolutePath(const std::string& path);
 };

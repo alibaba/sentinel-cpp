@@ -45,6 +45,7 @@ cc_library(
   deps = [
       "@com_google_absl//absl/strings",
       "//sentinel-core/utils:utils_lib",
+      "//sentinel-core/utils:file_utils_lib",
   ]
 )
 
@@ -62,10 +63,10 @@ cc_library(
   deps = [
      "@com_google_absl//absl/strings",
      "//sentinel-core/utils:utils_lib",
+     "//sentinel-core/utils:file_utils_lib",
      "//sentinel-core/statistic/base:metric_item_lib",
      "//sentinel-core/config:local_config_lib",
      ":record_log_impl_lib",
      ":log_base_impl_lib",
   ],
 )
-

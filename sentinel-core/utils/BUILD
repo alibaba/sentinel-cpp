@@ -9,6 +9,14 @@ cc_library(
     "utils.cc",
     "time_utils.h",
     "time_utils.cc",
+  ],
+  copts = DEFAULT_COPTS,
+)
+
+
+cc_library(
+  name = "file_utils_lib",
+  srcs = [
     "file_utils.h",
     "file_utils.cc",
   ],

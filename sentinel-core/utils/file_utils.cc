@@ -29,7 +29,7 @@ bool FileUtils::DirExists(const std::string& path) {
   return dir_exists;
 }
 
-int FileUtils::CreateDir(const std::string& path) {
+bool FileUtils::CreateDir(const std::string& path) {
   auto s = path;
   size_t pos = 0;
   std::string dir;
@@ -45,10 +45,10 @@ int FileUtils::CreateDir(const std::string& path) {
       continue;  // if leading / first time is 0 length
     }
     if ((ret = mkdir(dir.c_str(), S_IRWXU)) && errno != EEXIST) {
-      return ret;
+      return ret == 0;
     }
   }
-  return ret;
+  return ret == 0;
 }
 
 std::vector<std::string> FileUtils::ListFiles(const std::string& path) {
@@ -61,7 +61,7 @@ std::vector<std::string> FileUtils::ListFiles(const std::string& path) {
 
   struct dirent* ent;
   while ((ent = readdir(dir)) != nullptr) {
-    files.push_back(ent->d_name);
+    files.emplace_back(std::move(ent->d_name));
   }
   closedir(dir);
 
@@ -69,9 +69,12 @@ std::vector<std::string> FileUtils::ListFiles(const std::string& path) {
 }
 
 std::string FileUtils::GetAbsolutePath(const std::string& path) {
-  char abs_path[40960] = {0};
-  realpath(path.c_str(), abs_path);
-  return std::string(abs_path);
+  char abs_path[8192] = {0};
+  if (realpath(path.c_str(), abs_path) != nullptr) {
+    return std::string(abs_path);
+  }
+
+  return "";
 }
 
 }  // namespace Utils
