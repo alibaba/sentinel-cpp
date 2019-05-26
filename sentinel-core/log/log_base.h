@@ -20,9 +20,9 @@ class LogBase {
   static std::string AddSeparator(const std::string &dir);
 
  public:
-  static const std::string kEnvLogDir;
-  static const std::string kEnvLogNameUsrPid;
-  static const std::string kDirName;
+  static const char kEnvLogDir[];
+  static const char kEnvLogNameUsrPid[];
+  static const char kDirName[];
 
  private:
   static std::string log_base_dir_;

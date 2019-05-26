@@ -5,7 +5,6 @@
 
 #include "absl/strings/match.h"
 #include "absl/strings/string_view.h"
-
 #include "sentinel-core/utils/file_utils.h"
 
 using namespace Sentinel::Utils;
@@ -15,9 +14,9 @@ namespace Log {
 
 #define FILE_SEPARATPR "/"
 
-const std::string LogBase::kEnvLogDir = "csp.sentinel.log.dir";
-const std::string LogBase::kEnvLogNameUsrPid = "csp.sentinel.log.use.pid";
-const std::string LogBase::kDirName = "logs/csp";
+const char LogBase::kEnvLogDir[] = "csp.sentinel.log.dir";
+const char LogBase::kEnvLogNameUsrPid[] = "csp.sentinel.log.use.pid";
+const char LogBase::kDirName[] = "logs/csp";
 std::string LogBase::log_base_dir_ = "";
 bool LogBase::log_name_use_pid_ = false;
 
@@ -26,7 +25,7 @@ void LogBase::Initialize() {
 
   std::string str_log_dir;
 
-  auto log_dir = std::getenv(kEnvLogDir.c_str());
+  auto log_dir = std::getenv(kEnvLogDir);
 
   if (log_dir == nullptr) {
     str_log_dir = std::string(std::getenv("HOME"));
@@ -42,7 +41,7 @@ void LogBase::Initialize() {
     }
   }
 
-  const char *use_pid = std::getenv(kEnvLogNameUsrPid.c_str());
+  const char *use_pid = std::getenv(kEnvLogNameUsrPid);
   if (use_pid != nullptr && std::string(use_pid) == "true") {
     log_name_use_pid_ = true;
   } else {
