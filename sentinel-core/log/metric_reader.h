@@ -23,7 +23,8 @@ class MetricReader {
   bool ReadMetricsInOneFileByEndTime(std::vector<Stat::MetricItem> &metric_vec,
                                      const std::string &file_name,
                                      int64_t offset, int64_t begin_time_ms,
-                                     int64_t end_time_ms, std::string identity);
+                                     int64_t end_time_ms,
+                                     const std::string &identity);
 
  private:
   static const int kMaxLinesReturn = 100000;

@@ -80,7 +80,7 @@ std::vector<Stat::MetricItem> MetricReader::ReadMetricsByEndTime(
 bool MetricReader::ReadMetricsInOneFileByEndTime(
     std::vector<Stat::MetricItem> &metric_vec, const std::string &file_name,
     int64_t offset, int64_t begin_time_ms, int64_t end_time_ms,
-    std::string identity) {
+    const std::string &identity) {
   std::ifstream in_file(file_name.c_str(), std::ios::in | std::ios::binary);
   if (!in_file.is_open()) {
     return false;
