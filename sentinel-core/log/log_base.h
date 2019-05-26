@@ -17,7 +17,7 @@ class LogBase {
   static std::string GetLogBaseDir() { return log_base_dir_; }
 
  private:
-  static std::string AddSeparator(std::string dir);
+  static std::string AddSeparator(const std::string &dir);
 
  public:
   static const std::string kEnvLogDir;

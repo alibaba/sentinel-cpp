@@ -53,7 +53,7 @@ void LogBase::Initialize() {
   std::cout << "INFO: log name use pid is: " << log_name_use_pid_ << std::endl;
 }
 
-std::string LogBase::AddSeparator(std::string dir) {
+std::string LogBase::AddSeparator(const std::string &dir) {
   if (!absl::EndsWith(dir, FILE_SEPARATPR)) {
     return dir + FILE_SEPARATPR;
   }

@@ -46,6 +46,7 @@ cc_library(
       "@com_google_absl//absl/strings",
       "//sentinel-core/utils:utils_lib",
       "//sentinel-core/utils:file_utils_lib",
+      "//sentinel-core/init:init_target_registry_lib",
   ]
 )
 
@@ -69,4 +70,30 @@ cc_library(
      ":record_log_impl_lib",
      ":log_base_impl_lib",
   ],
+)
+
+
+cc_test(
+  name = "log_base_unittests",
+  srcs = [
+    "log_base_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":log_base_impl_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
+
+
+cc_test(
+  name = "metric_writer_unittests",
+  srcs = [
+    "metric_writer_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":metric_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
 )
