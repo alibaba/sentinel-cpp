@@ -19,11 +19,13 @@ HttpServer::~HttpServer() {
   }
 }
 
-bool HttpServer::Start() {
+bool HttpServer::Start(int port) {
   auto ret = event_loop_thread_.Start();
   if (!ret) {
     return false;
   }
+
+  port_ = port;
 
   std::promise<bool> start_promise;
   auto start_future = start_promise.get_future();
@@ -53,7 +55,7 @@ void HttpServer::InternalStart(std::promise<bool> &promise) {
 
   evhttp_set_gencb(http_, &HttpServer::HttpGenCallback, this);
 
-  auto handle = evhttp_bind_socket_with_handle(http_, "0.0.0.0", kDefaultPort);
+  auto handle = evhttp_bind_socket_with_handle(http_, "0.0.0.0", port_);
   if (!handle) {
     // log error
     promise.set_value(false);

@@ -24,6 +24,8 @@ class EventLoopThread {
 
   void RunTask(Functor func);
 
+  bool IsInLoopThread() const;
+
  private:
   bool InitEventBase();
   void ClearEventBase();

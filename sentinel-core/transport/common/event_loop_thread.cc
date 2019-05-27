@@ -102,6 +102,11 @@ void EventLoopThread::Dispatch() {
 }
 
 void EventLoopThread::RunTask(Functor func) {
+  if (IsInLoopThread()) {
+    func();
+    return;
+  }
+
   {
     std::lock_guard<std::mutex> lock(task_mutex_);
     pending_tasks_.emplace_back(func);
@@ -145,6 +150,10 @@ void EventLoopThread::DoPendingTasks() {
   for (const Functor& functor : functors) {
     functor();
   }
+}
+
+bool EventLoopThread::IsInLoopThread() const {
+  return thd_->get_id() == std::this_thread::get_id();
 }
 
 }  // namespace Transport

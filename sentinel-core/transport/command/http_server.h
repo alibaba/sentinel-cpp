@@ -21,7 +21,7 @@ class HttpServer {
   HttpServer(http_request_callback_t callback);
   ~HttpServer();
 
-  bool Start();
+  bool Start(int port);
   void Stop();
 
  private:
@@ -37,7 +37,7 @@ class HttpServer {
   static void HttpGenCallback(struct evhttp_request *req, void *arg);
 
  private:
-  static const int kDefaultPort = 8731;
+  int port_;
 };
 
 }  // namespace Transport
