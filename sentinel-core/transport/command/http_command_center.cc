@@ -8,7 +8,7 @@
 namespace Sentinel {
 namespace Transport {
 
-bool HttpCommandCenter::Start() {
+bool HttpCommandCenter::Start(int port) {
   if (http_server_) {
     // log warn
     return false;
@@ -16,7 +16,8 @@ bool HttpCommandCenter::Start() {
 
   http_server_ = std::make_unique<HttpServer>(std::bind(
       &HttpCommandCenter::OnHttpRequest, this, std::placeholders::_1));
-  return http_server_->Start();
+
+  return http_server_->Start(port);
 }
 
 void HttpCommandCenter::Stop() {

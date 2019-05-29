@@ -15,7 +15,7 @@ class HttpCommandCenter {
   explicit HttpCommandCenter() = default;
   ~HttpCommandCenter() = default;
 
-  bool Start();
+  bool Start(int port);
   void Stop();
 
   bool RegisterCommand(const std::string& command_name,

@@ -11,3 +11,17 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+
+cc_test(
+  name = "event_loop_thread_unittests",
+  srcs = [
+      "event_loop_thread.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":transport_common",
+    "@com_google_googletest//:gtest_main",
+  ],
+  linkstatic = 1,
+)
