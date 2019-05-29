@@ -1,7 +1,10 @@
 load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "transport_common",
+    copts = DEFAULT_COPTS,
     srcs = [
         "event_loop_thread.h",
         "event_loop_thread.cc",

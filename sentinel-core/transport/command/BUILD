@@ -1,7 +1,10 @@
 load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "command_request",
+    copts = DEFAULT_COPTS,
     srcs = [
         "command_request.h",
         "command_request.cc",
@@ -11,6 +14,7 @@ cc_library(
 
 cc_library(
     name = "command_response_interface",
+    copts = DEFAULT_COPTS,
     srcs = [
         "command_response.h",
         ],
@@ -19,6 +23,7 @@ cc_library(
 
 cc_library(
     name = "command_handler_interface",
+    copts = DEFAULT_COPTS,
     srcs = [
         "command_handler.h",
         ],
@@ -30,6 +35,7 @@ cc_library(
 
 cc_library(
     name = "http_command_utils",
+    copts = DEFAULT_COPTS,
     srcs = [
         "http_command_utils.h",
         "http_command_utils.cc",
@@ -43,6 +49,7 @@ cc_library(
 
 cc_library(
     name = "transport_httpserver",
+    copts = DEFAULT_COPTS,
     srcs = [
         "http_server.h",
         "http_server.cc",
@@ -56,6 +63,7 @@ cc_library(
 
 cc_library(
     name = "http_command_center",
+    copts = DEFAULT_COPTS,
     srcs = [
         "http_command_center.h",
         "http_command_center.cc",
