@@ -35,6 +35,7 @@ cc_library(
         "http_command_utils.cc",
         ],
     deps = [
+        "//:libevent",
         ":command_request",
     ],
 )
