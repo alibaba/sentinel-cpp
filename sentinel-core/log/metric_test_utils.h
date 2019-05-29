@@ -37,7 +37,7 @@ void TestWriteMetricLog(int64_t time) {
 }
 
 std::string GetAppName() {
-  auto app_name = Config::LocalConfigSingleton().get().app_name();
+  auto app_name = Config::LocalConfig::GetInstance().app_name();
   return app_name;
 }
 

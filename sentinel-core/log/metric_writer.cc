@@ -67,7 +67,7 @@ void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
     }
   }
 
-  auto app_name = Config::LocalConfigSingleton().get().app_name();
+  auto app_name = Config::LocalConfig::GetInstance().app_name();
 
   // first write, should create file
   if (!metric_out_.is_open()) {
