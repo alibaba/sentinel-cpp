@@ -6,27 +6,25 @@
 #include "sentinel-core/common/entry_result.h"
 #include "sentinel-core/common/entry_type.h"
 #include "sentinel-core/common/resource_wrapper.h"
-#include "sentinel-core/utils/utils.h"
 
 namespace Sentinel {
 
 class SphU {
  public:
-  virtual ~SphU() = default;
+  ~SphU() = default;
 
-  virtual EntryResult Entry(const std::string& r, EntryType t, int count,
-                            int flag);
-  virtual EntryResult Entry(const std::string& r, EntryType t, int count);
-  virtual EntryResult Entry(const std::string& r, EntryType t);
+  static EntryResultPtr Entry(const std::string& r, EntryType t, int count,
+                              int flag);
+  static EntryResultPtr Entry(const std::string& r, EntryType t, int count);
+  static EntryResultPtr Entry(const std::string& r, EntryType t);
+  static EntryResultPtr Entry(const std::string& r);
 
  private:
-  bool init_done_{false};
-
+  SphU() = default;
   // Will be public after Sentinel C++ supports invocation chain.
-  EntryResult Entry(const EntryContextPtr& context, const std::string& r,
-                    EntryType t, int count, int flag);
+  static EntryResultPtr Entry(const EntryContextSharedPtr& context,
+                              const std::string& r, EntryType t, int count,
+                              int flag);
 };
-
-using SphUSingleton = Utils::Singleton<SphU>;
 
 }  // namespace Sentinel

@@ -22,8 +22,8 @@ TEST(TracerTest, TraceExceptionTest) {
     EXPECT_CALL(*node.get(), AddExceptionRequest(n)).Times(1);
 
     EntrySharedPtr entry = std::make_shared<Entry>(
-        std::make_shared<StringResourceWrapper>("abc", EntryType::IN));
-    entry->SetCurNode(node);
+        std::make_shared<StringResourceWrapper>("abc", EntryType::IN), nullptr);
+    entry->set_cur_node(node);
 
     Tracer::Trace(entry, "some_exception", n);
   }

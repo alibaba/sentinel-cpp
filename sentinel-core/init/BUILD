@@ -16,4 +16,21 @@ cc_library(
     "init_target_registry.h",
   ],
   copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/utils:utils_lib",
+  ]
+)
+
+cc_test(
+  name = "init_target_registry_unittests",
+  srcs = [
+    "init_target_registry_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":init_target_interface",
+    ":init_target_registry_lib",
+    "//sentinel-core/test/mock/init:mock_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
 )

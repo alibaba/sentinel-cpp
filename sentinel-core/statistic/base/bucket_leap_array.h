@@ -15,7 +15,7 @@ class BucketLeapArray : public LeapArray<MetricBucket> {
   virtual ~BucketLeapArray() {}
 
   std::shared_ptr<MetricBucket> NewEmptyBucket(int64_t time_millis) override;
-  void ResetWindowTo(const WindowWrapPtr<MetricBucket>& wrap,
+  void ResetWindowTo(const WindowWrapSharedPtr<MetricBucket>& wrap,
                      int64_t start_time) override;
 };
 

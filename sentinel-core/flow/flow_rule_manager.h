@@ -16,31 +16,33 @@ namespace Sentinel {
 namespace Flow {
 
 using TrafficControllerMap =
-    std::unordered_map<FlowRule, TrafficShapingControllerPtr, FlowRuleHash>;
-using FlowRulePropertyPtr = Property::SentinelPropertySharedPtr<FlowRuleList>;
+    std::unordered_map<FlowRule, std::shared_ptr<TrafficShapingController>,
+                       FlowRuleHash>;
+using FlowRulePropertySharedPtr =
+    Property::SentinelPropertySharedPtr<FlowRuleList>;
 
 class FlowRuleManager {
  public:
   static FlowRuleManager& GetInstance() {
-    static FlowRuleManager instance;
-    return instance;
+    static FlowRuleManager* instance = new FlowRuleManager();
+    return *instance;
   }
 
   friend class FlowPropertyListener;
 
-  void RegisterToProperty(const FlowRulePropertyPtr& property);
+  void RegisterToProperty(const FlowRulePropertySharedPtr& property);
   bool LoadRules(const FlowRuleList& rules);
   bool HasRules(const std::string& resource);
   FlowRuleList GetRules() const;
   FlowRuleList GetRulesForResource(const std::string& resource) const;
 
-  TrafficShapingControllerPtr GetTrafficControllerFor(
+  std::shared_ptr<TrafficShapingController> GetTrafficControllerFor(
       const FlowRule& rule) const;
 
  private:
   FlowRuleManager();
 
-  FlowRulePropertyPtr cur_property_;
+  FlowRulePropertySharedPtr cur_property_;
 
   std::unordered_map<std::string, FlowRuleList> rule_map_{};
   TrafficControllerMap traffic_controller_map_{};
@@ -48,7 +50,8 @@ class FlowRuleManager {
   mutable std::mutex property_mtx_;
   mutable absl::Mutex update_mtx_;
 
-  TrafficShapingControllerPtr GenerateController(const FlowRule& rule);
+  std::shared_ptr<TrafficShapingController> GenerateController(
+      const FlowRule& rule);
 };
 
 class FlowPropertyListener : public Property::PropertyListener<FlowRuleList> {
@@ -61,7 +64,8 @@ class FlowPropertyListener : public Property::PropertyListener<FlowRuleList> {
 };
 
 bool IsValidRule(const FlowRule& rule);
-TrafficShapingControllerPtr CreateDefaultController(const FlowRule& rule);
+std::shared_ptr<TrafficShapingController> CreateDefaultController(
+    const FlowRule& rule);
 
 }  // namespace Flow
 }  // namespace Sentinel

@@ -5,7 +5,7 @@ namespace Sentinel {
 namespace Flow {
 
 Slot::TokenResultSharedPtr DefaultTrafficShapingChecker::DoCheck(
-    const Stat::NodePtr& node, int acquire_count, double threshold) {
+    const Stat::NodeSharedPtr& node, int acquire_count, double threshold) {
   double cur_pass = 0;
   if (node != nullptr) {
     cur_pass = mode_ == (int)FlowMetricType::kThreadCount ? node->CurThreadNum()

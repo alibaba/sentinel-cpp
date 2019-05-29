@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "sentinel-core/common/entry_context.h"
+#include "sentinel-core/common/entry.h"
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/slot/base/slot_base.h"
 #include "sentinel-core/slot/base/token_result.h"
@@ -13,11 +13,12 @@ namespace Slot {
 
 class SlotBase {
  public:
-  virtual TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  virtual ~SlotBase() = default;
+  virtual TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
-                                     Stat::NodePtr& node, int count,
+                                     Stat::NodeSharedPtr& node, int count,
                                      int flag) = 0;
-  virtual void Exit(const EntryContextPtr& context,
+  virtual void Exit(const EntrySharedPtr& entry,
                     const ResourceWrapperSharedPtr& resource, int count) = 0;
 };
 

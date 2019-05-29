@@ -15,7 +15,7 @@ class AlwaysPassChecker : public TrafficShapingChecker {
   AlwaysPassChecker() = default;
   ~AlwaysPassChecker() = default;
 
-  Slot::TokenResultSharedPtr DoCheck(const Stat::NodePtr& node,
+  Slot::TokenResultSharedPtr DoCheck(const Stat::NodeSharedPtr& node,
                                      int acquire_count, double threshold) {
     return Slot::TokenResult::Ok();
   }
@@ -26,7 +26,7 @@ class AlwaysBlockChecker : public TrafficShapingChecker {
   AlwaysBlockChecker() = default;
   ~AlwaysBlockChecker() = default;
 
-  Slot::TokenResultSharedPtr DoCheck(const Stat::NodePtr& node,
+  Slot::TokenResultSharedPtr DoCheck(const Stat::NodeSharedPtr& node,
                                      int acquire_count, double threshold) {
     return Slot::TokenResult::Blocked("block");
   }
@@ -37,8 +37,8 @@ class MockTrafficShapingChecker : public TrafficShapingChecker {
   MockTrafficShapingChecker();
   ~MockTrafficShapingChecker();
 
-  MOCK_METHOD3(DoCheck,
-               Slot::TokenResultSharedPtr(const Stat::NodePtr&, int, double));
+  MOCK_METHOD3(DoCheck, Slot::TokenResultSharedPtr(const Stat::NodeSharedPtr&,
+                                                   int, double));
 };
 
 class MockTrafficShapingCalculator : public TrafficShapingCalculator {
@@ -46,7 +46,8 @@ class MockTrafficShapingCalculator : public TrafficShapingCalculator {
   MockTrafficShapingCalculator();
   ~MockTrafficShapingCalculator();
 
-  MOCK_METHOD3(CalculateAllowedTokens, double(const Stat::NodePtr&, int, int));
+  MOCK_METHOD3(CalculateAllowedTokens,
+               double(const Stat::NodeSharedPtr&, int, int));
 };
 
 }  // namespace Flow

@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 #include "sentinel-core/property/sentinel_property.h"
-
-#include "absl/container/flat_hash_map.h"
 
 namespace Sentinel {
 namespace Property {
@@ -14,7 +13,7 @@ template <typename T>
 class DynamicSentinelProperty : public SentinelProperty<T> {
  public:
   DynamicSentinelProperty() = default;
-  ~DynamicSentinelProperty() = default;
+  virtual ~DynamicSentinelProperty() = default;
   void AddListener(PropertyListenerPtr<T>&& listener) override {
     auto name = listener->Name();
     listeners_.emplace(std::make_pair(std::string(name), std::move(listener)));
@@ -42,6 +41,5 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
   T laste_value;
   std::unordered_map<std::string, PropertyListenerPtr<T>> listeners_;
 };
-
 }  // namespace Property
 }  // namespace Sentinel

@@ -13,15 +13,16 @@ namespace Slot {
 class DefaultSlotChainImpl : public SlotChain {
  public:
   DefaultSlotChainImpl() = default;
-  ~DefaultSlotChainImpl() = default;
+  virtual ~DefaultSlotChainImpl() = default;
 
   // SlotChain<RuleCheckerSlot>
   void AddFirst(std::unique_ptr<Slot>&& slot) override;
   void AddLast(std::unique_ptr<Slot>&& slot) override;
-  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodePtr& node, int count, int flag) override;
-  void Exit(const EntryContextPtr& context,
+                             Stat::NodeSharedPtr& node, int count,
+                             int flag) override;
+  void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:

@@ -7,7 +7,7 @@ We use the same flags as absl.
 """
 
 load(
-    "@com_google_absl//absl:copts/GENERATED_copts.bzl",
+    "@com_google_absl//absl:copts.bzl",
     "GCC_FLAGS",
     "GCC_TEST_FLAGS",
     "LLVM_FLAGS",

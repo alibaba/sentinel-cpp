@@ -18,10 +18,12 @@ class AbstractReadableDataSource : public ReadableDataSource<S, T> {
         property_(std::make_shared<Property::DynamicSentinelProperty<T>>()) {}
   virtual ~AbstractReadableDataSource() = default;
 
-  T LoadConfig() override { return parser_->Convert(this->ReadSource()); }
+  T LoadConfig() override { return Convert(this->ReadSource()); }
   Property::SentinelPropertySharedPtr<T> GetProperty() override {
     return property_;
   }
+
+  T Convert(const S& s) { return parser_->Convert(s); }
 
  private:
   ConverterSharedPtr<S, T> parser_;

@@ -69,23 +69,23 @@ uint32_t StatisticNode::CurThreadNum() const {
   return this->cur_thread_num_.load();
 }
 
-bool StatisticNode::IsValidMetricItem(const MetricItemPtr& item) const {
+bool StatisticNode::IsValidMetricItem(const MetricItemSharedPtr& item) const {
   return item != nullptr && (item->pass_qps() > 0 || item->block_qps() > 0 ||
                              item->complete_qps() > 0 ||
                              item->exception_qps() > 0 || item->rt() > 0);
 }
 
-bool StatisticNode::IsNodeInTime(const MetricItemPtr& item,
+bool StatisticNode::IsNodeInTime(const MetricItemSharedPtr& item,
                                  int64_t cur_time) const {
   return item != nullptr && item->timestamp() > last_fetch_timestamp_ &&
          item->timestamp() < cur_time;
 }
 
-std::unordered_map<long, MetricItemPtr> StatisticNode::Metrics() {
+std::unordered_map<long, MetricItemSharedPtr> StatisticNode::Metrics() {
   int64_t cur_time = Utils::TimeUtils::CurrentTimeMillis().count();
   cur_time = cur_time - cur_time % 1000;
-  std::unordered_map<long, MetricItemPtr> map;
-  std::vector<MetricItemPtr> items_of_second =
+  std::unordered_map<long, MetricItemSharedPtr> map;
+  std::vector<MetricItemSharedPtr> items_of_second =
       rolling_counter_minute_->Details();
   int64_t new_last_fetch_time = last_fetch_timestamp_;
   // Iterate metrics of all resources, filter valid metrics (not-empty and
@@ -137,9 +137,9 @@ void StatisticNode::IncreaseThreadNum() { this->cur_thread_num_++; }
 void StatisticNode::DecreaseThreadNum() { this->cur_thread_num_--; }
 
 void StatisticNode::Reset() {
-  StatConfigManager& m = StatConfigManager::GetInstance();
+  StatConfig& c = StatConfig::GetInstance();
   this->rolling_counter_second_ =
-      std::make_unique<SlidingWindowMetric>(m.SampleCount(), m.IntervalMs());
+      std::make_unique<SlidingWindowMetric>(c.SampleCount(), c.IntervalMs());
 }
 
 }  // namespace Stat

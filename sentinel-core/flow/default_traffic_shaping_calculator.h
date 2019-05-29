@@ -8,10 +8,10 @@ namespace Flow {
 class DefaultTrafficShapingCalculator : public TrafficShapingCalculator {
  public:
   DefaultTrafficShapingCalculator(double t) : threshold_(t) {}
-  ~DefaultTrafficShapingCalculator() = default;
+  virtual ~DefaultTrafficShapingCalculator() = default;
 
-  double CalculateAllowedTokens(const Stat::NodePtr& node, int acquire_count,
-                                int flag) override;
+  double CalculateAllowedTokens(const Stat::NodeSharedPtr& node,
+                                int acquire_count, int flag) override;
 
  private:
   const double threshold_;

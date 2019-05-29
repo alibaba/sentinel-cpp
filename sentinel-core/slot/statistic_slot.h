@@ -10,30 +10,31 @@ constexpr auto kStatisticSlotName = "StatisticSlot";
 class StatisticSlot : public StatsSlot {
  public:
   StatisticSlot() = default;
-  ~StatisticSlot() = default;
+  virtual ~StatisticSlot() = default;
 
   const std::string& Name() const override;
-  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             /*const*/ Stat::NodePtr&, int count,
+                             /*const*/ Stat::NodeSharedPtr&, int count,
                              int flag) override;
-  void Exit(const EntryContextPtr& context,
+  void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:
   const std::string name_{kStatisticSlotName};
 
-  TokenResultSharedPtr OnPass(const EntryContextPtr& context,
+  TokenResultSharedPtr OnPass(const EntrySharedPtr& entry,
                               const ResourceWrapperSharedPtr& resource,
-                              const Stat::NodePtr& node, int count, int flag);
+                              const Stat::NodeSharedPtr& node, int count,
+                              int flag);
   TokenResultSharedPtr OnBlock(const TokenResultSharedPtr& prev_result,
-                               const EntryContextPtr& context,
+                               const EntrySharedPtr& entry,
                                const ResourceWrapperSharedPtr& resource,
-                               const Stat::NodePtr&, int count, int flag);
+                               const Stat::NodeSharedPtr&, int count, int flag);
 
-  void RecordPassFor(const Stat::NodePtr& node, int count);
-  void RecordBlockFor(const Stat::NodePtr& node, int count);
-  void RecordCompleteFor(const Stat::NodePtr& node, int rt, int count);
+  void RecordPassFor(const Stat::NodeSharedPtr& node, int count);
+  void RecordBlockFor(const Stat::NodeSharedPtr& node, int count);
+  void RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt, int count);
 };
 
 }  // namespace Slot

@@ -21,5 +21,18 @@ cc_library(
     ":config_constants",
     "//sentinel-core/init:init_target_interface",
     "//sentinel-core/utils:utils_lib",
+    "@com_google_absl//absl/strings",
+  ]
+)
+
+cc_test(
+  name = "local_config_unittests",
+  srcs = [
+    "local_config_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":local_config_lib",
+    "@com_google_googletest//:gtest_main",
   ]
 )

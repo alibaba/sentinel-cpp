@@ -7,7 +7,7 @@ namespace Sentinel {
 namespace Flow {
 
 Slot::TokenResultSharedPtr ThrottlingTrafficShapingChecker::DoCheck(
-    const Stat::NodePtr& node, int acquire_count, double threshold) {
+    const Stat::NodeSharedPtr& node, int acquire_count, double threshold) {
   if (acquire_count < 0) {
     return Slot::TokenResult::Ok();
   }

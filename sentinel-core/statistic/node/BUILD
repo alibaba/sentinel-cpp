@@ -24,7 +24,7 @@ cc_library(
     ":node_interface",
     "//sentinel-core/utils:utils_lib",
     "//sentinel-core/statistic/base:sliding_window_metric_lib",
-    "//sentinel-core/statistic/base:stat_config_manager_lib",
+    "//sentinel-core/statistic/base:stat_config_lib",
   ]
 )
 

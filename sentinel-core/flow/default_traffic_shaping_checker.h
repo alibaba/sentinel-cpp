@@ -13,7 +13,7 @@ class DefaultTrafficShapingChecker : public TrafficShapingChecker {
       : mode_((int)mode) {}
   virtual ~DefaultTrafficShapingChecker() = default;
 
-  Slot::TokenResultSharedPtr DoCheck(const Stat::NodePtr& node,
+  Slot::TokenResultSharedPtr DoCheck(const Stat::NodeSharedPtr& node,
                                      int acquire_count,
                                      double threshold) override;
 

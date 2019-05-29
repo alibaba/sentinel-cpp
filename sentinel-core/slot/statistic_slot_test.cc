@@ -18,20 +18,20 @@ namespace Sentinel {
 namespace Slot {
 
 TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
-  EntryContextPtr context = std::make_shared<Context>("test_context");
-  Stat::NodePtr node = std::make_shared<Stat::ClusterNode>();
+  EntryContextSharedPtr context =
+      std::make_shared<EntryContext>("test_context");
+  Stat::NodeSharedPtr node = std::make_shared<Stat::ClusterNode>();
   auto resource =
       std::make_shared<StringResourceWrapper>("test_resource", EntryType::OUT);
-  auto entry = std::make_shared<Entry>(resource);
-  entry->SetCurNode(node);
-  context->set_cur_entry(entry);
+  auto entry = std::make_shared<Entry>(resource, context);
+  entry->set_cur_node(node);
   StatisticSlot slot;
 
   // Make the slot pass.
   auto pass_result = TokenResult::Ok();
   slot.IsContinue(pass_result);
 
-  auto result1 = slot.Entry(context, resource, node, 1, 0);
+  auto result1 = slot.Entry(entry, resource, node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result1->status());
   EXPECT_EQ(1, node->CurThreadNum());
   EXPECT_DOUBLE_EQ(1, node->PassQps());
@@ -40,7 +40,7 @@ TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
 
   std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-  slot.Exit(context, resource, 1);
+  slot.Exit(entry, resource, 1);
   EXPECT_EQ(0, node->CurThreadNum());
   EXPECT_DOUBLE_EQ(1, node->CompleteQps());
   EXPECT_NEAR(200, node->AvgRt(), 50);
@@ -50,7 +50,7 @@ TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
   auto block_result = TokenResult::Blocked(error_msg);
   slot.IsContinue(block_result);
 
-  auto result2 = slot.Entry(context, resource, node, 1, 0);
+  auto result2 = slot.Entry(entry, resource, node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED, result2->status());
   EXPECT_TRUE(result2->blocked_reason().has_value());
   // The pass count should remain unchanged.

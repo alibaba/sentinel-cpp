@@ -12,20 +12,20 @@ namespace Slot {
 
 const std::string& StatisticSlot::Name() const { return name_; }
 
-void StatisticSlot::RecordPassFor(const Stat::NodePtr& node, int count) {
+void StatisticSlot::RecordPassFor(const Stat::NodeSharedPtr& node, int count) {
   if (node != nullptr) {
     node->IncreaseThreadNum();
     node->AddPassRequest(count);
   }
 }
 
-void StatisticSlot::RecordBlockFor(const Stat::NodePtr& node, int count) {
+void StatisticSlot::RecordBlockFor(const Stat::NodeSharedPtr& node, int count) {
   if (node != nullptr) {
     node->AddBlockRequest(count);
   }
 }
 
-void StatisticSlot::RecordCompleteFor(const Stat::NodePtr& node, int rt,
+void StatisticSlot::RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
                                       int count) {
   if (node != nullptr) {
     // Record response time and success count.
@@ -35,57 +35,54 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodePtr& node, int rt,
 }
 
 TokenResultSharedPtr StatisticSlot::OnPass(
-    const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
-    const Stat::NodePtr& node, int count, int flag) {
-  EntrySharedPtr entry = context->cur_entry();
-
+    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
+    const Stat::NodeSharedPtr& node, int count, int flag) {
   this->RecordPassFor(node, count);
   if (entry != nullptr) {
-    this->RecordPassFor(entry->GetOriginNode(), count);
+    this->RecordPassFor(entry->origin_node(), count);
   }
 
   return TokenResult::Ok();
 }
 
 TokenResultSharedPtr StatisticSlot::OnBlock(
-    const TokenResultSharedPtr& prev_result, const EntryContextPtr& context,
-    const ResourceWrapperSharedPtr& resource, const Stat::NodePtr& node,
+    const TokenResultSharedPtr& prev_result, const EntrySharedPtr& entry,
+    const ResourceWrapperSharedPtr& resource, const Stat::NodeSharedPtr& node,
     int count, int flag) {
-  EntrySharedPtr entry = context->cur_entry();
   if (entry == nullptr) {
     return prev_result;
   }
-  entry->SetError(prev_result->blocked_reason().value_or("unexpected_blocked"));
+  entry->set_error(
+      prev_result->blocked_reason().value_or("unexpected_blocked"));
 
   this->RecordBlockFor(node, count);
-  this->RecordBlockFor(entry->GetOriginNode(), count);
+  this->RecordBlockFor(entry->origin_node(), count);
 
   return prev_result;
 }
 
 TokenResultSharedPtr StatisticSlot::Entry(
-    const EntryContextPtr& context, const ResourceWrapperSharedPtr& resource,
-    /*const*/ Stat::NodePtr& node, int count, int flag) {
+    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
+    /*const*/ Stat::NodeSharedPtr& node, int count, int flag) {
   TokenResultSharedPtr prev_result = this->LastTokenResult();
   if (prev_result == nullptr) {
-    return OnPass(context, resource, node, count, flag);
+    return OnPass(entry, resource, node, count, flag);
   }
   switch (prev_result->status()) {
     case TokenStatus::RESULT_STATUS_BLOCKED:
-      return OnBlock(prev_result, context, resource, node, count, flag);
+      return OnBlock(prev_result, entry, resource, node, count, flag);
     case TokenStatus::RESULT_STATUS_OK:
     default:
-      return OnPass(context, resource, node, count, flag);
+      return OnPass(entry, resource, node, count, flag);
   }
 }
 
-void StatisticSlot::Exit(const EntryContextPtr& context,
+void StatisticSlot::Exit(const EntrySharedPtr& entry,
                          const ResourceWrapperSharedPtr& resource, int count) {
-  EntrySharedPtr entry = context->cur_entry();
   if (entry == nullptr) {
     return;
   }
-  Stat::NodePtr node = entry->GetCurrentNode();
+  Stat::NodeSharedPtr node = entry->cur_node();
   if (node == nullptr) {
     return;  // Should not happen.
   }
@@ -93,13 +90,13 @@ void StatisticSlot::Exit(const EntryContextPtr& context,
     return;
   }
   long rt = Utils::TimeUtils::CurrentTimeMillis().count() -
-            entry->GetCreateTime().count();
+            entry->create_time().count();
   if (rt > Constants::kMaxAllowedRt) {
     rt = Constants::kMaxAllowedRt;
   }
 
   this->RecordCompleteFor(node, rt, count);
-  this->RecordCompleteFor(entry->GetOriginNode(), rt, count);
+  this->RecordCompleteFor(entry->origin_node(), rt, count);
 }
 
 }  // namespace Slot

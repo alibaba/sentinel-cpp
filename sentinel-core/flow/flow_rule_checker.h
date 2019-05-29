@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sentinel-core/common/entry_context.h"
+#include "sentinel-core/common/entry.h"
 #include "sentinel-core/flow/flow_rule.h"
 #include "sentinel-core/slot/base/token_result.h"
 #include "sentinel-core/statistic/node/node.h"
@@ -14,22 +14,23 @@ class FlowRuleChecker {
   ~FlowRuleChecker() = default;
 
   Slot::TokenResultSharedPtr CanPassCheck(const FlowRule& rule,
-                                          const EntryContextPtr context,
-                                          const Stat::NodePtr& node, int count);
+                                          const EntrySharedPtr& entry,
+                                          const Stat::NodeSharedPtr& node,
+                                          int count);
   Slot::TokenResultSharedPtr CanPassCheck(const FlowRule& rule,
-                                          const EntryContextPtr context,
-                                          const Stat::NodePtr& node, int count,
-                                          int flag);
+                                          const EntrySharedPtr& entry,
+                                          const Stat::NodeSharedPtr& node,
+                                          int count, int flag);
 
  private:
   Slot::TokenResultSharedPtr PassLocalCheck(const FlowRule& rule,
-                                            const EntryContextPtr context,
-                                            const Stat::NodePtr& node,
+                                            const EntrySharedPtr& entry,
+                                            const Stat::NodeSharedPtr& node,
                                             int count, int flag);
 
-  Stat::NodePtr SelectNodeByRelStrategy(const FlowRule& rule,
-                                        const EntryContextPtr context,
-                                        const Stat::NodePtr& node);
+  Stat::NodeSharedPtr SelectNodeByRelStrategy(const FlowRule& rule,
+                                              const EntrySharedPtr& entry,
+                                              const Stat::NodeSharedPtr& node);
 };
 
 }  // namespace Flow

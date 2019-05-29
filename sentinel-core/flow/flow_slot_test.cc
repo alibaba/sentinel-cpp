@@ -12,6 +12,7 @@
 
 using testing::_;
 using testing::InSequence;
+using testing::Mock;
 using testing::Return;
 
 namespace Sentinel {
@@ -19,21 +20,19 @@ namespace Slot {
 
 TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   std::string resource_name{"test_resource"};
-  EntryContextPtr context = std::make_shared<Context>("test_context");
-  Stat::NodePtr node = std::make_shared<Stat::MockNode>();
+  EntryContextSharedPtr context =
+      std::make_shared<EntryContext>("test_context");
+  Stat::NodeSharedPtr node = std::make_shared<Stat::MockNode>();
   auto resource =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
-  auto entry = std::make_shared<Entry>(resource);
-  entry->SetCurNode(node);
-  context->set_cur_entry(entry);
+  auto entry = std::make_shared<Entry>(resource, context);
+  entry->set_cur_node(node);
 
   FlowSlot slot;
   {
     // Test flow checking when no rule exists.
-    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
-        .WillByDefault(Return(100));
-    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-              slot.Entry(context, resource, node, 10, 0)->status());
+    auto result = slot.Entry(entry, resource, node, 1000, 0);
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
   }
 
   Flow::FlowRule rule{resource_name};
@@ -43,23 +42,27 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   m.LoadRules(rules);
 
   {
-    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
-        .WillByDefault(Return(0));
+    InSequence s;
+    EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillOnce(Return(0));
     EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-              slot.Entry(context, resource, node, 1, 0)->status());
+              slot.Entry(entry, resource, node, 1, 0)->status());
+    Mock::VerifyAndClearExpectations(node.get());
   }
   {
-    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
-        .WillByDefault(Return(0));
+    EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillOnce(Return(0));
     EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-              slot.Entry(context, resource, node, 2, 0)->status());
+              slot.Entry(entry, resource, node, 2, 0)->status());
+    Mock::VerifyAndClearExpectations(node.get());
   }
 
   {
-    ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
-        .WillByDefault(Return(1));
+    EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
+        .WillOnce(Return(1));
     EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-              slot.Entry(context, resource, node, 1, 0)->status());
+              slot.Entry(entry, resource, node, 1, 0)->status());
+    Mock::VerifyAndClearExpectations(node.get());
   }
 
   m.LoadRules({});

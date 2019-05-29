@@ -14,19 +14,21 @@ constexpr auto kResourceNodeBuilderSlotName = "ResourceNodeBuilderSlot";
 class ResourceNodeBuilderSlot : public StatsSlot {
  public:
   ResourceNodeBuilderSlot() = default;
-  ~ResourceNodeBuilderSlot() = default;
+  virtual ~ResourceNodeBuilderSlot() = default;
 
-  TokenResultSharedPtr Entry(const EntryContextPtr& context,
+  TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodePtr& node, int count, int flag) override;
-  void Exit(const EntryContextPtr& context,
+                             Stat::NodeSharedPtr& node, int count,
+                             int flag) override;
+  void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
   const std::string& Name() const override;
 
  private:
   const std::string name_{kResourceNodeBuilderSlotName};
 
-  Stat::ResourceNodeStorage& node_storage_ = Stat::ResourceNodeStorageInstance;
+  Stat::ResourceNodeStorage& node_storage_ =
+      Stat::ResourceNodeStorage::GetInstance();
 };
 
 }  // namespace Slot

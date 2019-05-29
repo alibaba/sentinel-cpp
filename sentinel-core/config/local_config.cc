@@ -1,21 +1,17 @@
+#include <cstdint>
+
+#include "absl/strings/numbers.h"
+
+#include "sentinel-core/config/config_constants.h"
 #include "sentinel-core/config/local_config.h"
 
 namespace Sentinel {
 namespace Config {
 
-const char LocalConfig::kCharsetKey[] = "csp.sentinel.charset";
-const char LocalConfig::kSingleMetricFileSizeKey[] =
-    "csp.sentinel.metric.file.single.size";
-const char LocalConfig::kTotalMetricFileCountKey[] =
-    "csp.sentinel.metric.file.total.count";
-const char LocalConfig::kColdFactorKey[] = "csp.sentinel.flow.cold.factor";
-const char LocalConfig::kStatisticMaxRtKey[] = "csp.sentinel.statistic.max.rt";
-
-const char LocalConfig::kDefaultCharset[] = "UTF-8";
-const uint64_t LocalConfig::kDefaultSingleMetricFileSize = 1024 * 1024 * 50;
-const uint32_t LocalConfig::kDefaultTotalMetricFileCount = 6;
-const uint32_t LocalConfig::kDefaultColdFactor = 3;
-const uint32_t LocalConfig::kDefaultStatisticMaxRt = 4900;
+LocalConfig::LocalConfig() {
+  // Initialize on create.
+  this->Initialize();
+}
 
 void LocalConfig::SetConfig(const std::string& key, const std::string& value) {
   config_map_.emplace(std::make_pair(key, value));
@@ -35,7 +31,7 @@ void LocalConfig::RemoveConfig(const std::string& key) {
   config_map_.erase(key);
 }
 
-const std::string LocalConfig::GetConfig(const std::string& key) {
+const std::string LocalConfig::GetConfig(const std::string& key) const {
   auto iter = config_map_.find(key);
   if (iter == config_map_.end()) {
     return std::string();
@@ -43,31 +39,84 @@ const std::string LocalConfig::GetConfig(const std::string& key) {
   return iter->second;
 }
 
-uint32_t LocalConfig::ColdFactor() { return kDefaultColdFactor; }
-
-uint32_t LocalConfig::StatisticMaxRt() { return kDefaultStatisticMaxRt; }
-
-uint32_t LocalConfig::TotalMetricFileCount() {
-  return kDefaultTotalMetricFileCount;
+int32_t LocalConfig::GetInt32(const std::string& key,
+                              int32_t default_value) const {
+  auto v = GetConfig(key);
+  if (v.empty()) {
+    return default_value;
+  }
+  int32_t x;
+  if (!absl::SimpleAtoi(v, &x)) {
+    x = default_value;
+  }
+  return x;
 }
 
-uint64_t LocalConfig::SingleMetricFileSize() {
-  return kDefaultSingleMetricFileSize;
+int64_t LocalConfig::GetInt64(const std::string& key,
+                              int64_t default_value) const {
+  auto v = GetConfig(key);
+  if (v.empty()) {
+    return default_value;
+  }
+  int64_t x;
+  if (!absl::SimpleAtoi(v, &x)) {
+    x = default_value;
+  }
+  return x;
 }
 
-const std::string& LocalConfig::Charset() { return kDefaultCharset; }
+int32_t LocalConfig::WarmUpColdFactor() const {
+  int cold_factor =
+      GetInt32(Env::kWarmUpColdFactorKey, kDefaultWarmUpColdFactor);
+  if (cold_factor <= 1) {
+    // TODO: warn
+    cold_factor = kDefaultWarmUpColdFactor;
+  }
+  return cold_factor;
+}
+
+int32_t LocalConfig::StatisticMaxRt() const {
+  int max_rt = GetInt32(Env::kStatisticMaxRtKey, kDefaultStatisticMaxRt);
+  if (max_rt < 0) {
+    max_rt = kDefaultStatisticMaxRt;
+  }
+  return max_rt;
+}
+
+int32_t LocalConfig::TotalMetricFileCount() const {
+  return GetInt32(Env::kTotalMetricFileCountKey, kDefaultTotalMetricFileCount);
+}
+
+int64_t LocalConfig::SingleMetricFileSize() const {
+  return GetInt64(Env::kSingleMetricFileSizeKey, kDefaultSingleMetricFileSize);
+}
+
+const std::string LocalConfig::Charset() const {
+  return GetConfig(Env::kCharsetKey);
+}
+
+void LocalConfig::ResolveAppName() {
+  const char* app_name_env = std::getenv(Env::kAppNameKey);
+  if (app_name_env) {
+    app_name_ = app_name_env;
+  } else {
+    app_name_ = kUnknownAppName;
+  }
+}
 
 void LocalConfig::Initialize() {
+  ResolveAppName();
+  config_map_.emplace(std::make_pair(Env::kCharsetKey, kDefaultCharset));
   config_map_.emplace(
-      std::make_pair<std::string, std::string>(kCharsetKey, kDefaultCharset));
-  config_map_.emplace(std::make_pair<std::string, std::string>(
-      kSingleMetricFileSizeKey, std::to_string(kDefaultSingleMetricFileSize)));
-  config_map_.emplace(std::make_pair<std::string, std::string>(
-      kTotalMetricFileCountKey, std::to_string(kDefaultTotalMetricFileCount)));
-  config_map_.emplace(std::make_pair<std::string, std::string>(
-      kColdFactorKey, std::to_string(kDefaultColdFactor)));
-  config_map_.emplace(std::make_pair<std::string, std::string>(
-      kStatisticMaxRtKey, std::to_string(kDefaultStatisticMaxRt)));
+      std::make_pair(Env::kSingleMetricFileSizeKey,
+                     std::to_string(kDefaultSingleMetricFileSize)));
+  config_map_.emplace(
+      std::make_pair(Env::kTotalMetricFileCountKey,
+                     std::to_string(kDefaultTotalMetricFileCount)));
+  config_map_.emplace(std::make_pair(Env::kWarmUpColdFactorKey,
+                                     std::to_string(kDefaultWarmUpColdFactor)));
+  config_map_.emplace(std::make_pair(Env::kStatisticMaxRtKey,
+                                     std::to_string(kDefaultStatisticMaxRt)));
 }
 
 }  // namespace Config

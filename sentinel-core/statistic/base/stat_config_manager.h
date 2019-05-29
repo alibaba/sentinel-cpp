@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "sentinel-core/common/constants.h"
 #include "sentinel-core/property/sentinel_property.h"
+#include "sentinel-core/statistic/base/stat_config.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -11,26 +11,42 @@ namespace Stat {
 class StatConfigManager {
  public:
   static StatConfigManager& GetInstance() {
-    static StatConfigManager instance;
-    return instance;
+    static StatConfigManager* instance = new StatConfigManager();
+    return *instance;
   }
-
-  int32_t SampleCount() const;
-  int32_t IntervalMs() const;
 
   void UpdateSampleCount(int32_t new_sample_count);
   void UpdateInterval(int32_t new_interval_ms);
 
-  void registerSampleCountProperty(
+  void RegisterSampleCountProperty(
       const Property::SentinelPropertySharedPtr<int32_t>& property);
-  void registerIntervalProperty(
+  void RegisterIntervalProperty(
       const Property::SentinelPropertySharedPtr<int32_t>& property);
 
  private:
-  int32_t sample_count_ = Constants::kDefaultSampleCount;
-  int32_t interval_ms_ = Constants::kDefaultIntervalMs;
-
   StatConfigManager() = default;
+};
+
+class SampleCountPropertyListener : public Property::PropertyListener<int32_t> {
+ public:
+  SampleCountPropertyListener() = default;
+  ~SampleCountPropertyListener() = default;
+
+  void ConfigUpdate(const int32_t& value, bool first_load) override;
+  const std::string Name() const override {
+    return "SampleCountPropertyListener";
+  }
+};
+
+class IntervalPropertyListener : public Property::PropertyListener<int32_t> {
+ public:
+  IntervalPropertyListener() = default;
+  ~IntervalPropertyListener() = default;
+
+  void ConfigUpdate(const int32_t& value, bool first_load) override;
+  const std::string Name() const override {
+    return "IntervalPropertyListener";
+  };
 };
 
 }  // namespace Stat

@@ -4,7 +4,7 @@
 
 #include "sentinel-core/statistic/base/metric.h"
 #include "sentinel-core/statistic/base/sliding_window_metric.h"
-#include "sentinel-core/statistic/base/stat_config_manager.h"
+#include "sentinel-core/statistic/base/stat_config.h"
 #include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
@@ -35,7 +35,7 @@ class StatisticNode : public Node {
   virtual double PreviousBlockQps() override;
   virtual double PreviousPassQps() override;
 
-  virtual std::unordered_map<long, MetricItemPtr> Metrics() override;
+  virtual std::unordered_map<long, MetricItemSharedPtr> Metrics() override;
 
   virtual void AddPassRequest(int32_t count) override;
   virtual void AddRtAndCompleteRequest(int32_t rt,
@@ -50,15 +50,15 @@ class StatisticNode : public Node {
  private:
   std::unique_ptr<Metric> rolling_counter_second_ =
       std::make_unique<SlidingWindowMetric>(
-          StatConfigManager::GetInstance().SampleCount(),
-          StatConfigManager::GetInstance().IntervalMs());
+          StatConfig::GetInstance().SampleCount(),
+          StatConfig::GetInstance().IntervalMs());
   std::unique_ptr<Metric> rolling_counter_minute_ =
       std::make_unique<SlidingWindowMetric>(60, 60 * 1000);
   std::atomic<uint32_t> cur_thread_num_{0};
   uint64_t last_fetch_timestamp_ = -1;
 
-  bool IsValidMetricItem(const MetricItemPtr& item) const;
-  bool IsNodeInTime(const MetricItemPtr& item, int64_t cur_time) const;
+  bool IsValidMetricItem(const MetricItemSharedPtr& item) const;
+  bool IsNodeInTime(const MetricItemSharedPtr& item, int64_t cur_time) const;
 };
 
 using StatisticNodeSharedPtr = std::shared_ptr<StatisticNode>;

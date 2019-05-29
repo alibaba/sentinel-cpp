@@ -3,6 +3,17 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+  name = "stat_config_lib",
+  srcs = [
+    "stat_config.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/common:constants",
+  ]
+)
+
+cc_library(
   name = "stat_config_manager_lib",
   srcs = [
     "stat_config_manager.h",
@@ -10,8 +21,9 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/common:constants",
+    ":stat_config_lib",
     "//sentinel-core/property:sentinel_property_interface",
+    "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
 
@@ -50,7 +62,12 @@ cc_library(
     "metric_item.h",
     "metric_item.cc",
   ],
-  copts = DEFAULT_COPTS
+  copts = DEFAULT_COPTS,
+  deps = [
+    "@com_google_absl//absl/strings",
+    "@com_google_absl//absl/strings:str_format",
+    "@com_google_absl//absl/time",
+  ]
 )
 
 cc_library(
@@ -125,6 +142,18 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":bucket_leap_array_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
+
+cc_test(
+  name = "metric_item_unittests",
+  srcs = [
+    "metric_item_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":metric_item_lib",
     "@com_google_googletest//:gtest_main",
   ]
 )
