@@ -79,6 +79,10 @@ void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
 
   if (second < last_second_) {
   } else if (second == last_second_) {
+    if (first_write_) {
+      first_write_ = false;
+      WriteIndex(second, metric_out_.tellp());
+    }
     DoWrite(time, nodes);
   } else {
     WriteIndex(second, metric_out_.tellp());

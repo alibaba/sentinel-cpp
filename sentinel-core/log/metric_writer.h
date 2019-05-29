@@ -57,6 +57,7 @@ class MetricWriter {
 
   int64_t time_second_base_;
   int64_t last_second_ = -1;
+  bool first_write_ = true;
 
   int pid_;
 

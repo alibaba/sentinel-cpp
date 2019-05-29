@@ -97,3 +97,31 @@ cc_test(
     "@com_google_googletest//:gtest_main",
   ]
 )
+
+cc_test(
+  name = "metric_reader_unittests",
+  srcs = [
+      "metric_test_utils.h",
+    "metric_reader_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":metric_lib",
+    "@com_google_googletest//:gtest_main",
+  ],
+  linkstatic = 1,
+)
+
+cc_test(
+  name = "metric_searcher_unittests",
+  srcs = [
+      "metric_test_utils.h",
+    "metric_searcher_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":metric_lib",
+    "@com_google_googletest//:gtest_main",
+  ],
+  linkstatic = 1,
+)
