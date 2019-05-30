@@ -32,8 +32,7 @@ void LogBase::Initialize() {
     if (home_dir != nullptr) {
       str_log_dir = std::string(home_dir);
       str_log_dir = AddSeparator(str_log_dir) + kDirName;
-    }
-    else {
+    } else {
       std::cout << "INFO: home_dir is null" << std::endl;
       str_log_dir = "./";
     }
