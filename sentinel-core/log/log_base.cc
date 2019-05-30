@@ -28,8 +28,15 @@ void LogBase::Initialize() {
   auto log_dir = std::getenv(kEnvLogDir);
 
   if (log_dir == nullptr) {
-    str_log_dir = std::string(std::getenv("HOME"));
-    str_log_dir = AddSeparator(str_log_dir) + kDirName;
+    auto home_dir = std::getenv("HOME");
+    if (home_dir != nullptr) {
+      str_log_dir = std::string(home_dir);
+      str_log_dir = AddSeparator(str_log_dir) + kDirName;
+    }
+    else {
+      std::cout << "INFO: home_dir is null" << std::endl;
+      str_log_dir = "./";
+    }
   }
 
   log_base_dir_ = AddSeparator(str_log_dir);
