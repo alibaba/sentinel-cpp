@@ -1,5 +1,6 @@
 #pragma once
 
+#include <assert.h>
 #include <string>
 
 #include "sentinel-core/slot/base/slot.h"
@@ -10,13 +11,19 @@ namespace Slot {
 class StatsSlot : public Slot {
  public:
   virtual ~StatsSlot() = default;
+
   /*
    * Statistics class slot default always continue the rest of the slot
    * TODO(tianqian.zyf): TokenResultSharedPtr should be passed over the entire
    * slot chain using the SlotChainContext method.
    */
-  bool IsContinue(const TokenResultSharedPtr& token) override {
-    last_token_result_ = token;
+  bool IsContinue(const TokenResultSharedPtr& token,
+                  const EntryContextSharedPtr& context) override {
+    assert(context != nullptr);
+    // We need to check nullptr to prevent unexpected circumstances.
+    if (context != nullptr) {
+      context->set_last_token_result(token);
+    }
     return true;
   }
 
@@ -24,10 +31,6 @@ class StatsSlot : public Slot {
     static constexpr SlotType type = SlotType::STATS_SLOT;
     return type;
   }
-
- protected:
-  const TokenResultSharedPtr& LastTokenResult() { return last_token_result_; }
-  TokenResultSharedPtr last_token_result_;
 };
 
 }  // namespace Slot

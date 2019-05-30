@@ -29,7 +29,7 @@ TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
 
   // Make the slot pass.
   auto pass_result = TokenResult::Ok();
-  slot.IsContinue(pass_result);
+  slot.IsContinue(pass_result, context);
 
   auto result1 = slot.Entry(entry, resource, node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result1->status());
@@ -48,7 +48,7 @@ TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
   // Make the slot block.
   const std::string error_msg = "SomeBlockException";
   auto block_result = TokenResult::Blocked(error_msg);
-  slot.IsContinue(block_result);
+  slot.IsContinue(block_result, context);
 
   auto result2 = slot.Entry(entry, resource, node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED, result2->status());
