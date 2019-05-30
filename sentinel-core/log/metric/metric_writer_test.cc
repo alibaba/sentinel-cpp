@@ -7,7 +7,7 @@
 #define private public
 
 #include "sentinel-core/log/log_base.h"
-#include "sentinel-core/log/metric_writer.h"
+#include "sentinel-core/log/metric/metric_writer.h"
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
 

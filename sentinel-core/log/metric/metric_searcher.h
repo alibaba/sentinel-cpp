@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "sentinel-core/log/metric_reader.h"
+#include "sentinel-core/log/metric/metric_reader.h"
 #include "sentinel-core/statistic/base/metric_item.h"
 
 namespace Sentinel {
@@ -21,9 +21,9 @@ class MetricSearcher {
  public:
   MetricSearcher(const std::string &base_dir,
                  const std::string &base_file_name);
-  std::vector<Stat::MetricItem> Find(int64_t begin_time_ms,
-                                     int recommend_lines);
-  std::vector<Stat::MetricItem> FindByTimeAndResource(
+  std::vector<Stat::MetricItemSharedPtr> Find(int64_t begin_time_ms,
+                                              int recommend_lines);
+  std::vector<Stat::MetricItemSharedPtr> FindByTimeAndResource(
       int64_t begin_time_ms, int64_t end_time_ms, const std::string &identity);
 
  private:

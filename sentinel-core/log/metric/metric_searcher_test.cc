@@ -10,9 +10,9 @@
 
 #include "sentinel-core/config/local_config.h"
 #include "sentinel-core/log/log_base.h"
-#include "sentinel-core/log/metric_searcher.h"
-#include "sentinel-core/log/metric_test_utils.h"
-#include "sentinel-core/log/metric_writer.h"
+#include "sentinel-core/log/metric/metric_searcher.h"
+#include "sentinel-core/log/metric/metric_test_utils.h"
+#include "sentinel-core/log/metric/metric_writer.h"
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
 

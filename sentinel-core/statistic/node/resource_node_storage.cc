@@ -40,5 +40,10 @@ void ResourceNodeStorage::ResetClusterNodes() {
   }
 }
 
+const std::unordered_map<std::string, Stat::ClusterNodePtr>&
+ResourceNodeStorage::GetNodeMap() const {
+  return this->node_map_;
+}
+
 }  // namespace Stat
 }  // namespace Sentinel

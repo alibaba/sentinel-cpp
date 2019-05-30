@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include "sentinel-core/config/local_config.h"
 #include "sentinel-core/statistic/base/metric_item.h"
 
 namespace Sentinel {
@@ -17,7 +16,7 @@ class MetricWriter {
   MetricWriter(int64_t single_file_size, int32_t total_file_count);
   virtual ~MetricWriter() {}
 
-  void Write(int64_t time, std::vector<Stat::MetricItem>& nodes);
+  void Write(int64_t time, std::vector<Stat::MetricItemSharedPtr>& nodes);
   void Close();
 
   static std::string FormMetricFileName(const std::string& app_name, int pid);
@@ -31,7 +30,8 @@ class MetricWriter {
                               const std::string& base_file_name);
 
  private:
-  void DoWrite(int64_t time, const std::vector<Stat::MetricItem>& nodes);
+  void DoWrite(int64_t time,
+               const std::vector<Stat::MetricItemSharedPtr>& nodes);
   void WriteIndex(int64_t time, int64_t offset);
 
   std::string NextFileNameOfDay(int64_t time);

@@ -2,10 +2,10 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include "sentinel-core/statistic/node/cluster_node.h"
 
-#include "absl/container/flat_hash_map.h"
 #include "absl/synchronization/mutex.h"
 
 namespace Sentinel {
@@ -24,10 +24,13 @@ class ResourceNodeStorage {
   Stat::ClusterNodePtr GetOrCreateClusterNode(const std::string& resource_name);
   void ResetClusterNodes();
 
+  const std::unordered_map<std::string, Stat::ClusterNodePtr>& GetNodeMap()
+      const;
+
  private:
   ResourceNodeStorage() = default;
 
-  absl::flat_hash_map<std::string, Stat::ClusterNodePtr> node_map_;
+  std::unordered_map<std::string, Stat::ClusterNodePtr> node_map_;
   mutable absl::Mutex mtx_;
 };
 

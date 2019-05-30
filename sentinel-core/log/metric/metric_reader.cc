@@ -1,4 +1,4 @@
-#include "sentinel-core/log/metric_reader.h"
+#include "sentinel-core/log/metric/metric_reader.h"
 
 #include <fstream>
 #include <iostream>
@@ -7,10 +7,10 @@
 namespace Sentinel {
 namespace Log {
 
-std::vector<Stat::MetricItem> MetricReader::ReadMetrics(
+std::vector<Stat::MetricItemSharedPtr> MetricReader::ReadMetrics(
     const std::vector<std::string> &file_names, int pos, int64_t offset,
     int recommend_lines_) {
-  std::vector<Stat::MetricItem> metric_vec;
+  std::vector<Stat::MetricItemSharedPtr> metric_vec;
   if (pos >= file_names.size()) {
     return metric_vec;
   }
@@ -23,11 +23,11 @@ std::vector<Stat::MetricItem> MetricReader::ReadMetrics(
 }
 
 void MetricReader::ReadMetricsInOneFile(
-    std::vector<Stat::MetricItem> &metric_vec, const std::string &file_name,
-    int64_t offset, int recommend_lines) {
+    std::vector<Stat::MetricItemSharedPtr> &metric_vec,
+    const std::string &file_name, int64_t offset, int recommend_lines) {
   int64_t last_second = -1;
   if (metric_vec.size() > 0) {
-    last_second = metric_vec[metric_vec.size() - 1].timestamp() / 1000;
+    last_second = metric_vec[metric_vec.size() - 1]->timestamp() / 1000;
   }
 
   std::ifstream in_file(file_name.c_str(), std::ios::in);
@@ -44,9 +44,9 @@ void MetricReader::ReadMetricsInOneFile(
     int64_t cur_second = node->timestamp() / 1000;
 
     if (metric_vec.size() < recommend_lines) {
-      metric_vec.emplace_back(std::move(*node));
+      metric_vec.emplace_back(std::move(node));
     } else if (cur_second == last_second) {
-      metric_vec.emplace_back(std::move(*node));
+      metric_vec.emplace_back(std::move(node));
     } else {
       break;
     }
@@ -56,10 +56,10 @@ void MetricReader::ReadMetricsInOneFile(
   in_file.close();
 }
 
-std::vector<Stat::MetricItem> MetricReader::ReadMetricsByEndTime(
+std::vector<Stat::MetricItemSharedPtr> MetricReader::ReadMetricsByEndTime(
     const std::vector<std::string> file_names, int pos, int64_t offset,
     int64_t begin_time_ms, int64_t end_time_ms, const std::string &identity) {
-  std::vector<Stat::MetricItem> metric_vec;
+  std::vector<Stat::MetricItemSharedPtr> metric_vec;
   if (pos >= file_names.size()) {
     return metric_vec;
   }
@@ -78,9 +78,9 @@ std::vector<Stat::MetricItem> MetricReader::ReadMetricsByEndTime(
 }
 
 bool MetricReader::ReadMetricsInOneFileByEndTime(
-    std::vector<Stat::MetricItem> &metric_vec, const std::string &file_name,
-    int64_t offset, int64_t begin_time_ms, int64_t end_time_ms,
-    const std::string &identity) {
+    std::vector<Stat::MetricItemSharedPtr> &metric_vec,
+    const std::string &file_name, int64_t offset, int64_t begin_time_ms,
+    int64_t end_time_ms, const std::string &identity) {
   std::ifstream in_file(file_name.c_str(), std::ios::in | std::ios::binary);
   if (!in_file.is_open()) {
     return false;
@@ -104,9 +104,9 @@ bool MetricReader::ReadMetricsInOneFileByEndTime(
     if (cur_second <= end_second) {
       // read all
       if (identity.size() == 0) {
-        metric_vec.emplace_back(std::move(*node));
+        metric_vec.emplace_back(std::move(node));
       } else if (node->resource() == identity) {
-        metric_vec.emplace_back(std::move(*node));
+        metric_vec.emplace_back(std::move(node));
       }
     } else {
       return false;
