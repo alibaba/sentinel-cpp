@@ -64,7 +64,10 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 TokenResultSharedPtr StatisticSlot::Entry(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
     /*const*/ Stat::NodeSharedPtr& node, int count, int flag) {
-  TokenResultSharedPtr prev_result = this->LastTokenResult();
+  if (entry == nullptr || entry->context() == nullptr) {
+    return OnPass(entry, resource, node, count, flag);
+  }
+  TokenResultSharedPtr prev_result = entry->context()->last_token_result();
   if (prev_result == nullptr) {
     return OnPass(entry, resource, node, count, flag);
   }

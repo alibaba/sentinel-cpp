@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 
+#include "sentinel-core/slot/base/token_result.h"
 #include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
@@ -16,9 +17,21 @@ class EntryContext {
   const std::string& name() const { return name_; };
   const std::string& origin() const { return origin_; };
 
+  const Slot::TokenResultSharedPtr& last_token_result() const {
+    return last_token_result_;
+  }
+  /**
+   * Users should not invoke this.
+   */
+  void set_last_token_result(const Slot::TokenResultSharedPtr& r) {
+    last_token_result_ = r;
+  }
+
  private:
   const std::string name_;
   const std::string origin_;
+
+  Slot::TokenResultSharedPtr last_token_result_;
 };
 
 using EntryContextSharedPtr = std::shared_ptr<EntryContext>;
