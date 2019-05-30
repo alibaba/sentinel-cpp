@@ -1,4 +1,4 @@
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 all_content = """filegroup(name = "all", srcs = glob(["**"]), visibility = ["//visibility:public"])"""
 
@@ -24,4 +24,11 @@ def include_third_party_repositories():
         sha256 = "160845266e94db1d4922ef755637f6901266731c4cb3b30b45bf41efa0e6ab70",
         strip_prefix = "spdlog-1.3.1",
         urls = ["https://github.com/gabime/spdlog/archive/v1.3.1.tar.gz"],
+    )
+
+    http_file(
+        name = "com_github_nlohmann_json",
+        downloaded_file_path = "nlohmann/json.hpp",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.6.1/json.hpp"],
+        sha256 = "d2eeb25d2e95bffeb08ebb7704cdffd2e8fca7113eba9a0b38d60a5c391ea09a",
     )

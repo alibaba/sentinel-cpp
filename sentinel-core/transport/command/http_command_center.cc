@@ -27,7 +27,7 @@ void HttpCommandCenter::Stop() {
 }
 
 bool HttpCommandCenter::RegisterCommand(const std::string& command_name,
-                                        CommandHandlerPtr handler) {
+                                        CommandHandlerPtr&& handler) {
   if (command_name.size() == 0) {
     return false;
   }
@@ -37,7 +37,7 @@ bool HttpCommandCenter::RegisterCommand(const std::string& command_name,
     return false;
   }
 
-  handler_map_[command_name] = handler;
+  handler_map_.insert(std::make_pair(command_name, std::move(handler)));
   return true;
 }
 
@@ -58,12 +58,12 @@ void HttpCommandCenter::OnHttpRequest(struct evhttp_request* http_req) {
   return;
 }
 
-void HttpCommandCenter::HandleResponse(struct evhttp_request* http_req,
-                                       const CommandResponse& response) {
-  if (response.IsSuccess()) {
-    HttpCommandUtils::SucessRequest(http_req, response.GetResult());
+void HttpCommandCenter::HandleResponse(
+    struct evhttp_request* http_req, const CommandResponseSharedPtr& response) {
+  if (response->success()) {
+    HttpCommandUtils::SucessRequest(http_req, response->result());
   } else {
-    HttpCommandUtils::BadRequest(http_req, response.GetResult());
+    HttpCommandUtils::BadRequest(http_req, response->result());
   }
 }
 

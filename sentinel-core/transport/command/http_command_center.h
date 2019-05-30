@@ -1,7 +1,7 @@
 #pragma once
 
-#include <map>
 #include <memory>
+#include <unordered_map>
 
 #include "sentinel-core/transport/command/command_handler.h"
 #include "sentinel-core/transport/command/command_response.h"
@@ -19,16 +19,16 @@ class HttpCommandCenter {
   void Stop();
 
   bool RegisterCommand(const std::string& command_name,
-                       CommandHandlerPtr handler);
+                       CommandHandlerPtr&& handler);
 
  private:
   void OnHttpRequest(struct evhttp_request* http_req);
   void HandleResponse(struct evhttp_request* http_req,
-                      const CommandResponse& response);
+                      const CommandResponseSharedPtr& response);
 
  private:
   std::unique_ptr<HttpServer> http_server_;
-  std::map<std::string, CommandHandlerPtr> handler_map_;
+  std::unordered_map<std::string, CommandHandlerPtr> handler_map_;
 };
 
 }  // namespace Transport

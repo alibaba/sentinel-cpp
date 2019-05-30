@@ -15,7 +15,7 @@ CommandRequest::GetParameters() const {
   return parameters_;
 }
 
-std::string CommandRequest::GetParam(const std::string& key) {
+std::string CommandRequest::GetParam(const std::string& key) const {
   auto it = parameters_.find(key);
   if (it == parameters_.end()) {
     return std::string("");
@@ -25,7 +25,7 @@ std::string CommandRequest::GetParam(const std::string& key) {
 }
 
 std::string CommandRequest::GetParam(const std::string& key,
-                                     const std::string& defaultValue) {
+                                     const std::string& defaultValue) const {
   auto it = parameters_.find(key);
   if (it == parameters_.end()) {
     return defaultValue;
