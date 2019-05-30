@@ -1,5 +1,6 @@
 #pragma once
 
+#include <assert.h>
 #include <string>
 
 #include "sentinel-core/slot/base/slot.h"
@@ -18,6 +19,8 @@ class StatsSlot : public Slot {
    */
   bool IsContinue(const TokenResultSharedPtr& token,
                   const EntryContextSharedPtr& context) override {
+    assert(context != nullptr);
+    // We need to check nullptr to prevent unexpected circumstances.
     if (context != nullptr) {
       context->set_last_token_result(token);
     }
