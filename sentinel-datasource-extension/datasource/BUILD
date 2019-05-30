@@ -8,7 +8,7 @@ cc_library(
     "converter.h"
   ],
   copts = DEFAULT_COPTS,
-  deps = []
+  deps = ["@com_google_absl//absl/types:optional",]
 )
 
 cc_library(
