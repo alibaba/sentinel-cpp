@@ -44,7 +44,5 @@ class LocalConfig {
   void Initialize();
 };
 
-using LocalConfigSingleton = Utils::Singleton<LocalConfig>;
-
 }  // namespace Config
 }  // namespace Sentinel
