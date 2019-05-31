@@ -18,8 +18,7 @@ class HttpCommandCenter {
   bool Start(int port);
   void Stop();
 
-  bool RegisterCommand(const std::string& command_name,
-                       CommandHandlerPtr&& handler);
+  bool RegisterCommand(CommandHandlerPtr&& handler);
 
  private:
   void OnHttpRequest(struct evhttp_request* http_req);

@@ -26,11 +26,11 @@ void HttpCommandCenter::Stop() {
   }
 }
 
-bool HttpCommandCenter::RegisterCommand(const std::string& command_name,
-                                        CommandHandlerPtr&& handler) {
-  if (command_name.size() == 0) {
+bool HttpCommandCenter::RegisterCommand(CommandHandlerPtr&& handler) {
+  if (handler == nullptr) {
     return false;
   }
+  auto command_name = handler->command_name();
 
   if (handler_map_.find(command_name) != handler_map_.end()) {
     // log warn
