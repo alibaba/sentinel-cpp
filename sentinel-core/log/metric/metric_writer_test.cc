@@ -23,11 +23,11 @@ TEST(MetricWriterTest, TestFormMetricFileName) {
   MetricWriter writer(kSingleFileSize, kTotalFileCount);
   auto pid = 1001;
 
-  LogBase::log_name_use_pid_ = true;
+  LogBase::GetInstance().log_name_use_pid_ = true;
   auto name = writer.FormMetricFileName("appname", pid);
   EXPECT_EQ(name, "appname-metrics.log.pid1001");
 
-  LogBase::log_name_use_pid_ = false;
+  LogBase::GetInstance().log_name_use_pid_ = false;
   name = writer.FormMetricFileName("appname", pid);
   EXPECT_EQ(name, "appname-metrics.log");
 }

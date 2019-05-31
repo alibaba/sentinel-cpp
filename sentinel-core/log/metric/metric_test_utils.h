@@ -18,7 +18,6 @@ constexpr int64_t kSingleFileSize = 10000;
 constexpr int64_t kTotalFileCount = 10000;
 
 void TestWriteMetricLog(int64_t time) {
-  LogBase::Initialize();
   MetricWriter writer(kSingleFileSize, kTotalFileCount);
 
   std::vector<Stat::MetricItemSharedPtr> nodes;

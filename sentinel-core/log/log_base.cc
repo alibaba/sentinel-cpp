@@ -12,16 +12,13 @@ using namespace Sentinel::Utils;
 namespace Sentinel {
 namespace Log {
 
-#define FILE_SEPARATPR "/"
+static constexpr auto kFileSeparator = "/";
 
-const char LogBase::kEnvLogDir[] = "csp.sentinel.log.dir";
-const char LogBase::kEnvLogNameUsrPid[] = "csp.sentinel.log.use.pid";
-const char LogBase::kDirName[] = "logs/csp";
-std::string LogBase::log_base_dir_ = "";
-bool LogBase::log_name_use_pid_ = false;
+LogBase::LogBase() { InitializeInternal(); }
 
-void LogBase::Initialize() {
-  // first use -D, then use user home.
+void LogBase::InitializeInternal() {
+  // First use config from ENV.
+  // If absent, then use `~/logs/csp/`.
 
   std::string str_log_dir;
 
@@ -59,8 +56,8 @@ void LogBase::Initialize() {
 }
 
 std::string LogBase::AddSeparator(const std::string &dir) {
-  if (!absl::EndsWith(dir, FILE_SEPARATPR)) {
-    return dir + FILE_SEPARATPR;
+  if (!absl::EndsWith(dir, kFileSeparator)) {
+    return dir + kFileSeparator;
   }
   return dir;
 }

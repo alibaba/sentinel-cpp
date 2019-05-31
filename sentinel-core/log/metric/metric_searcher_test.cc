@@ -22,7 +22,6 @@ namespace Sentinel {
 namespace Log {
 
 TEST(MetricSearcherTest, TestFind) {
-  LogBase::Initialize();
   int64_t time = Sentinel::Utils::TimeUtils::CurrentTimeMillis().count();
   MetricTestUtils::TestWriteMetricLog(time);
 
@@ -48,7 +47,6 @@ TEST(MetricSearcherTest, TestFind) {
 }
 
 TEST(MetricSearcherTest, TestFindInMultiFile) {
-  LogBase::Initialize();
   int64_t time = Sentinel::Utils::TimeUtils::CurrentTimeMillis().count();
 
   MetricTestUtils::TestWriteMetricLog(time);
@@ -80,7 +78,6 @@ TEST(MetricSearcherTest, TestFindInMultiFile) {
 }
 
 TEST(MetricSearcherTest, TestFindByTimeAndResource) {
-  LogBase::Initialize();
   int64_t time = Sentinel::Utils::TimeUtils::CurrentTimeMillis().count();
 
   MetricTestUtils::TestWriteMetricLog(time);

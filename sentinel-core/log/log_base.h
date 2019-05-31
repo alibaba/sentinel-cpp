@@ -2,31 +2,33 @@
 
 #include <string>
 
-//#include "sentinel-core/init/init_target_registry.h"
-
 namespace Sentinel {
 namespace Log {
 
+static constexpr auto kEnvLogDir = "CSP_SENTINEL_LOG_DIR";
+static constexpr auto kEnvLogNameUsrPid = "CSP_SENTINEL_LOG_USE_PID";
+static constexpr auto kDirName = "logs/csp";
+
 class LogBase {
  public:
-  LogBase() = default;
+  ~LogBase() = default;
 
-  static void Initialize();
-  static bool IsLogNameUsePid() { return log_name_use_pid_; }
+  static LogBase& GetInstance() {
+    static LogBase* instance = new LogBase();
+    return *instance;
+  }
 
-  static std::string GetLogBaseDir() { return log_base_dir_; }
-
- private:
-  static std::string AddSeparator(const std::string &dir);
-
- public:
-  static const char kEnvLogDir[];
-  static const char kEnvLogNameUsrPid[];
-  static const char kDirName[];
+  static bool IsLogNameUsePid() { return GetInstance().log_name_use_pid_; }
+  static std::string GetLogBaseDir() { return GetInstance().log_base_dir_; }
 
  private:
-  static std::string log_base_dir_;
-  static bool log_name_use_pid_;
+  LogBase();
+
+  void InitializeInternal();
+  static std::string AddSeparator(const std::string& dir);
+
+  std::string log_base_dir_{};
+  bool log_name_use_pid_{false};
 };
 
 }  // namespace Log
