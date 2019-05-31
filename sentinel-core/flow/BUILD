@@ -14,9 +14,11 @@ cc_library(
   name = "flow_rule_lib",
   srcs = [
     "flow_rule.h",
+    "flow_rule.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    "@com_google_absl//absl/strings:str_format",
     ":flow_rule_constants_lib",
     "//sentinel-core/common:constants",
     "//sentinel-core/common:rule_lib",
@@ -37,6 +39,7 @@ cc_library(
     ":default_traffic_shaping_calculator_lib",
     ":default_traffic_shaping_checker_lib",
     "//sentinel-core/property:property_listener_interface",
+    "//sentinel-core/log:record_log_impl_lib",
     "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/property:dynamic_sentinel_property_lib",
     "@com_google_absl//absl/synchronization",
