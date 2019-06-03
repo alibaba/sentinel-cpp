@@ -55,6 +55,7 @@ cc_library(
         ],
     deps = [
         "//:libevent",
+        "//sentinel-core/log:record_log_impl_lib",
         "//sentinel-core/transport/common:transport_common",
     ],
 )
