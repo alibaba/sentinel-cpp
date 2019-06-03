@@ -18,7 +18,7 @@ class FetchMetricLogCommandHandler : public CommandHandler {
     const std::string& app_name = Config::LocalConfig::GetInstance().app_name();
     searcher_ = std::make_unique<Log::MetricSearcher>(
         Log::LogBase::GetLogBaseDir(),
-        Log::MetricWriter::FormIndexFileName(app_name));
+        Log::MetricWriter::FormSelfMetricFileName(app_name));
   }
 
   virtual ~FetchMetricLogCommandHandler() = default;

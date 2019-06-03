@@ -110,6 +110,7 @@ std::vector<MetricItemSharedPtr> SlidingWindowMetric::Details() {
     item->set_pass_qps(bucket->Get(MetricEvent::PASS));
     item->set_exception_qps(bucket->Get(MetricEvent::EXCEPTION));
     auto complete = bucket->Get(MetricEvent::COMPLETE);
+    item->set_complete_qps(complete);
     if (complete <= 0) {
       item->set_rt(bucket->Get(MetricEvent::RT));
     } else {

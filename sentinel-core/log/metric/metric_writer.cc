@@ -32,9 +32,6 @@ using namespace Sentinel::Utils;
 namespace Sentinel {
 namespace Log {
 
-const std::string MetricWriter::kMetricFile = "metrics.log";
-const std::string MetricWriter::kMetricIndexFileSuffix = ".idx";
-
 MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
     : single_file_size_(single_file_size), total_file_count_(total_file_count) {
   RecordLog::Info("[MetricWriter] Creating new MetricWriter, singleFileSize=" +
@@ -125,6 +122,10 @@ void MetricWriter::WriteIndex(int64_t time, int64_t offset) {
 bool MetricWriter::IsExceedMaxSingleFileSize() {
   auto size = metric_out_.tellp();
   return size >= single_file_size_;
+}
+
+std::string MetricWriter::FormSelfMetricFileName(const std::string &app_name) {
+  return FormMetricFileName(app_name, ::getpid());
 }
 
 std::string MetricWriter::FormMetricFileName(const std::string &app_name,

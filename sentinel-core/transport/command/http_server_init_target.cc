@@ -5,7 +5,6 @@
 
 #include "sentinel-core/transport/command/handler/fetch_cluster_node_handler.h"
 #include "sentinel-core/transport/command/handler/fetch_metric_log_handler.h"
-#include "sentinel-core/transport/command/http_command_center.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
 
 namespace Sentinel {
@@ -25,17 +24,14 @@ uint32_t HttpCommandCenterInitTarget::GetAvailablePort() {
 }
 
 void HttpCommandCenterInitTarget::Initialize() {
-  std::unique_ptr<HttpCommandCenter> command_center =
-      std::make_unique<HttpCommandCenter>();
-
   // Register commands.
-  command_center->RegisterCommand(
+  command_center_->RegisterCommand(
       std::make_unique<FetchMetricLogCommandHandler>());
-  command_center->RegisterCommand(
+  command_center_->RegisterCommand(
       std::make_unique<FetchClusterNodeCommandHandler>());
 
   uint32_t port = GetAvailablePort();
-  command_center->Start(port);
+  command_center_->Start(port);
 }
 
 }  // namespace Transport
