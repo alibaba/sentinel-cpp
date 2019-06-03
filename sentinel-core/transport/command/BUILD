@@ -46,7 +46,6 @@ cc_library(
     ],
 )
 
-
 cc_library(
     name = "transport_httpserver_lib",
     copts = DEFAULT_COPTS,
@@ -59,7 +58,6 @@ cc_library(
         "//sentinel-core/transport/common:transport_common",
     ],
 )
-
 
 cc_library(
     name = "http_command_center",
@@ -87,6 +85,7 @@ cc_library(
     deps = [
         ":http_command_center",
         "//sentinel-core/init:init_target_interface",
+        "//sentinel-core/transport:transport_constants",
         "//sentinel-core/transport/command/handler:fetch_metric_log_handler_lib",
         "//sentinel-core/transport/command/handler:fetch_cluster_node_handler_lib",
         "@com_google_absl//absl/strings",

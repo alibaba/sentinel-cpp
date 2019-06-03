@@ -9,9 +9,6 @@
 namespace Sentinel {
 namespace Transport {
 
-constexpr auto kCommandPortKey = "CSP_SENTINEL_API_PORT";
-constexpr uint32_t kDefaultCommandPort = 8718;
-
 class HttpCommandCenterInitTarget : public Init::Target {
  public:
   HttpCommandCenterInitTarget()
@@ -19,11 +16,13 @@ class HttpCommandCenterInitTarget : public Init::Target {
   virtual ~HttpCommandCenterInitTarget() = default;
 
   void Initialize() override;
+  void Close();
 
  private:
   uint32_t GetAvailablePort();
 
   const std::unique_ptr<HttpCommandCenter> command_center_;
+  bool closed_{false};
 };
 
 }  // namespace Transport

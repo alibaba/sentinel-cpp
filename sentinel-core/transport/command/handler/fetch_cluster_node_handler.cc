@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "external/com_github_nlohmann_json/file/nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
 #include "sentinel-core/statistic/node/resource_node_storage.h"
 #include "sentinel-core/transport/command/handler/fetch_cluster_node_handler.h"
@@ -52,7 +52,7 @@ CommandResponseSharedPtr FetchClusterNodeCommandHandler::Handle(
 
   auto j = nlohmann::json::array();
   for (const auto& v : vec) {
-    j.push_back(ConvertNodeVoToJson(v));
+    j.emplace_back(ConvertNodeVoToJson(v));
   }
   return CommandResponse::OfSuccess(j.dump());
 }

@@ -6,19 +6,28 @@
 #include "sentinel-core/transport/command/handler/fetch_cluster_node_handler.h"
 #include "sentinel-core/transport/command/handler/fetch_metric_log_handler.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
+#include "sentinel-core/transport/constants.h"
 
 namespace Sentinel {
 namespace Transport {
 
+void HttpCommandCenterInitTarget::Close() {
+  if (!closed_ && command_center_ != nullptr) {
+    // Not thread-safe
+    closed_ = true;
+    command_center_->Stop();
+  }
+}
+
 uint32_t HttpCommandCenterInitTarget::GetAvailablePort() {
-  const char* command_port_env = std::getenv(kCommandPortKey);
+  const char* command_port_env = std::getenv(Constants::kCommandPortKey);
   uint32_t port;
   if (command_port_env != nullptr) {
     if (!absl::SimpleAtoi(command_port_env, &port)) {
-      port = kDefaultCommandPort;
+      port = Constants::kDefaultCommandPort;
     }
   } else {
-    port = kDefaultCommandPort;
+    port = Constants::kDefaultCommandPort;
   }
   return port;
 }

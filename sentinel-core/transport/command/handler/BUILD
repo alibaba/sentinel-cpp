@@ -20,13 +20,13 @@ cc_library(
 
 cc_library(
   name = "fetch_cluster_node_handler_lib",
-  hdrs = ["@com_github_nlohmann_json//file"],
   srcs = [
     "fetch_cluster_node_handler.h",
     "fetch_cluster_node_handler.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    "//:nlohmann_json_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
     "//sentinel-core/utils:utils_lib",
     "//sentinel-core/transport/command:command_handler_interface",

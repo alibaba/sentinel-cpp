@@ -37,7 +37,7 @@ bool HttpCommandCenter::RegisterCommand(CommandHandlerPtr&& handler) {
     return false;
   }
 
-  handler_map_.insert(std::make_pair(command_name, std::move(handler)));
+  handler_map_.emplace(std::make_pair(command_name, std::move(handler)));
   return true;
 }
 

@@ -291,7 +291,7 @@ void MetricWriter::RemoveMoreFiles() {
   if (list.empty() || list.size() <= total_file_count_) {
     return;
   }
-  
+
   auto diff = int(list.size() - total_file_count_);
   for (int i = 0; i < diff; i++) {
     auto &file_name = list[i];

@@ -9,11 +9,13 @@
 namespace Sentinel {
 namespace Transport {
 
+namespace {
 constexpr auto kStartTimeKey = "startTime";
 constexpr auto kEndTimeKey = "endTime";
 constexpr auto kMaxLinesKey = "maxLines";
 constexpr auto kResourceKey = "identity";
 constexpr int32_t kMaxLines = 12000;
+}  // namespace
 
 int64_t ParseOrDefault(const std::string& s, int64_t default_value) {
   int64_t x;
