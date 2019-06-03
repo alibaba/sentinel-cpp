@@ -11,6 +11,9 @@
 namespace Sentinel {
 namespace Log {
 
+static constexpr auto kMetricFile = "metrics.log";
+static constexpr auto kMetricIndexFileSuffix = ".idx";
+
 class MetricWriter {
  public:
   MetricWriter(int64_t single_file_size, int32_t total_file_count);
@@ -19,6 +22,7 @@ class MetricWriter {
   void Write(int64_t time, std::vector<Stat::MetricItemSharedPtr>& nodes);
   void Close();
 
+  static std::string FormSelfMetricFileName(const std::string& app_name);
   static std::string FormMetricFileName(const std::string& app_name, int pid);
   static std::string FormIndexFileName(const std::string& metric_file_name);
   static std::vector<std::string> ListMetricFiles(
@@ -42,10 +46,6 @@ class MetricWriter {
   void RemoveMoreFiles();
 
   void DoClose();
-
- public:
-  static const std::string kMetricFile;
-  static const std::string kMetricIndexFileSuffix;
 
  private:
   int64_t single_file_size_;
