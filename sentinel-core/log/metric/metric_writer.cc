@@ -288,11 +288,13 @@ std::vector<std::string> MetricWriter::ListMetricFiles(
 
 void MetricWriter::RemoveMoreFiles() {
   auto list = ListMetricFiles(base_dir_, base_file_name_);
-  if (list.empty()) {
+  if (list.empty() || list.size() <= total_file_count_) {
     return;
   }
-  for (auto i = 0; i < list.size() - total_file_count_; i++) {
-    auto file_name = list[i];
+  
+  auto diff = int(list.size() - total_file_count_);
+  for (int i = 0; i < diff; i++) {
+    auto &file_name = list[i];
     auto index_file = FormIndexFileName(file_name);
     remove(file_name.c_str());
     RecordLog::Info("[MetricWriter] Removing metric file: " + file_name);
