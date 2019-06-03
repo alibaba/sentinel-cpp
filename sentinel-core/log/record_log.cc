@@ -17,6 +17,13 @@ void RecordLog::Info(const std::string& message) {
   }
 };
 
+void RecordLog::Warn(const std::string& message) {
+  auto logger = spdlog::get(kRecordLogger);
+  if (logger) {
+    logger->warn(message);
+  }
+};
+
 void RecordLog::Error(const std::string& message) {
   auto logger = spdlog::get(kRecordLogger);
   if (logger) {
@@ -31,7 +38,7 @@ void RecordLog::Init(const std::string& file_path) {
     spdlog::drop_all();
     spdlog::register_logger(record_logger);
   } catch (const spdlog::spdlog_ex& ex) {
-    std::cout << "Log initialization failed: " << ex.what() << std::endl;
+    std::cerr << "Log initialization failed: " << ex.what() << std::endl;
   }
 }
 

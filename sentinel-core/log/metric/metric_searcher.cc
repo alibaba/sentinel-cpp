@@ -1,10 +1,10 @@
-#include "sentinel-core/log/metric_searcher.h"
+#include "sentinel-core/log/metric/metric_searcher.h"
 
 #include <algorithm>
 #include <iostream>
 
 #include "sentinel-core/log/log_base.h"
-#include "sentinel-core/log/metric_writer.h"
+#include "sentinel-core/log/metric/metric_writer.h"
 #include "sentinel-core/utils/file_utils.h"
 
 namespace Sentinel {
@@ -78,8 +78,8 @@ MetricSearcher::MetricSearcher(const std::string &base_dir,
                                const std::string &base_file_name)
     : base_dir_(base_dir), base_file_name_(base_file_name) {}
 
-std::vector<Stat::MetricItem> MetricSearcher::Find(int64_t begin_time_ms,
-                                                   int recommend_lines) {
+std::vector<Stat::MetricItemSharedPtr> MetricSearcher::Find(
+    int64_t begin_time_ms, int recommend_lines) {
   std::lock_guard<std::mutex> guard(lock_);
 
   auto file_names = MetricWriter::ListMetricFiles(base_dir_, base_file_name_);
@@ -107,10 +107,10 @@ std::vector<Stat::MetricItem> MetricSearcher::Find(int64_t begin_time_ms,
                                         offset, recommend_lines);
     }
   }
-  return std::vector<Stat::MetricItem>();
+  return std::vector<Stat::MetricItemSharedPtr>();
 }
 
-std::vector<Stat::MetricItem> MetricSearcher::FindByTimeAndResource(
+std::vector<Stat::MetricItemSharedPtr> MetricSearcher::FindByTimeAndResource(
     int64_t begin_time_ms, int64_t end_time_ms, const std::string &identity) {
   std::lock_guard<std::mutex> guard(lock_);
 
@@ -141,7 +141,7 @@ std::vector<Stat::MetricItem> MetricSearcher::FindByTimeAndResource(
           end_time_ms, identity);
     }
   }
-  return std::vector<Stat::MetricItem>();
+  return std::vector<Stat::MetricItemSharedPtr>();
 }
 
 }  // namespace Log

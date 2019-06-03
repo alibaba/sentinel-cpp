@@ -1,5 +1,7 @@
 #pragma once
 
+#include "absl/types/optional.h"
+
 #include "sentinel-core/property/sentinel_property.h"
 
 #include <memory>
@@ -12,7 +14,7 @@ template <typename S, typename T>
 class ReadableDataSource {
  public:
   virtual ~ReadableDataSource() = default;
-  virtual T LoadConfig() = 0;
+  virtual absl::optional<T> LoadConfig() = 0;
   virtual S ReadSource() = 0;
   virtual Property::SentinelPropertySharedPtr<T> GetProperty() = 0;
 };

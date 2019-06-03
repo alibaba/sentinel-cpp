@@ -52,17 +52,8 @@ struct FlowRule : public Rule {
   void set_max_queueing_time_ms_(int q) { max_queueing_time_ms_ = q; }
   void set_cluster_mode(bool cluster_mode) { cluster_mode_ = cluster_mode; }
 
-  bool operator==(const FlowRule& rule) const {
-    return resource_ == rule.resource() &&
-           Rule::LimitOriginEquals(limit_origin_, rule.limit_origin()) &&
-           metric_type_ == rule.metric_type() && count_ == rule.count() &&
-           strategy_ == rule.strategy() &&
-           ref_resource_ == rule.ref_resource() &&
-           control_behavior_ == rule.control_behavior() &&
-           warm_up_period_sec_ == rule.warm_up_period_sec() &&
-           max_queueing_time_ms_ == rule.max_queueing_time_ms() &&
-           cluster_mode_ == rule.cluster_mode();
-  }
+  bool operator==(const FlowRule& rule) const;
+  std::string ToString() const;
 
  private:
   std::string resource_;                                          // resource

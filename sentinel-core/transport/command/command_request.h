@@ -12,8 +12,9 @@ class CommandRequest {
   CommandRequest& set_body(const std::string& body);
 
   CommandRequest& AddParam(const std::string& key, const std::string& value);
-  std::string GetParam(const std::string& key);
-  std::string GetParam(const std::string& key, const std::string& defaultValue);
+  std::string GetParam(const std::string& key) const;
+  std::string GetParam(const std::string& key,
+                       const std::string& defaultValue) const;
   const std::unordered_map<std::string, std::string>& GetParameters() const;
 
   CommandRequest& AddMetadata(const std::string& key, const std::string& value);

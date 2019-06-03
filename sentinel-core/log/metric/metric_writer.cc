@@ -1,4 +1,6 @@
-#include "sentinel-core/log/metric_writer.h"
+#include "sentinel-core/log/metric/metric_writer.h"
+
+#include "sentinel-core/config/local_config.h"
 
 #include <dirent.h>
 #include <unistd.h>
@@ -58,12 +60,13 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
   pid_ = ::getpid();
 }
 
-void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
+void MetricWriter::Write(int64_t time,
+                         std::vector<Stat::MetricItemSharedPtr> &nodes) {
   std::lock_guard<std::mutex> lk(lock_);
 
   if (time != -1) {
     for (auto &node : nodes) {
-      node.set_timestamp(time);
+      node->set_timestamp(time);
     }
   }
 
@@ -96,10 +99,10 @@ void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
   }
 }
 
-void MetricWriter::DoWrite(int64_t time,
-                           const std::vector<Stat::MetricItem> &nodes) {
+void MetricWriter::DoWrite(
+    int64_t time, const std::vector<Stat::MetricItemSharedPtr> &nodes) {
   for (auto &node : nodes) {
-    metric_out_ << node.ToFatString() << "\n";
+    metric_out_ << node->ToFatString() << "\n";
   }
   metric_out_.flush();
   if (IsExceedMaxSingleFileSize()) {
