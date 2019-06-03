@@ -58,6 +58,9 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
           .count();
 
   pid_ = ::getpid();
+
+  auto app_name = Config::LocalConfig::GetInstance().app_name();
+  base_file_name_ = FormMetricFileName(app_name, pid_);
 }
 
 void MetricWriter::Write(int64_t time,
@@ -224,6 +227,8 @@ std::string MetricWriter::FormIndexFileName(
 }
 
 void MetricWriter::CloseAndNewFile(const std::string &file_name) {
+  RemoveMoreFiles();
+
   DoClose();
 
   metric_out_.open(file_name, std::ios::out);
@@ -278,6 +283,21 @@ std::vector<std::string> MetricWriter::ListMetricFiles(
   std::sort(vec.begin(), vec.end(), &MetricWriter::MetricFileNameComparator);
 
   return vec;
+}
+
+void MetricWriter::RemoveMoreFiles() {
+  auto list = ListMetricFiles(base_dir_, base_file_name_);
+  if (list.empty()) {
+    return;
+  }
+  for (auto i = 0; i < list.size() - total_file_count_; i++) {
+    auto file_name = list[i];
+    auto index_file = FormIndexFileName(file_name);
+    remove(file_name.c_str());
+    RecordLog::Info("[MetricWriter] Removing metric file: " + file_name);
+    remove(index_file.c_str());
+    RecordLog::Info("[MetricWriter] Removing metric index file: " + index_file);
+  }
 }
 
 }  // namespace Log

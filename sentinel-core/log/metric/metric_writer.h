@@ -39,6 +39,8 @@ class MetricWriter {
   bool IsNewDay(int64_t last_second, int64_t second);
   bool IsExceedMaxSingleFileSize();
 
+  void RemoveMoreFiles();
+
   void DoClose();
 
  public:

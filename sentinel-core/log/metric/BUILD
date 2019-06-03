@@ -43,6 +43,7 @@ cc_library(
 cc_test(
   name = "metric_writer_unittests",
   srcs = [
+    "metric_test_utils.h",
     "metric_writer_test.cc",
   ],
   copts = TEST_COPTS,
