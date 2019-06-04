@@ -1,4 +1,6 @@
-#include "sentinel-core/log/metric_writer.h"
+#include "sentinel-core/log/metric/metric_writer.h"
+
+#include "sentinel-core/config/local_config.h"
 
 #include <dirent.h>
 #include <unistd.h>
@@ -30,9 +32,6 @@ using namespace Sentinel::Utils;
 namespace Sentinel {
 namespace Log {
 
-const std::string MetricWriter::kMetricFile = "metrics.log";
-const std::string MetricWriter::kMetricIndexFileSuffix = ".idx";
-
 MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
     : single_file_size_(single_file_size), total_file_count_(total_file_count) {
   RecordLog::Info("[MetricWriter] Creating new MetricWriter, singleFileSize=" +
@@ -56,14 +55,18 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
           .count();
 
   pid_ = ::getpid();
+
+  auto app_name = Config::LocalConfig::GetInstance().app_name();
+  base_file_name_ = FormMetricFileName(app_name, pid_);
 }
 
-void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
+void MetricWriter::Write(int64_t time,
+                         std::vector<Stat::MetricItemSharedPtr> &nodes) {
   std::lock_guard<std::mutex> lk(lock_);
 
   if (time != -1) {
     for (auto &node : nodes) {
-      node.set_timestamp(time);
+      node->set_timestamp(time);
     }
   }
 
@@ -96,10 +99,10 @@ void MetricWriter::Write(int64_t time, std::vector<Stat::MetricItem> &nodes) {
   }
 }
 
-void MetricWriter::DoWrite(int64_t time,
-                           const std::vector<Stat::MetricItem> &nodes) {
+void MetricWriter::DoWrite(
+    int64_t time, const std::vector<Stat::MetricItemSharedPtr> &nodes) {
   for (auto &node : nodes) {
-    metric_out_ << node.ToFatString() << "\n";
+    metric_out_ << node->ToFatString() << "\n";
   }
   metric_out_.flush();
   if (IsExceedMaxSingleFileSize()) {
@@ -122,6 +125,10 @@ void MetricWriter::WriteIndex(int64_t time, int64_t offset) {
 bool MetricWriter::IsExceedMaxSingleFileSize() {
   auto size = metric_out_.tellp();
   return size >= single_file_size_;
+}
+
+std::string MetricWriter::FormSelfMetricFileName(const std::string &app_name) {
+  return FormMetricFileName(app_name, ::getpid());
 }
 
 std::string MetricWriter::FormMetricFileName(const std::string &app_name,
@@ -221,6 +228,8 @@ std::string MetricWriter::FormIndexFileName(
 }
 
 void MetricWriter::CloseAndNewFile(const std::string &file_name) {
+  RemoveMoreFiles();
+
   DoClose();
 
   metric_out_.open(file_name, std::ios::out);
@@ -275,6 +284,23 @@ std::vector<std::string> MetricWriter::ListMetricFiles(
   std::sort(vec.begin(), vec.end(), &MetricWriter::MetricFileNameComparator);
 
   return vec;
+}
+
+void MetricWriter::RemoveMoreFiles() {
+  auto list = ListMetricFiles(base_dir_, base_file_name_);
+  if (list.empty() || list.size() <= total_file_count_) {
+    return;
+  }
+
+  auto diff = int(list.size() - total_file_count_);
+  for (int i = 0; i < diff; i++) {
+    auto &file_name = list[i];
+    auto index_file = FormIndexFileName(file_name);
+    remove(file_name.c_str());
+    RecordLog::Info("[MetricWriter] Removing metric file: " + file_name);
+    remove(index_file.c_str());
+    RecordLog::Info("[MetricWriter] Removing metric index file: " + index_file);
+  }
 }
 
 }  // namespace Log

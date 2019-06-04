@@ -1,26 +1,34 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
+namespace Sentinel {
+namespace Transport {
+
+class CommandResponse;
+using CommandResponseSharedPtr = std::shared_ptr<CommandResponse>;
+
 class CommandResponse {
- private:
+ public:
   CommandResponse(bool success, const std::string& result)
       : success_(success), result_(result) {}
 
- public:
-  static CommandResponse OfSuccess(const std::string& result) {
-    return CommandResponse(true, result);
+  static CommandResponseSharedPtr OfSuccess(const std::string& result) {
+    return std::make_shared<CommandResponse>(true, result);
   }
 
-  static CommandResponse OfFailure(const std::string& result) {
-    return CommandResponse(false, result);
+  static CommandResponseSharedPtr OfFailure(const std::string& result) {
+    return std::make_shared<CommandResponse>(false, result);
   }
 
-  bool IsSuccess() const { return success_; }
-
-  const std::string& GetResult() const { return result_; }
+  bool success() const { return success_; }
+  const std::string& result() const { return result_; }
 
  private:
   bool success_;
   std::string result_;
 };
+
+}  // namespace Transport
+}  // namespace Sentinel

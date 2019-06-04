@@ -6,20 +6,23 @@
 #include <string>
 #include <vector>
 
-#include "sentinel-core/config/local_config.h"
 #include "sentinel-core/statistic/base/metric_item.h"
 
 namespace Sentinel {
 namespace Log {
+
+static constexpr auto kMetricFile = "metrics.log";
+static constexpr auto kMetricIndexFileSuffix = ".idx";
 
 class MetricWriter {
  public:
   MetricWriter(int64_t single_file_size, int32_t total_file_count);
   virtual ~MetricWriter() {}
 
-  void Write(int64_t time, std::vector<Stat::MetricItem>& nodes);
+  void Write(int64_t time, std::vector<Stat::MetricItemSharedPtr>& nodes);
   void Close();
 
+  static std::string FormSelfMetricFileName(const std::string& app_name);
   static std::string FormMetricFileName(const std::string& app_name, int pid);
   static std::string FormIndexFileName(const std::string& metric_file_name);
   static std::vector<std::string> ListMetricFiles(
@@ -31,7 +34,8 @@ class MetricWriter {
                               const std::string& base_file_name);
 
  private:
-  void DoWrite(int64_t time, const std::vector<Stat::MetricItem>& nodes);
+  void DoWrite(int64_t time,
+               const std::vector<Stat::MetricItemSharedPtr>& nodes);
   void WriteIndex(int64_t time, int64_t offset);
 
   std::string NextFileNameOfDay(int64_t time);
@@ -39,11 +43,9 @@ class MetricWriter {
   bool IsNewDay(int64_t last_second, int64_t second);
   bool IsExceedMaxSingleFileSize();
 
-  void DoClose();
+  void RemoveMoreFiles();
 
- public:
-  static const std::string kMetricFile;
-  static const std::string kMetricIndexFileSuffix;
+  void DoClose();
 
  private:
   int64_t single_file_size_;

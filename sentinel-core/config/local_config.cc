@@ -4,6 +4,7 @@
 
 #include "sentinel-core/config/config_constants.h"
 #include "sentinel-core/config/local_config.h"
+#include "sentinel-core/log/record_log.h"
 
 namespace Sentinel {
 namespace Config {
@@ -99,8 +100,11 @@ void LocalConfig::ResolveAppName() {
   const char* app_name_env = std::getenv(Env::kAppNameKey);
   if (app_name_env) {
     app_name_ = app_name_env;
+    Log::RecordLog::Info("App name resolved: {}", app_name_);
   } else {
     app_name_ = kUnknownAppName;
+    Log::RecordLog::Warn("No {} configured, using the fallback app name: {}",
+                         Env::kAppNameKey, kUnknownAppName);
   }
 }
 

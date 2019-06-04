@@ -6,6 +6,7 @@
 #include "sentinel-core/flow/default_traffic_shaping_calculator.h"
 #include "sentinel-core/flow/default_traffic_shaping_checker.h"
 #include "sentinel-core/flow/flow_rule_manager.h"
+#include "sentinel-core/log/record_log.h"
 #include "sentinel-core/property/dynamic_sentinel_property.h"
 
 namespace Sentinel {
@@ -120,6 +121,18 @@ std::shared_ptr<TrafficShapingController> FlowRuleManager::GenerateController(
 
 // FlowPropertyListener
 
+void LogFlowMap(const std::unordered_map<std::string, FlowRuleList>& map) {
+  std::string s("[");
+  for (const auto& e : map) {
+    for (const auto& rule : e.second) {
+      s += rule.ToString();
+      s += ",";
+    }
+  }
+  s[s.size() - 1] = ']';
+  Log::RecordLog::Info("[FlowRuleManager] Flow rules received: {}", s);
+}
+
 void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
                                         bool first_load) {
   FlowRuleManager& m = FlowRuleManager::GetInstance();
@@ -133,8 +146,10 @@ void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
   std::unordered_set<FlowRule, FlowRuleHash> tmp_set;
   for (const auto& rule : value) {
     if (!IsValidRule(rule)) {
-      // TODO: warn("[FlowRuleManager] Ignoring invalid flow rule when loading
-      // new flow rules: " + rule)
+      Log::RecordLog::Info(
+          "[FlowRuleManager] Ignoring invalid flow rule when loading new flow "
+          "rules: {}",
+          rule.ToString());
       continue;
     }
     FlowRule f_rule = rule;
@@ -161,7 +176,8 @@ void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
   absl::WriterMutexLock lck(&(m.update_mtx_));
   m.rule_map_ = std::move(new_rule_map);
   m.traffic_controller_map_ = std::move(new_controller_map);
-  // TODO: log
+
+  LogFlowMap(m.rule_map_);
 }
 
 const std::string FlowPropertyListener::Name() const {

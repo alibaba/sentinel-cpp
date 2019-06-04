@@ -12,14 +12,15 @@ class CommandHandler {
  public:
   CommandHandler(const std::string& name) : command_name_(name) {}
   virtual ~CommandHandler() = default;
-  virtual CommandResponse Handle(const CommandRequest& request) = 0;
-  std::string command_name() const { return command_name_; }
+  virtual CommandResponseSharedPtr Handle(const CommandRequest& request) = 0;
+
+  const std::string& command_name() const { return command_name_; }
 
  protected:
   std::string command_name_;
 };
 
-using CommandHandlerPtr = std::shared_ptr<CommandHandler>;
+using CommandHandlerPtr = std::unique_ptr<CommandHandler>;
 
 }  // namespace Transport
 }  // namespace Sentinel

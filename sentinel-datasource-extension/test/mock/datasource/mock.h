@@ -15,7 +15,7 @@ template <typename S, typename T>
 class MockConverter : public Converter<S, T> {
  public:
   virtual ~MockConverter() = default;
-  MOCK_METHOD1_T(Convert, T(const S&));
+  MOCK_METHOD1_T(Convert, absl::optional<T>(const S&));
 };
 
 template <typename S, typename T>

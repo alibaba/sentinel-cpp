@@ -7,7 +7,8 @@
 #define private public
 
 #include "sentinel-core/log/log_base.h"
-#include "sentinel-core/log/metric_writer.h"
+#include "sentinel-core/log/metric/metric_test_utils.h"
+#include "sentinel-core/log/metric/metric_writer.h"
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
 
@@ -23,11 +24,11 @@ TEST(MetricWriterTest, TestFormMetricFileName) {
   MetricWriter writer(kSingleFileSize, kTotalFileCount);
   auto pid = 1001;
 
-  LogBase::log_name_use_pid_ = true;
+  LogBase::GetInstance().log_name_use_pid_ = true;
   auto name = writer.FormMetricFileName("appname", pid);
   EXPECT_EQ(name, "appname-metrics.log.pid1001");
 
-  LogBase::log_name_use_pid_ = false;
+  LogBase::GetInstance().log_name_use_pid_ = false;
   name = writer.FormMetricFileName("appname", pid);
   EXPECT_EQ(name, "appname-metrics.log");
 }
@@ -147,6 +148,52 @@ TEST(MetricWriterTest, TestIsExceedMaxSingleFileSize) {
   writer.metric_out_.close();
 
   remove(file_name);
+}
+
+TEST(MetricWriterTest, TestRemoveMoreFiles) {
+  auto total_file_count = 2;
+  MetricWriter writer(kSingleFileSize, total_file_count);
+
+  int64_t time = Sentinel::Utils::TimeUtils::CurrentTimeMillis().count();
+
+  MetricTestUtils::TestWriteMetricLog(time);
+  auto list1 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list1.size(), 1);
+
+  MetricTestUtils::TestWriteMetricLog(time + 10 * 1000);
+  auto list2 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list2.size(), 2);
+
+  MetricTestUtils::TestWriteMetricLog(time + 20 * 1000);
+  auto list3 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list3.size(), 3);
+  //移除多于的文件
+  writer.RemoveMoreFiles();
+  auto list4 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list4.size(), 2);
+
+  MetricTestUtils::TestWriteMetricLog(time + 30 * 1000);
+  auto list5 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list5.size(), 3);
+  //移除多于的文件
+  writer.RemoveMoreFiles();
+  auto list6 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list6.size(), 2);
+
+  MetricTestUtils::TestWriteMetricLog(time + 40 * 1000);
+  auto list7 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list7.size(), 3);
+
+  MetricTestUtils::TestWriteMetricLog(time + 50 * 1000);
+  auto list8 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list8.size(), 4);
+
+  //移除多于的文件
+  writer.RemoveMoreFiles();
+  auto list9 = writer.ListMetricFiles(writer.base_dir_, writer.base_file_name_);
+  EXPECT_EQ(list9.size(), 2);
+
+  MetricTestUtils::RemoveTestLogFile();
 }
 
 }  // namespace Log
