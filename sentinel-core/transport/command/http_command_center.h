@@ -13,7 +13,7 @@ namespace Transport {
 class HttpCommandCenter {
  public:
   explicit HttpCommandCenter() = default;
-  ~HttpCommandCenter() = default;
+  ~HttpCommandCenter();
 
   bool Start(int port);
   void Stop();

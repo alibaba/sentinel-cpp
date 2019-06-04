@@ -28,8 +28,8 @@ struct FlowRule : public Rule {
   FlowRelationStrategy strategy() const { return strategy_; }
   const std::string& ref_resource() const { return ref_resource_; }
   FlowControlBehavior control_behavior() const { return control_behavior_; }
-  int warm_up_period_sec() const { return warm_up_period_sec_; }
-  int max_queueing_time_ms() const { return max_queueing_time_ms_; }
+  int32_t warm_up_period_sec() const { return warm_up_period_sec_; }
+  int32_t max_queueing_time_ms() const { return max_queueing_time_ms_; }
   bool cluster_mode() const { return cluster_mode_; }
 
   void set_resource(const std::string& resource) { resource_ = resource; }
@@ -48,8 +48,8 @@ struct FlowRule : public Rule {
   void set_strategy(FlowRelationStrategy strategy) { strategy_ = strategy; }
   void set_ref_resource(const std::string& r) { ref_resource_ = r; }
   void set_control_behavior(FlowControlBehavior cb) { control_behavior_ = cb; }
-  void set_warm_up_period_sec(int w) { warm_up_period_sec_ = w; }
-  void set_max_queueing_time_ms_(int q) { max_queueing_time_ms_ = q; }
+  void set_warm_up_period_sec(int32_t w) { warm_up_period_sec_ = w; }
+  void set_max_queueing_time_ms(int32_t q) { max_queueing_time_ms_ = q; }
   void set_cluster_mode(bool cluster_mode) { cluster_mode_ = cluster_mode; }
 
   bool operator==(const FlowRule& rule) const;
@@ -62,11 +62,11 @@ struct FlowRule : public Rule {
   double count_ = 0;                                              // count
   FlowRelationStrategy strategy_{FlowRelationStrategy::kDirect};  // strategy
   FlowControlBehavior control_behavior_{
-      FlowControlBehavior::kReject};  // controlBehavior
-  std::string ref_resource_{};        // refResource
-  int warm_up_period_sec_ = 10;       // warmUpPeriodSec
-  int max_queueing_time_ms_ = 500;    // maxQueueingTimeMs
-  bool cluster_mode_ = false;         // clusterMode
+      FlowControlBehavior::kReject};    // controlBehavior
+  std::string ref_resource_{};          // refResource
+  int32_t warm_up_period_sec_ = 10;     // warmUpPeriodSec
+  int32_t max_queueing_time_ms_ = 500;  // maxQueueingTimeMs
+  bool cluster_mode_ = false;           // clusterMode
 };
 
 using FlowRulePtr = std::shared_ptr<FlowRule>;
