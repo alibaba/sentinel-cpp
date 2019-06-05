@@ -8,6 +8,8 @@
 namespace Sentinel {
 namespace Transport {
 
+HttpCommandCenter::~HttpCommandCenter() { Stop(); }
+
 bool HttpCommandCenter::Start(int port) {
   if (http_server_) {
     // log warn
