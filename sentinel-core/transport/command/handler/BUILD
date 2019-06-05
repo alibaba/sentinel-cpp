@@ -48,3 +48,16 @@ cc_library(
     "//sentinel-core/transport/command:command_handler_interface",
   ]
 )
+
+cc_test(
+  name = "sentinel_on_off_switch_handler_unittests",
+  srcs = [
+      "set_switch_status_handler_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":sentinel_on_off_switch_handler_lib",
+    "//sentinel-core/common:global_status",
+    "@com_google_googletest//:gtest_main",
+  ],
+)
