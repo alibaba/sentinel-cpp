@@ -33,3 +33,18 @@ cc_library(
     "//sentinel-core/transport/command/handler/vo:statistic_node_vo_lib",
   ]
 )
+
+cc_library(
+  name = "sentinel_on_off_switch_handler_lib",
+  srcs = [
+    "get_switch_status_handler.h",
+    "get_switch_status_handler.cc",
+    "set_switch_status_handler.h",
+    "set_switch_status_handler.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/common:global_status",
+    "//sentinel-core/transport/command:command_handler_interface",
+  ]
+)

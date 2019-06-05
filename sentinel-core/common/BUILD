@@ -11,6 +11,15 @@ cc_library(
 )
 
 cc_library(
+  name = "global_status",
+  srcs = [
+    "global_status.h",
+    "global_status.cc",
+  ],
+  copts = DEFAULT_COPTS,
+)
+
+cc_library(
   name = "entry_type_enum",
   srcs = [
     "entry_type.h",
