@@ -46,6 +46,7 @@ cc_library(
   name = "global_slot_chain_header",
   srcs = [
     "global_slot_chain.h",
+    "global_slot_chain.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [

@@ -25,7 +25,7 @@ int64_t ParseOrDefault(const std::string& s, int64_t default_value) {
   return x;
 }
 
-std::shared_ptr<CommandResponse> FetchMetricLogCommandHandler::Handle(
+CommandResponsePtr FetchMetricLogCommandHandler::Handle(
     const CommandRequest& request) {
   std::string start_time_str = request.GetParam(kStartTimeKey);
   std::string end_time_str = request.GetParam(kEndTimeKey);

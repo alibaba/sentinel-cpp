@@ -23,7 +23,7 @@ class HttpCommandCenter {
  private:
   void OnHttpRequest(struct evhttp_request* http_req);
   void HandleResponse(struct evhttp_request* http_req,
-                      const CommandResponseSharedPtr& response);
+                      CommandResponsePtr&& response);
 
  private:
   std::unique_ptr<HttpServer> http_server_;

@@ -18,7 +18,7 @@ static SlotChainSharedPtr BuildDefaultSlotChain() {
   return chain;
 }
 
-static SlotChainSharedPtr GlobalSlotChain = BuildDefaultSlotChain();
+extern SlotChainSharedPtr GlobalSlotChain;
 
 }  // namespace Slot
 }  // namespace Sentinel

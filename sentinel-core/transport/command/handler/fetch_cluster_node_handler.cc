@@ -30,7 +30,7 @@ nlohmann::json ConvertNodeVoToJson(
                         {"timestamp", node->timestamp()}};
 }
 
-CommandResponseSharedPtr FetchClusterNodeCommandHandler::Handle(
+CommandResponsePtr FetchClusterNodeCommandHandler::Handle(
     const CommandRequest& request) {
   std::string type = request.GetParam("type");
   std::vector<std::shared_ptr<StatisticNodeVO>> vec;
