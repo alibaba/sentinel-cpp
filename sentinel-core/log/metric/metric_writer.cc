@@ -1,7 +1,5 @@
 #include "sentinel-core/log/metric/metric_writer.h"
 
-#include "sentinel-core/config/local_config.h"
-
 #include <dirent.h>
 #include <unistd.h>
 
@@ -19,13 +17,11 @@
 #include "absl/strings/string_view.h"
 #include "absl/time/time.h"
 
+#include "sentinel-core/config/local_config.h"
 #include "sentinel-core/log/log_base.h"
 #include "sentinel-core/log/record_log.h"
-
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
-
-#include <iostream>
 
 using namespace Sentinel::Utils;
 

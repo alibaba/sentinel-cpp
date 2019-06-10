@@ -63,6 +63,7 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":metric_log_lib",
+    "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest_main",
   ],
   linkstatic = 1,
