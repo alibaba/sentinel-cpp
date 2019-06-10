@@ -1,5 +1,5 @@
 #include "sentinel-core/transport/command/http_server.h"
-#include "sentinel-core/log/record_log.h"
+#include "sentinel-core/log/logger.h"
 
 #ifndef WIN32
 #include <unistd.h>
@@ -47,8 +47,8 @@ void HttpServer::Stop() {
 void HttpServer::InternalStart(std::promise<bool> &promise) {
   http_ = evhttp_new(event_loop_thread_.GetEventBase());
   if (!http_) {
-    Log::RecordLog::Error("HttpServer evhttp_new() failed, pending port={}",
-                          port_);
+    SENTINEL_LOG(error, "HttpServer evhttp_new() failed, pending port={}",
+                 port_);
     promise.set_value(false);
     return;
   }
@@ -57,7 +57,8 @@ void HttpServer::InternalStart(std::promise<bool> &promise) {
 
   auto handle = evhttp_bind_socket_with_handle(http_, "0.0.0.0", port_);
   if (!handle) {
-    Log::RecordLog::Error(
+    SENTINEL_LOG(
+        error,
         "HttpServer evhttp_bind_socket_with_handle() failed, pending port={}",
         port_);
     promise.set_value(false);
@@ -65,7 +66,7 @@ void HttpServer::InternalStart(std::promise<bool> &promise) {
   }
 
   promise.set_value(true);
-  Log::RecordLog::Info("HttpServer is running at port {}", port_);
+  SENTINEL_LOG(info, "HttpServer is running at port {}", port_);
   return;
 }
 

@@ -10,9 +10,11 @@ namespace Log {
 
 const char Logger::kDefaultFileLogger[] = "default_sentinel_logger";
 
-bool Logger::Init(const std::string& file_path, const std::string& log_format) {
+bool Logger::InitDefaultLogger(const std::string& file_path,
+                               const std::string& log_format) {
   try {
-    auto logger = spdlog::basic_logger_mt<spdlog::async_factory>(kDefaultFileLogger, file_path);
+    auto logger = spdlog::basic_logger_mt<spdlog::async_factory>(
+        kDefaultFileLogger, file_path);
     if (!logger) {
       return false;
     }
@@ -20,6 +22,7 @@ bool Logger::Init(const std::string& file_path, const std::string& log_format) {
     if (!log_format.empty()) {
       logger->set_pattern(log_format);
     }
+    logger->set_level(spdlog::level::info);
     logger->flush_on(spdlog::level::err);
   } catch (const spdlog::spdlog_ex& ex) {
     std::cerr << "Log initialization failed: " << ex.what() << std::endl;
@@ -28,16 +31,16 @@ bool Logger::Init(const std::string& file_path, const std::string& log_format) {
   return true;
 }
 
-void Logger::Uninitialization() {
-  spdlog::drop(kDefaultFileLogger);
-}
+void Logger::Uninitialization() { spdlog::drop(kDefaultFileLogger); }
 
 void Logger::SetAllLoggerLevel(levels level) {
-  spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->set_level(static_cast<spdlog::level::level_enum>(level));});
+  spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {
+    l->set_level(static_cast<spdlog::level::level_enum>(level));
+  });
 }
 
 void Logger::FlushAllLogger() {
-  spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->flush();});
+  spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) { l->flush(); });
 }
 
 }  // namespace Log

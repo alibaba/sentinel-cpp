@@ -19,7 +19,7 @@ cc_library(
      "//sentinel-core/utils:file_utils_lib",
      "//sentinel-core/statistic/base:metric_item_lib",
      "//sentinel-core/config:local_config_lib",
-     "//sentinel-core/log:record_log_impl_lib",
+     "//sentinel-core/log:logger_lib",
      "//sentinel-core/log:log_base_impl_lib",
   ],
 )

@@ -6,7 +6,7 @@
 #include "sentinel-core/flow/default_traffic_shaping_calculator.h"
 #include "sentinel-core/flow/default_traffic_shaping_checker.h"
 #include "sentinel-core/flow/flow_rule_manager.h"
-#include "sentinel-core/log/record_log.h"
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/property/dynamic_sentinel_property.h"
 
 namespace Sentinel {
@@ -130,7 +130,7 @@ void LogFlowMap(const std::unordered_map<std::string, FlowRuleList>& map) {
     }
   }
   s[s.size() - 1] = ']';
-  Log::RecordLog::Info("[FlowRuleManager] Flow rules received: {}", s);
+  SENTINEL_LOG(info, "[FlowRuleManager] Flow rules received: {}", s);
 }
 
 void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
@@ -146,7 +146,8 @@ void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
   std::unordered_set<FlowRule, FlowRuleHash> tmp_set;
   for (const auto& rule : value) {
     if (!IsValidRule(rule)) {
-      Log::RecordLog::Info(
+      SENTINEL_LOG(
+          info,
           "[FlowRuleManager] Ignoring invalid flow rule when loading new flow "
           "rules: {}",
           rule.ToString());
