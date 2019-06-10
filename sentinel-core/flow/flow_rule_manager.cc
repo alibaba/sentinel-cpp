@@ -97,7 +97,7 @@ void FlowRuleManager::RegisterToProperty(
     return;
   }
   std::lock_guard<std::mutex> lck(property_mtx_);
-  // TODO: log
+  Log::RecordLog::Info("Registering new property to FlowRuleManager");
   cur_property_->RemoveListener(kFlowPropertyListenerName);
   cur_property_ = property;
   cur_property_->AddListener(std::make_unique<FlowPropertyListener>());
@@ -140,6 +140,7 @@ void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
     absl::WriterMutexLock lck(&(m.update_mtx_));
     m.rule_map_.clear();
     m.traffic_controller_map_.clear();
+    Log::RecordLog::Info("[FlowRuleManager] Flow rules received: []");
     return;
   }
 
