@@ -97,7 +97,7 @@ void FlowRuleManager::RegisterToProperty(
     return;
   }
   std::lock_guard<std::mutex> lck(property_mtx_);
-  Log::RecordLog::Info("Registering new property to FlowRuleManager");
+  SENTINEL_LOG(info, "Registering new property to FlowRuleManager");
   cur_property_->RemoveListener(kFlowPropertyListenerName);
   cur_property_ = property;
   cur_property_->AddListener(std::make_unique<FlowPropertyListener>());
