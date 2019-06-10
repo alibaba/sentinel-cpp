@@ -9,10 +9,10 @@ namespace Transport {
 
 class GetSwitchStatusCommandHandler : public CommandHandler {
  public:
-  GetSwitchStatusCommandHandler() : CommandHandler("setSwitch") {}
+  GetSwitchStatusCommandHandler() : CommandHandler("getSwitch") {}
 
   virtual ~GetSwitchStatusCommandHandler() = default;
-  CommandResponseSharedPtr Handle(const CommandRequest& request) override;
+  CommandResponsePtr Handle(const CommandRequest& request) override;
 };
 
 }  // namespace Transport

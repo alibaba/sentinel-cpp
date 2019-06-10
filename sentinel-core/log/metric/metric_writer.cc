@@ -1,13 +1,10 @@
 #include "sentinel-core/log/metric/metric_writer.h"
 
-#include "sentinel-core/config/local_config.h"
-
 #include <dirent.h>
 #include <unistd.h>
 
 #include <ctime>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <locale>
 #include <regex>
@@ -18,14 +15,14 @@
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
+#include "absl/time/time.h"
 
+#include "sentinel-core/config/local_config.h"
 #include "sentinel-core/log/log_base.h"
 #include "sentinel-core/log/logger.h"
 
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
-
-#include <iostream>
 
 using namespace Sentinel::Utils;
 
@@ -48,14 +45,8 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
   single_file_size_ = single_file_size;
   total_file_count_ = total_file_count;
 
-  std::tm tm = {};
-  std::istringstream ss("1970-01-01 00:00:00");
-  ss >> std::get_time(&tm, "%Y-%m-%d T %H:%M:%S");
-  auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-  time_second_base_ =
-      std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch())
-          .count();
-
+  time_second_base_ = absl::ToUnixSeconds(
+      absl::FromDateTime(1970, 1, 1, 0, 0, 0, absl::LocalTimeZone()));
   pid_ = ::getpid();
 
   auto app_name = Config::LocalConfig::GetInstance().app_name();
@@ -153,10 +144,9 @@ std::string MetricWriter::FormMetricFileName(const std::string &app_name,
 }
 
 std::string MetricWriter::NextFileNameOfDay(int64_t time) {
-  std::ostringstream data_ss;
-  std::time_t t(time / 1000);
-  data_ss << std::put_time(std::localtime(&t), "%Y-%m-%d");
-  auto file_name_model = base_file_name_ + "." + data_ss.str();
+  auto date_str = absl::FormatTime("%Y-%m-%d", absl::FromUnixMillis(time),
+                                   absl::LocalTimeZone());
+  auto file_name_model = base_file_name_ + "." + date_str;
 
   std::vector<std::string> files;
   for (auto &file_name : Sentinel::Utils::FileUtils::ListFiles(base_dir_)) {

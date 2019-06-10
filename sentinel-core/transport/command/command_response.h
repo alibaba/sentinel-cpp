@@ -8,18 +8,19 @@ namespace Transport {
 
 class CommandResponse;
 using CommandResponseSharedPtr = std::shared_ptr<CommandResponse>;
+using CommandResponsePtr = std::unique_ptr<CommandResponse>;
 
 class CommandResponse {
  public:
   CommandResponse(bool success, const std::string& result)
       : success_(success), result_(result) {}
 
-  static CommandResponseSharedPtr OfSuccess(const std::string& result) {
-    return std::make_shared<CommandResponse>(true, result);
+  static CommandResponsePtr OfSuccess(const std::string& result) {
+    return std::make_unique<CommandResponse>(true, result);
   }
 
-  static CommandResponseSharedPtr OfFailure(const std::string& result) {
-    return std::make_shared<CommandResponse>(false, result);
+  static CommandResponsePtr OfFailure(const std::string& result) {
+    return std::make_unique<CommandResponse>(false, result);
   }
 
   bool success() const { return success_; }

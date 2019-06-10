@@ -5,6 +5,8 @@
 
 #include "sentinel-core/transport/command/handler/fetch_cluster_node_handler.h"
 #include "sentinel-core/transport/command/handler/fetch_metric_log_handler.h"
+#include "sentinel-core/transport/command/handler/get_switch_status_handler.h"
+#include "sentinel-core/transport/command/handler/set_switch_status_handler.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
 #include "sentinel-core/transport/constants.h"
 
@@ -38,6 +40,10 @@ void HttpCommandCenterInitTarget::Initialize() {
       std::make_unique<FetchMetricLogCommandHandler>());
   command_center_->RegisterCommand(
       std::make_unique<FetchClusterNodeCommandHandler>());
+  command_center_->RegisterCommand(
+      std::make_unique<SetSwitchStatusCommandHandler>());
+  command_center_->RegisterCommand(
+      std::make_unique<GetSwitchStatusCommandHandler>());
 
   uint32_t port = GetAvailablePort();
   command_center_->Start(port);

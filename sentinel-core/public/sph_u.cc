@@ -2,6 +2,7 @@
 
 #include "sentinel-core/common/constants.h"
 #include "sentinel-core/common/entry.h"
+#include "sentinel-core/common/global_status.h"
 #include "sentinel-core/common/string_resource_wrapper.h"
 #include "sentinel-core/public/sph_u.h"
 #include "sentinel-core/slot/base/slot_chain.h"
@@ -14,6 +15,10 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
                            int flag) {
   auto resource = std::make_shared<StringResourceWrapper>(r, t);
   EntrySharedPtr e = std::make_shared<Sentinel::Entry>(resource, context);
+  if (!GlobalStatus::activated) {
+    e->exited_ = true;
+    return std::make_unique<EntryResult>(e);
+  }
 
   Slot::SlotChainSharedPtr chain = Slot::GlobalSlotChain;
   if (chain == nullptr) {

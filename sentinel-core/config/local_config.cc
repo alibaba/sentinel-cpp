@@ -70,7 +70,10 @@ int32_t LocalConfig::WarmUpColdFactor() const {
   int cold_factor =
       GetInt32(Env::kWarmUpColdFactorKey, kDefaultWarmUpColdFactor);
   if (cold_factor <= 1) {
-    // TODO: warn
+    SENTINEL_LOG(
+        info,
+        "Invalid cold_factor <{}>, fallback with the default cold factor <{}>",
+        cold_factor, kDefaultWarmUpColdFactor);
     cold_factor = kDefaultWarmUpColdFactor;
   }
   return cold_factor;

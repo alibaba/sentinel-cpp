@@ -21,6 +21,7 @@ class Entry {
   virtual ~Entry() = default;
 
   friend class EntryResult;
+  friend class SphU;
 
   ResourceWrapperSharedPtr resource() const { return resource_; }
   std::chrono::milliseconds create_time() const { return create_time_; }

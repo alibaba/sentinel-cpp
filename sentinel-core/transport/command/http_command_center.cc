@@ -8,6 +8,8 @@
 namespace Sentinel {
 namespace Transport {
 
+HttpCommandCenter::~HttpCommandCenter() { Stop(); }
+
 bool HttpCommandCenter::Start(int port) {
   if (http_server_) {
     // log warn
@@ -53,13 +55,13 @@ void HttpCommandCenter::OnHttpRequest(struct evhttp_request* http_req) {
   }
 
   auto response = it->second->Handle(request);
-  HandleResponse(http_req, response);
+  HandleResponse(http_req, std::move(response));
 
   return;
 }
 
-void HttpCommandCenter::HandleResponse(
-    struct evhttp_request* http_req, const CommandResponseSharedPtr& response) {
+void HttpCommandCenter::HandleResponse(struct evhttp_request* http_req,
+                                       CommandResponsePtr&& response) {
   if (response->success()) {
     HttpCommandUtils::SucessRequest(http_req, response->result());
   } else {

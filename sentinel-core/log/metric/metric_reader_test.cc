@@ -3,10 +3,11 @@
 
 #include <cstdio>
 #include <fstream>
-#include <iomanip>
 #include <sstream>
 
 #define private public
+
+#include "absl/time/time.h"
 
 #include "sentinel-core/config/local_config.h"
 #include "sentinel-core/log/log_base.h"
@@ -16,8 +17,6 @@
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
 
-#include <iostream>
-
 namespace Sentinel {
 namespace Log {
 
@@ -25,13 +24,12 @@ TEST(MetricReaderTest, TestReadMetrics) {
   int64_t time = Sentinel::Utils::TimeUtils::CurrentTimeMillis().count();
   MetricTestUtils::TestWriteMetricLog(time);
 
-  std::ostringstream data_ss;
-  std::time_t t(time / 1000);
-  data_ss << std::put_time(std::localtime(&t), "%Y-%m-%d");
+  auto date_str = absl::FormatTime("%Y-%m-%d", absl::FromUnixMillis(time),
+                                   absl::LocalTimeZone());
 
   auto log_file_name = LogBase::GetLogBaseDir() +
                        MetricTestUtils::GetAppName() + "-metrics.log." +
-                       data_ss.str();
+                       date_str;
 
   std::vector<std::string> file_names{log_file_name};
   MetricReader reader;
@@ -48,13 +46,12 @@ TEST(MetricReaderTest, TestReadMetricsByEndTime) {
   int64_t time = Sentinel::Utils::TimeUtils::CurrentTimeMillis().count();
   MetricTestUtils::TestWriteMetricLog(time);
 
-  std::ostringstream data_ss;
-  std::time_t t(time / 1000);
-  data_ss << std::put_time(std::localtime(&t), "%Y-%m-%d");
+  auto date_str = absl::FormatTime("%Y-%m-%d", absl::FromUnixMillis(time),
+                                   absl::LocalTimeZone());
 
   auto log_file_name = LogBase::GetLogBaseDir() +
                        MetricTestUtils::GetAppName() + "-metrics.log." +
-                       data_ss.str();
+                       date_str;
 
   std::vector<std::string> file_names{log_file_name};
   MetricReader reader;

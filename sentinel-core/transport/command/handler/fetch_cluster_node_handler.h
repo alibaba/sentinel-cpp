@@ -12,8 +12,7 @@ class FetchClusterNodeCommandHandler : public CommandHandler {
   FetchClusterNodeCommandHandler() : CommandHandler("clusterNode") {}
 
   virtual ~FetchClusterNodeCommandHandler() = default;
-  std::shared_ptr<CommandResponse> Handle(
-      const CommandRequest& request) override;
+  CommandResponsePtr Handle(const CommandRequest& request) override;
 };
 
 }  // namespace Transport

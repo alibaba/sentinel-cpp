@@ -24,10 +24,11 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
   }
 
   bool UpdateValue(const T& value) override {
-    if (laste_value == value) {
+    if (last_value_ == value) {
       return false;
     }
 
+    last_value_ = value;
     for (auto it = listeners_.begin(); it != listeners_.end(); ++it) {
       it->second->ConfigUpdate(value, false);
     }
@@ -38,7 +39,7 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
   void Clear() { listeners_.clear(); }
 
  private:
-  T laste_value;
+  T last_value_;
   std::unordered_map<std::string, PropertyListenerPtr<T>> listeners_;
 };
 }  // namespace Property

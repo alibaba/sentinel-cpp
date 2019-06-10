@@ -22,8 +22,7 @@ class FetchMetricLogCommandHandler : public CommandHandler {
   }
 
   virtual ~FetchMetricLogCommandHandler() = default;
-  std::shared_ptr<CommandResponse> Handle(
-      const CommandRequest& request) override;
+  CommandResponsePtr Handle(const CommandRequest& request) override;
 
  private:
   std::unique_ptr<Log::MetricSearcher> searcher_;
