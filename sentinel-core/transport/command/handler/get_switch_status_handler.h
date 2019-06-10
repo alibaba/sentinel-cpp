@@ -12,7 +12,7 @@ class GetSwitchStatusCommandHandler : public CommandHandler {
   GetSwitchStatusCommandHandler() : CommandHandler("getSwitch") {}
 
   virtual ~GetSwitchStatusCommandHandler() = default;
-  CommandResponseSharedPtr Handle(const CommandRequest& request) override;
+  CommandResponsePtr Handle(const CommandRequest& request) override;
 };
 
 }  // namespace Transport

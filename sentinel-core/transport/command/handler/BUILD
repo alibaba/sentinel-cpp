@@ -44,6 +44,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    "@com_google_absl//absl/strings:str_format",
     "//sentinel-core/common:global_status",
     "//sentinel-core/transport/command:command_handler_interface",
   ]

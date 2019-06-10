@@ -5,7 +5,7 @@
 namespace Sentinel {
 namespace Transport {
 
-CommandResponseSharedPtr SetSwitchStatusCommandHandler::Handle(
+CommandResponsePtr SetSwitchStatusCommandHandler::Handle(
     const CommandRequest& request) {
   auto v = request.GetParam("value");
   if (v == "true") {

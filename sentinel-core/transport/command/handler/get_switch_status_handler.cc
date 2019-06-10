@@ -2,15 +2,18 @@
 
 #include <string>
 
+#include "absl/strings/str_format.h"
+
 #include "sentinel-core/common/global_status.h"
 
 namespace Sentinel {
 namespace Transport {
 
-CommandResponseSharedPtr GetSwitchStatusCommandHandler::Handle(
+CommandResponsePtr GetSwitchStatusCommandHandler::Handle(
     const CommandRequest& request) {
   const char* status = GlobalStatus::activated ? "enabled" : "disabled";
-  return CommandResponse::OfSuccess(std::string("Sentinel status: ") + status);
+  return CommandResponse::OfSuccess(
+      absl::StrFormat("Sentinel status: %s", status));
 }
 
 }  // namespace Transport

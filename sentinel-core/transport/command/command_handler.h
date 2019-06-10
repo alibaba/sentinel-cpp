@@ -12,7 +12,7 @@ class CommandHandler {
  public:
   CommandHandler(const std::string& name) : command_name_(name) {}
   virtual ~CommandHandler() = default;
-  virtual CommandResponseSharedPtr Handle(const CommandRequest& request) = 0;
+  virtual CommandResponsePtr Handle(const CommandRequest& request) = 0;
 
   const std::string& command_name() const { return command_name_; }
 
