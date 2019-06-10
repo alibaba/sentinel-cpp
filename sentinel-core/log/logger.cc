@@ -28,6 +28,10 @@ bool Logger::Init(const std::string& file_path, const std::string& log_format) {
   return true;
 }
 
+void Logger::Uninitialization() {
+  spdlog::drop(kDefaultFileLogger);
+}
+
 void Logger::SetAllLoggerLevel(levels level) {
   spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->set_level(static_cast<spdlog::level::level_enum>(level));});
 }

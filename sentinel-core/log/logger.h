@@ -21,6 +21,7 @@ class Logger {
  public:
   Logger() = delete;
   static bool Init(const std::string& file_path, const std::string& log_format);
+  static void Uninitialization();
   static void SetAllLoggerLevel(levels level);
   static void FlushAllLogger();
 
@@ -39,15 +40,19 @@ class Logger {
       }
       case info: {
         logger->info(format, args...);
+        break;
       }
       case warn: {
         logger->warn(format, args...);
+        break;
       }
       case error: {
         logger->error(format, args...);
+        break;
       }
       case critical: {
         logger->critical(format, args...);
+        break;
       }
       default: {
         NOT_REACHED_GCOVR_EXCL_LINE
