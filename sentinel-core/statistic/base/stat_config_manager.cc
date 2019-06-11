@@ -40,13 +40,11 @@ void StatConfigManager::RegisterIntervalProperty(
   property->AddListener(std::make_unique<IntervalPropertyListener>());
 }
 
-void SampleCountPropertyListener::ConfigUpdate(const int32_t& value,
-                                               bool first_load) {
+void SampleCountPropertyListener::ConfigUpdate(const int32_t& value, bool) {
   StatConfigManager::GetInstance().UpdateSampleCount(value);
 }
 
-void IntervalPropertyListener::ConfigUpdate(const int32_t& value,
-                                            bool first_load) {
+void IntervalPropertyListener::ConfigUpdate(const int32_t& value, bool) {
   StatConfigManager::GetInstance().UpdateInterval(value);
 }
 

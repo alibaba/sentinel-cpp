@@ -1,5 +1,6 @@
 #include "sentinel-core/transport/command/http_command_center.h"
 
+#include <functional>
 #include <future>
 #include <iostream>
 

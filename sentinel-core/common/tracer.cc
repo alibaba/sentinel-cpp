@@ -5,8 +5,7 @@
 
 namespace Sentinel {
 
-void Tracer::Trace(const EntrySharedPtr entry, const std::string& message,
-                   int count) {
+void Tracer::Trace(const EntrySharedPtr entry, const std::string&, int count) {
   if (entry == nullptr || count <= 0) {
     return;
   }

@@ -133,8 +133,7 @@ void LogFlowMap(const std::unordered_map<std::string, FlowRuleList>& map) {
   Log::RecordLog::Info("[FlowRuleManager] Flow rules received: {}", s);
 }
 
-void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value,
-                                        bool first_load) {
+void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value, bool) {
   FlowRuleManager& m = FlowRuleManager::GetInstance();
   if (value.empty()) {
     absl::WriterMutexLock lck(&(m.update_mtx_));
