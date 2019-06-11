@@ -1,9 +1,11 @@
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <string>
 
 #include "absl/container/flat_hash_map.h"
+#include "absl/synchronization/mutex.h"
 #include "spdlog/spdlog.h"
 
 namespace Sentinel {
@@ -14,7 +16,6 @@ static constexpr const char* kBlockLogFilename = "sentinel-block.log";
 static constexpr uint32_t kDefaultBlockLogMaxSize = 1024 * 1024 * 300;
 
 struct BlockLogRecord {
- public:
   BlockLogRecord() = default;
   BlockLogRecord(int64_t lw, int64_t lb) : last_write_(lw), last_block_(lb) {}
 
@@ -32,12 +33,13 @@ class BlockLogTask {
 
   void Log(const std::string& resource, const std::string& cause);
 
-  bool started() const { return started_; }
+  bool started() const { return started_.load(); }
 
  private:
-  bool started_{false};
+  std::atomic_bool started_{false};
   std::shared_ptr<spdlog::logger> logger_;
   absl::flat_hash_map<std::string, BlockLogRecord> map_;
+  mutable absl::Mutex mtx_;
 
   void LoopWriteBlockLog();
 };

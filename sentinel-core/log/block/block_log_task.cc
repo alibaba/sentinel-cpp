@@ -33,22 +33,29 @@ BlockLogTask::~BlockLogTask() { Stop(); }
 
 void BlockLogTask::LoopWriteBlockLog() {
   while (true) {
-    if (!started_) {
+    if (!started()) {
       return;
     }
     if (logger_ != nullptr) {
-      for (auto& e : map_) {
-        if (e.second.last_block_ - e.second.last_write_ > 0) {
-          int64_t cur_time = TimeUtils::CurrentTimeMillis().count();
-          auto time_str = absl::FormatTime("%Y-%m-%d %H:%M:%S",
-                                           absl::FromUnixMillis(cur_time),
-                                           absl::LocalTimeZone());
-          // format: time|resource|exception
-          logger_->info("{}|{}", time_str, e.first);
-          e.second.last_write_ = cur_time;
+      {
+        absl::ReaderMutexLock lck(&mtx_);
+        for (auto& e : map_) {
+          if (e.second.last_block_ - e.second.last_write_ > 0) {
+            int64_t cur_time = TimeUtils::CurrentTimeMillis().count();
+            auto time_str = absl::FormatTime("%Y-%m-%d %H:%M:%S",
+                                             absl::FromUnixMillis(cur_time),
+                                             absl::LocalTimeZone());
+            // format: time|resource|exception
+            logger_->info("{}|{}", time_str, e.first);
+            e.second.last_write_ = cur_time;
+          }
         }
       }
       logger_->flush();
+      {
+        absl::WriterMutexLock lck(&mtx_);
+        map_.clear();
+      }
     }
 
     // sleep for 1s
@@ -57,22 +64,29 @@ void BlockLogTask::LoopWriteBlockLog() {
 }
 
 void BlockLogTask::Start() {
-  if (started_) {
+  if (logger_ == nullptr) {
+    // TODO: warn via SENTINEL_LOG
     return;
   }
-  started_ = true;
-  std::thread daemon_task(&BlockLogTask::LoopWriteBlockLog, this);
-  daemon_task.detach();
+  bool expected = false;
+  if (started_.compare_exchange_strong(expected, true)) {
+    std::thread daemon_task(&BlockLogTask::LoopWriteBlockLog, this);
+    daemon_task.detach();
+  }
 }
 
-void BlockLogTask::Stop() { started_ = false; }
+void BlockLogTask::Stop() { started_.store(false); }
 
 void BlockLogTask::Log(const std::string& resource, const std::string& cause) {
   auto key = absl::StrFormat("%s|%s", resource, cause);
+  mtx_.ReaderLock();
   auto it = map_.find(key);
   if (it != map_.end()) {
     it->second.last_block_ = TimeUtils::CurrentTimeMillis().count();
+    mtx_.ReaderUnlock();
   } else {
+    mtx_.ReaderUnlock();
+    absl::WriterMutexLock lck(&mtx_);
     map_.emplace(std::make_pair(
         key, BlockLogRecord{0, TimeUtils::CurrentTimeMillis().count()}));
   }
