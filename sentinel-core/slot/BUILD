@@ -6,10 +6,12 @@ cc_library(
   name = "log_slot_lib",
   srcs = [
     "log_slot.h",
+    "log_slot.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
     "//sentinel-core/slot/base:stats_slot_interface",
+    "//sentinel-core/log/block:block_log_task_lib",
   ]
 )
 
@@ -52,6 +54,7 @@ cc_library(
   deps = [
     ":resource_node_builder_slot_lib",
     ":statistic_slot_lib",
+    ":log_slot_lib",
     "//sentinel-core/flow:flow_slot_lib",
     "//sentinel-core/slot/base:default_slot_chain_impl_lib",
   ]
