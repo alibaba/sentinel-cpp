@@ -57,9 +57,7 @@ class Logger {
         logger->critical(format, args...);
         break;
       }
-      default: {
-        NOT_REACHED_GCOVR_EXCL_LINE
-      }
+      default: { NOT_REACHED_GCOVR_EXCL_LINE }
     }
   }
   static const char kDefaultFileLogger[];
