@@ -16,6 +16,19 @@ cc_library(
     "@com_google_absl//absl/time",
     "@com_github_gabime_spdlog//:spdlog",
     "//sentinel-core/log:log_base_impl_lib",
+    "//sentinel-core/log:logger_lib",
     "//sentinel-core/utils:utils_lib",
+  ]
+)
+
+cc_test(
+  name = "block_log_task_unittests",
+  srcs = [
+    "block_log_task_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":block_log_task_lib",
+    "@com_google_googletest//:gtest_main",
   ]
 )

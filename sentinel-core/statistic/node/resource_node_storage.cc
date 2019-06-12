@@ -26,7 +26,8 @@ Stat::ClusterNodePtr ResourceNodeStorage::GetOrCreateClusterNode(
     auto got = node_map_.find(resource_name);
     if (got == node_map_.end()) {
       if (node_map_.size() >= Constants::kMaxResourceSize) {
-        // TODO: warn here.
+        SENTINEL_LOG(warn, "Resource node size exceeds the threshold {}",
+                     Constants::kMaxResourceSize);
       }
       // Resource node not found, so we create a new node.
       cluster_node = std::make_shared<Stat::ClusterNode>();

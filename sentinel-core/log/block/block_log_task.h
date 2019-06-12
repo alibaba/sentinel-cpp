@@ -8,6 +8,8 @@
 #include "absl/synchronization/mutex.h"
 #include "spdlog/spdlog.h"
 
+#include "sentinel-core/log/log_base.h"
+
 namespace Sentinel {
 namespace Log {
 
@@ -25,7 +27,8 @@ struct BlockLogRecord {
 
 class BlockLogTask {
  public:
-  BlockLogTask();
+  BlockLogTask() : BlockLogTask(LogBase::GetLogBaseDir() + kBlockLogFilename) {}
+  explicit BlockLogTask(const std::string& log_path);
   ~BlockLogTask();
 
   void Start();

@@ -4,7 +4,7 @@
 #include <memory>
 #include <thread>
 
-#include "sentinel-core/log/log_base.h"
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/utils/time_utils.h"
 
 #include "absl/strings/str_format.h"
@@ -17,10 +17,9 @@ using namespace Sentinel::Utils;
 namespace Sentinel {
 namespace Log {
 
-BlockLogTask::BlockLogTask() {
-  auto filename = LogBase::GetLogBaseDir() + kBlockLogFilename;
+BlockLogTask::BlockLogTask(const std::string& log_path) {
   try {
-    logger_ = spdlog::rotating_logger_mt(kBlockLoggerName, filename,
+    logger_ = spdlog::rotating_logger_mt(kBlockLoggerName, log_path,
                                          kDefaultBlockLogMaxSize, 3);
     logger_->set_pattern("%v");
   } catch (const spdlog::spdlog_ex& ex) {
@@ -29,7 +28,10 @@ BlockLogTask::BlockLogTask() {
   }
 }
 
-BlockLogTask::~BlockLogTask() { Stop(); }
+BlockLogTask::~BlockLogTask() {
+  Stop();
+  spdlog::drop(kBlockLoggerName);
+}
 
 void BlockLogTask::LoopWriteBlockLog() {
   while (true) {
@@ -61,7 +63,9 @@ void BlockLogTask::LoopWriteBlockLog() {
 
 void BlockLogTask::Start() {
   if (logger_ == nullptr) {
-    // TODO: warn via SENTINEL_LOG
+    SENTINEL_LOG(
+        error,
+        "Block logger failed to initialize, the block log task won't start");
     return;
   }
   bool expected = false;
