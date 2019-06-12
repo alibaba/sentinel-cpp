@@ -1,7 +1,7 @@
 #include <memory>
 #include <string>
 
-#include "sentinel-core/log/record_log.h"
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/statistic/node/resource_node_storage.h"
 
 namespace Sentinel {
@@ -28,7 +28,7 @@ Stat::ClusterNodePtr ResourceNodeStorage::GetOrCreateClusterNode(
       cluster_node = std::make_shared<Stat::ClusterNode>();
       node_map_.insert(std::make_pair(resource_name, cluster_node));
 
-      Log::RecordLog::Info("Creating resource node for <{}>", resource_name);
+      SENTINEL_LOG(info, "Creating resource node for <{}>", resource_name);
     } else {
       cluster_node = got->second;
     }

@@ -39,7 +39,7 @@ cc_library(
     ":default_traffic_shaping_calculator_lib",
     ":default_traffic_shaping_checker_lib",
     "//sentinel-core/property:property_listener_interface",
-    "//sentinel-core/log:record_log_impl_lib",
+    "//sentinel-core/log:logger_lib",
     "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/property:dynamic_sentinel_property_lib",
     "@com_google_absl//absl/synchronization",
