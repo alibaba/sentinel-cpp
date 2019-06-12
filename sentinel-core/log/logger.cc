@@ -3,17 +3,27 @@
 #include <iostream>
 
 #include <spdlog/async.h>
-#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/daily_file_sink.h>
 
 namespace Sentinel {
 namespace Log {
 
+static constexpr const char* kDefaultRecordLogFormat = "[%H:%M:%S] [%l] %v";
+
 const char Logger::kDefaultFileLogger[] = "default_sentinel_logger";
+
+bool Logger::InitDefaultLogger() {
+  return Logger::InitDefaultLogger(Logger::GetDefaultLogPath());
+}
+
+bool Logger::InitDefaultLogger(const std::string& file_path) {
+  return Logger::InitDefaultLogger(file_path, kDefaultRecordLogFormat);
+}
 
 bool Logger::InitDefaultLogger(const std::string& file_path,
                                const std::string& log_format) {
   try {
-    auto logger = spdlog::basic_logger_mt<spdlog::async_factory>(
+    auto logger = spdlog::daily_logger_mt<spdlog::async_factory>(
         kDefaultFileLogger, file_path);
     if (!logger) {
       return false;
@@ -23,7 +33,7 @@ bool Logger::InitDefaultLogger(const std::string& file_path,
       logger->set_pattern(log_format);
     }
     logger->set_level(spdlog::level::info);
-    logger->flush_on(spdlog::level::err);
+    logger->flush_on(spdlog::level::info);
   } catch (const spdlog::spdlog_ex& ex) {
     std::cerr << "Log initialization failed: " << ex.what() << std::endl;
     return false;
@@ -41,6 +51,10 @@ void Logger::SetAllLoggerLevel(levels level) {
 
 void Logger::FlushAllLogger() {
   spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) { l->flush(); });
+}
+
+std::string Logger::GetDefaultLogPath() {
+  return LogBase::GetLogBaseDir() + kRecordLogFilename;
 }
 
 }  // namespace Log

@@ -2,7 +2,9 @@
 
 #include <string>
 
+#include "sentinel-core/log/log_base.h"
 #include "sentinel-core/utils/macros.h"
+
 #include "spdlog/spdlog.h"
 
 namespace Sentinel {
@@ -16,14 +18,21 @@ typedef enum {
 } levels;
 
 namespace Log {
+
+static constexpr const char* kRecordLogFilename = "sentinel-record.log";
+
 class Logger {
  public:
   Logger() = delete;
+  static bool InitDefaultLogger();
+  static bool InitDefaultLogger(const std::string& file_path);
   static bool InitDefaultLogger(const std::string& file_path,
                                 const std::string& log_format);
   static void Uninitialization();
   static void SetAllLoggerLevel(levels level);
   static void FlushAllLogger();
+
+  static std::string GetDefaultLogPath();
 
   template <typename... Args>
   static void Log(const std::string& logger_name, levels level,

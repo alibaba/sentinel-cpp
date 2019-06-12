@@ -10,6 +10,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    ":log_base_impl_lib",
     "//sentinel-core/utils:macros_lib",
     "@com_github_gabime_spdlog//:spdlog"
   ]
