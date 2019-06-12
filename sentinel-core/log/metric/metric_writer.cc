@@ -19,7 +19,8 @@
 
 #include "sentinel-core/config/local_config.h"
 #include "sentinel-core/log/log_base.h"
-#include "sentinel-core/log/record_log.h"
+#include "sentinel-core/log/logger.h"
+
 #include "sentinel-core/utils/file_utils.h"
 #include "sentinel-core/utils/time_utils.h"
 
@@ -30,9 +31,11 @@ namespace Log {
 
 MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
     : single_file_size_(single_file_size), total_file_count_(total_file_count) {
-  RecordLog::Info("[MetricWriter] Creating new MetricWriter, singleFileSize=" +
-                  std::to_string(single_file_size_) +
-                  ", totalFileCount=" + std::to_string(total_file_count_));
+  SENTINEL_LOG(info,
+               "[MetricWriter] Creating new MetricWriter, singleFileSize={}, "
+               "totalFileCount={}",
+               std::to_string(single_file_size_),
+               std::to_string(total_file_count_));
 
   base_dir_ = LogBase::GetLogBaseDir();
 
@@ -155,7 +158,7 @@ std::string MetricWriter::NextFileNameOfDay(int64_t time) {
   }
 
   if (files.size() == 0) {
-    RecordLog::Info("NextFileNameOfDay: " + base_dir_ + file_name_model);
+    SENTINEL_LOG(info, "NextFileNameOfDay: {} {}", base_dir_, file_name_model);
     return base_dir_ + file_name_model;
   }
 
@@ -177,7 +180,7 @@ std::string MetricWriter::NextFileNameOfDay(int64_t time) {
   }
 
   auto file_name = base_dir_ + file_name_model + "." + std::to_string(n + 1);
-  RecordLog::Info("NextFileNameOfDay: " + file_name);
+  SENTINEL_LOG(info, "NextFileNameOfDay: {}", file_name);
 
   return file_name;
 }
@@ -226,9 +229,9 @@ void MetricWriter::CloseAndNewFile(const std::string &file_name) {
   auto idx_file_name = FormIndexFileName(file_name);
   metric_index_out_.open(idx_file_name, std::ios::out);
 
-  RecordLog::Info("[MetricWriter] New metric file created: " + file_name);
-  RecordLog::Info("[MetricWriter] New metric index file created: " +
-                  idx_file_name);
+  SENTINEL_LOG(info, "[MetricWriter] New metric file created: {}", file_name);
+  SENTINEL_LOG(info, "[MetricWriter] New metric index file created: {}",
+               idx_file_name);
 }
 
 void MetricWriter::Close() {
@@ -286,9 +289,10 @@ void MetricWriter::RemoveMoreFiles() {
     auto &file_name = list[i];
     auto index_file = FormIndexFileName(file_name);
     remove(file_name.c_str());
-    RecordLog::Info("[MetricWriter] Removing metric file: " + file_name);
+    SENTINEL_LOG(info, "[MetricWriter] Removing metric file: {}", file_name);
     remove(index_file.c_str());
-    RecordLog::Info("[MetricWriter] Removing metric index file: " + index_file);
+    SENTINEL_LOG(info, "[MetricWriter] Removing metric index file: {}",
+                 index_file);
   }
 }
 

@@ -7,8 +7,8 @@
 #include "sentinel-core/flow/flow_rule_manager.h"
 #include "sentinel-core/init/init_target_registry.h"
 #include "sentinel-core/log/log_base.h"
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/log/metric/metric_log_task.h"
-#include "sentinel-core/log/record_log.h"
 #include "sentinel-core/public/sph_u.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
 
@@ -39,8 +39,12 @@ void doAnotherEntry() { doEntry("big_brother_service:foo()"); }
  * ./bazel-bin/examples/sentinel-cpp/sentinel_basic_concurrency_limit
  */
 int main() {
-  Sentinel::Log::MetricLogTask task;
-  task.Initialize();
+  // Initialize for Sentinel.
+  Sentinel::Log::Logger::InitDefaultLogger();
+  Sentinel::Transport::HttpCommandCenterInitTarget command_center_init;
+  command_center_init.Initialize();
+  Sentinel::Log::MetricLogTask metric_log_task;
+  metric_log_task.Initialize();
 
   Sentinel::Flow::FlowRule rule1{"my_open_api_abc"};
   rule1.set_metric_type(Sentinel::Flow::FlowMetricType::kThreadCount);

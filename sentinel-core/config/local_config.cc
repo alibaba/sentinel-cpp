@@ -4,7 +4,7 @@
 
 #include "sentinel-core/config/config_constants.h"
 #include "sentinel-core/config/local_config.h"
-#include "sentinel-core/log/record_log.h"
+#include "sentinel-core/log/logger.h"
 
 namespace Sentinel {
 namespace Config {
@@ -70,7 +70,8 @@ int32_t LocalConfig::WarmUpColdFactor() const {
   int cold_factor =
       GetInt32(Env::kWarmUpColdFactorKey, kDefaultWarmUpColdFactor);
   if (cold_factor <= 1) {
-    Log::RecordLog::Warn(
+    SENTINEL_LOG(
+        info,
         "Invalid cold_factor <{}>, fallback with the default cold factor <{}>",
         cold_factor, kDefaultWarmUpColdFactor);
     cold_factor = kDefaultWarmUpColdFactor;
@@ -102,11 +103,11 @@ void LocalConfig::ResolveAppName() {
   const char* app_name_env = std::getenv(Env::kAppNameKey);
   if (app_name_env) {
     app_name_ = app_name_env;
-    Log::RecordLog::Info("App name resolved: {}", app_name_);
+    SENTINEL_LOG(info, "App name resolved: {}", app_name_);
   } else {
     app_name_ = kUnknownAppName;
-    Log::RecordLog::Warn("No {} configured, using the fallback app name: {}",
-                         Env::kAppNameKey, kUnknownAppName);
+    SENTINEL_LOG(warn, "No {} configured, using the fallback app name: {}",
+                 Env::kAppNameKey, kUnknownAppName);
   }
 }
 

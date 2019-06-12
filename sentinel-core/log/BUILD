@@ -3,23 +3,15 @@ load("//bazel:copts.bzl", "DEFAULT_COPTS", "TEST_COPTS")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-  name = "record_log_interface",
+  name = "logger_lib",
   srcs = [
-    "record_log.h",
+    "logger.h",
+    "logger.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
-  ]
-)
-
-cc_library(
-  name = "record_log_impl_lib",
-  srcs = [
-    "record_log.h",
-    "record_log.cc",
-  ],
-  copts = DEFAULT_COPTS,
-  deps = [
+    ":log_base_impl_lib",
+    "//sentinel-core/utils:macros_lib",
     "@com_github_gabime_spdlog//:spdlog"
   ]
 )
@@ -58,6 +50,21 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":log_base_impl_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
+
+
+cc_test(
+  name = "logger_unittests",
+  srcs = [
+    "logger_unittests.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":logger_lib",
+    "@com_google_absl//absl/strings:str_format",
+    "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest_main",
   ]
 )

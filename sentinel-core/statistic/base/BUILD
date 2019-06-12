@@ -22,6 +22,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":stat_config_lib",
+    "//sentinel-core/log:logger_lib",
     "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
