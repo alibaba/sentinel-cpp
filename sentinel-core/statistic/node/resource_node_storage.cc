@@ -1,6 +1,7 @@
 #include <memory>
 #include <string>
 
+#include "sentinel-core/common/constants.h"
 #include "sentinel-core/log/logger.h"
 #include "sentinel-core/statistic/node/resource_node_storage.h"
 
@@ -24,6 +25,10 @@ Stat::ClusterNodePtr ResourceNodeStorage::GetOrCreateClusterNode(
     absl::WriterMutexLock lck(&mtx_);
     auto got = node_map_.find(resource_name);
     if (got == node_map_.end()) {
+      if (node_map_.size() >= Constants::kMaxResourceSize) {
+        SENTINEL_LOG(warn, "Resource node size exceeds the threshold {}",
+                     Constants::kMaxResourceSize);
+      }
       // Resource node not found, so we create a new node.
       cluster_node = std::make_shared<Stat::ClusterNode>();
       node_map_.insert(std::make_pair(resource_name, cluster_node));

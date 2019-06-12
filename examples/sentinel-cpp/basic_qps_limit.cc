@@ -18,10 +18,10 @@ void DoEntry(const char* resource) {
     if (r->IsBlocked()) {
       // Indicating the request is blocked. We can do something for this.
       std::cout << "b";
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(8));
     } else {
       std::cout << "\n~~passed~~\n";
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(8));
       r->Exit();
     }
   }
@@ -37,6 +37,7 @@ void DoAnotherEntry() { DoEntry("m1:my_another_api_233"); }
  */
 int main() {
   // Initialize for Sentinel.
+  Sentinel::Log::Logger::InitDefaultLogger();
   Sentinel::Transport::HttpCommandCenterInitTarget command_center_init;
   command_center_init.Initialize();
   Sentinel::Log::MetricLogTask metric_log_task;
@@ -49,14 +50,20 @@ int main() {
   Sentinel::Flow::FlowRuleManager::GetInstance().LoadRules({rule1, rule2});
   std::thread t1(DoOneEntry);
   std::thread t2(DoOneEntry);
+  std::thread t21(DoOneEntry);
+  std::thread t22(DoOneEntry);
+  std::thread t23(DoOneEntry);
   std::this_thread::sleep_for(std::chrono::milliseconds(5));
   std::thread t3(DoOneEntry);
   std::thread t4(DoAnotherEntry);
+  std::this_thread::sleep_for(std::chrono::milliseconds(9));
   std::thread t5(DoOneEntry);
+  std::thread t6(DoOneEntry);
   t1.join();
   t2.join();
   t3.join();
   t4.join();
   t5.join();
+  t6.join();
   return 0;
 }

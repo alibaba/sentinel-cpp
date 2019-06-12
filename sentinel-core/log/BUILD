@@ -10,6 +10,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    ":log_base_impl_lib",
     "//sentinel-core/utils:macros_lib",
     "@com_github_gabime_spdlog//:spdlog"
   ]
@@ -62,6 +63,8 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":logger_lib",
+    "@com_google_absl//absl/strings:str_format",
+    "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest_main",
   ]
 )

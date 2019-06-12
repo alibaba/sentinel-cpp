@@ -39,8 +39,12 @@ void doAnotherEntry() { doEntry("big_brother_service:foo()"); }
  * ./bazel-bin/examples/sentinel-cpp/sentinel_basic_concurrency_limit
  */
 int main() {
-  Sentinel::Log::MetricLogTask task;
-  task.Initialize();
+  // Initialize for Sentinel.
+  Sentinel::Log::Logger::InitDefaultLogger();
+  Sentinel::Transport::HttpCommandCenterInitTarget command_center_init;
+  command_center_init.Initialize();
+  Sentinel::Log::MetricLogTask metric_log_task;
+  metric_log_task.Initialize();
 
   Sentinel::Flow::FlowRule rule1{"my_open_api_abc"};
   rule1.set_metric_type(Sentinel::Flow::FlowMetricType::kThreadCount);
