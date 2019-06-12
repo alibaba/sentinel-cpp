@@ -10,12 +10,12 @@ CommandResponsePtr SetSwitchStatusCommandHandler::Handle(
   auto v = request.GetParam("value");
   if (v == "true") {
     GlobalStatus::activated = true;
-    // Log::RecordLog::Info("[SwitchOnOffHandler] Sentinel has been activated");
+    // SENTINEL_LOG(info, "[SwitchOnOffHandler] Sentinel has been activated");
     return CommandResponse::OfSuccess("Sentinel has been enabled");
   }
   if (v == "false") {
     GlobalStatus::activated = false;
-    // Log::RecordLog::Info("[SwitchOnOffHandler] Sentinel has been disabled");
+    // SENTINEL_LOG(info, "[SwitchOnOffHandler] Sentinel has been disabled");
     return CommandResponse::OfSuccess("Sentinel has been disabled");
   }
   return CommandResponse::OfFailure("bad new status");

@@ -7,8 +7,8 @@
 #include "sentinel-core/flow/flow_rule_manager.h"
 #include "sentinel-core/init/init_target_registry.h"
 #include "sentinel-core/log/log_base.h"
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/log/metric/metric_log_task.h"
-#include "sentinel-core/log/record_log.h"
 #include "sentinel-core/public/sph_u.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
 

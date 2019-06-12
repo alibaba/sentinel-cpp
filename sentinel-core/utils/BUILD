@@ -22,3 +22,11 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
 )
+
+cc_library(
+  name = "macros_lib",
+  srcs = [
+    "macros.h",
+  ],
+  copts = DEFAULT_COPTS,
+)
