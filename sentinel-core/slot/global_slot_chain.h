@@ -11,15 +11,6 @@
 namespace Sentinel {
 namespace Slot {
 
-static SlotChainSharedPtr BuildDefaultSlotChain() {
-  auto chain = std::make_shared<DefaultSlotChainImpl>();
-  chain->AddLast(std::make_unique<ResourceNodeBuilderSlot>());
-  chain->AddLast(std::make_unique<FlowSlot>());
-  chain->AddLast(std::make_unique<StatisticSlot>());
-  chain->AddLast(std::make_unique<LogSlot>());
-  return chain;
-}
-
 extern SlotChainSharedPtr GlobalSlotChain;
 
 }  // namespace Slot

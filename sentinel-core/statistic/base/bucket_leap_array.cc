@@ -3,8 +3,7 @@
 namespace Sentinel {
 namespace Stat {
 
-std::shared_ptr<MetricBucket> BucketLeapArray::NewEmptyBucket(
-    int64_t time_millis) {
+std::shared_ptr<MetricBucket> BucketLeapArray::NewEmptyBucket(int64_t) {
   return std::make_shared<MetricBucket>();
 }
 

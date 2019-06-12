@@ -124,8 +124,7 @@ void EventLoopThread::Wakeup() {
 #endif  // !WIN32
 }
 
-void EventLoopThread::OnWakeupFdCallback(evutil_socket_t fd, short events,
-                                         void* userdata) {
+void EventLoopThread::OnWakeupFdCallback(evutil_socket_t fd, short, void*) {
   uint64_t chr;
 #ifndef WIN32
   ::read(fd, &chr, sizeof chr);

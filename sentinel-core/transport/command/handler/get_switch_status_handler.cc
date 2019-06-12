@@ -10,7 +10,7 @@ namespace Sentinel {
 namespace Transport {
 
 CommandResponsePtr GetSwitchStatusCommandHandler::Handle(
-    const CommandRequest& request) {
+    const CommandRequest&) {
   const char* status = GlobalStatus::activated ? "enabled" : "disabled";
   return CommandResponse::OfSuccess(
       absl::StrFormat("Sentinel status: %s", status));

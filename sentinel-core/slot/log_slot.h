@@ -19,9 +19,9 @@ class LogSlot : public StatsSlot {
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodeSharedPtr& node, int count,
-                             int flag);
+                             int flag) override;
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count);
+            const ResourceWrapperSharedPtr& resource, int count) override;
 
  private:
   const std::string name_{kLogSlotName};

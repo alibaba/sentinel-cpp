@@ -34,8 +34,8 @@ TokenResultSharedPtr FlowSlot::Entry(const EntrySharedPtr& entry,
   return TokenResult::Ok();
 }
 
-void FlowSlot::Exit(const EntrySharedPtr& entry,
-                    const ResourceWrapperSharedPtr& resource, int count) {
+void FlowSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&,
+                    int) {
   // Do nothing
 }
 

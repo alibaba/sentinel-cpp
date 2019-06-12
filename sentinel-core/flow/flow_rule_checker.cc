@@ -41,7 +41,7 @@ Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
 }
 
 Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
-    const FlowRule& rule, const EntrySharedPtr& entry,
+    const FlowRule& rule, const EntrySharedPtr&,
     const Stat::NodeSharedPtr& node) {
   const std::string& ref_resource = rule.ref_resource();
   auto rel_strategy = rule.strategy();

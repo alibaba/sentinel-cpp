@@ -3,8 +3,7 @@
 namespace Sentinel {
 namespace Stat {
 
-StatisticNodeSharedPtr ClusterNode::GetOrCreateOriginNode(
-    const std::string& origin) {
+StatisticNodeSharedPtr ClusterNode::GetOrCreateOriginNode(const std::string&) {
   return nullptr;  // TODO: implemet here.
 }
 
