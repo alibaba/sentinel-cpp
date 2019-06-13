@@ -7,29 +7,29 @@ We use the same flags as absl.
 """
 
 load(
-    "@com_google_absl//absl:copts.bzl",
-    "GCC_FLAGS",
-    "GCC_TEST_FLAGS",
-    "LLVM_FLAGS",
-    "LLVM_TEST_FLAGS",
-    "MSVC_FLAGS",
-    "MSVC_TEST_FLAGS",
+    "@com_google_absl//absl:copts/GENERATED_copts.bzl",
+    "ABSL_GCC_EXCEPTIONS_FLAGS",
+    "ABSL_GCC_FLAGS",
+    "ABSL_GCC_TEST_FLAGS",
+    "ABSL_LLVM_EXCEPTIONS_FLAGS",
+    "ABSL_LLVM_FLAGS",
+    "ABSL_LLVM_TEST_FLAGS",
+    "ABSL_MSVC_EXCEPTIONS_FLAGS",
+    "ABSL_MSVC_FLAGS",
+    "ABSL_MSVC_LINKOPTS",
+    "ABSL_MSVC_TEST_FLAGS",
 )
 
 WERROR = ["-Werror=return-type", "-Werror=switch"]
 
 DEFAULT_COPTS = select({
-    "//bazel:llvm_compiler": LLVM_FLAGS + WERROR,
-    # Disable "not all control paths return a value"; functions that return
-    # out of a switch on an enum cause build errors otherwise.
-    "//bazel:windows": MSVC_FLAGS + ["/wd4715"],
-    "//conditions:default": GCC_FLAGS + WERROR + ["-std=c++14"],
+    "//bazel:windows": ABSL_MSVC_FLAGS,
+    "//bazel:llvm_compiler": ABSL_LLVM_FLAGS,
+    "//conditions:default": ABSL_GCC_FLAGS + WERROR + ["-std=c++14"],
 })
 
 TEST_COPTS = DEFAULT_COPTS + select({
-    "//bazel:llvm_compiler": LLVM_TEST_FLAGS,
-    # Disable "not all control paths return a value"; functions that return
-    # out of a switch on an enum cause build errors otherwise.
-    "//bazel:windows": MSVC_TEST_FLAGS + ["/wd4715"],
-    "//conditions:default": GCC_TEST_FLAGS +  WERROR + ["-std=c++14"],
+    "//bazel:windows": ABSL_MSVC_TEST_FLAGS,
+    "//bazel:llvm_compiler": ABSL_LLVM_TEST_FLAGS,
+    "//conditions:default": ABSL_GCC_TEST_FLAGS + WERROR + ["-std=c++14"],
 })

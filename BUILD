@@ -16,5 +16,5 @@ cc_library(
     name = "nlohmann_json_lib",
     visibility = ["//visibility:public"],
     hdrs = ["@com_github_nlohmann_json//file"],
-    strip_include_prefix = "/external/com_github_nlohmann_json/file",
+    strip_include_prefix = "external/com_github_nlohmann_json/file",
 )
