@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "nlohmann/json.hpp"
+#include "third_party/nlohmann/json.hpp"
 
 #include "sentinel-core/statistic/node/resource_node_storage.h"
 #include "sentinel-core/transport/command/handler/fetch_cluster_node_handler.h"

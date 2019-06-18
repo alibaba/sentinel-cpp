@@ -52,3 +52,4 @@ http_archive(
 
 load("//bazel:third_party_repositories.bzl", "include_third_party_repositories")
 include_third_party_repositories()
+
