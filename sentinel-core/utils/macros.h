@@ -3,11 +3,12 @@
 
 namespace Sentinel {
 
-#define PANIC(X)                            \
+#define SENTINEL_PANIC(X)                   \
   std::cerr << "panic: " << X << std::endl; \
   abort();
 
-#define NOT_IMPLEMENTED_GCOVR_EXCL_LINE PANIC("not implemented")
-#define NOT_REACHED_GCOVR_EXCL_LINE PANIC("not reached")
+#define SENTINEL_NOT_IMPLEMENTED_GCOVR_EXCL_LINE \
+  SENTINEL_PANIC("not implemented")
+#define SENTINEL_NOT_REACHED_GCOVR_EXCL_LINE SENTINEL_PANIC("not reached")
 
 }  // namespace Sentinel
