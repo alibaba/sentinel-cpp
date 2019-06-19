@@ -7,7 +7,7 @@
 namespace Sentinel {
 namespace Slot {
 
-extern SlotChainSharedPtr GlobalSlotChain;
+SlotChainSharedPtr GetGlobalSlotChain();
 
 }  // namespace Slot
 }  // namespace Sentinel

@@ -20,7 +20,7 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
     return std::make_unique<EntryResult>(e);
   }
 
-  Slot::SlotChainSharedPtr chain = Slot::GlobalSlotChain;
+  Slot::SlotChainSharedPtr chain = Slot::GetGlobalSlotChain();
   if (chain == nullptr) {
     // TODO: should warn here.
     return std::make_unique<EntryResult>(e);
