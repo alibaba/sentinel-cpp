@@ -27,6 +27,8 @@ class LocalConfig {
   int64_t GetInt64(const std::string& key, int64_t default_value) const;
 
   const std::string& app_name() const { return app_name_; }
+  void set_app_name(const std::string& app_name) { app_name_ = app_name; }
+
 
   int32_t WarmUpColdFactor() const;
   int32_t StatisticMaxRt() const;
