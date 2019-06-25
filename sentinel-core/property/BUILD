@@ -19,6 +19,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":property_listener_interface",
+    "//sentinel-core/log:logger_lib",
   ]
 )
 

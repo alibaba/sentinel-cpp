@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <utility>
 
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/property/sentinel_property.h"
 
 namespace Sentinel {
@@ -29,6 +30,7 @@ class DynamicSentinelProperty : public SentinelProperty<T> {
     }
 
     last_value_ = value;
+    SENTINEL_LOG(info, "starting to config update");
     for (auto it = listeners_.begin(); it != listeners_.end(); ++it) {
       it->second->ConfigUpdate(value, false);
     }
