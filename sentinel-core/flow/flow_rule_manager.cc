@@ -59,7 +59,7 @@ bool FlowRuleManager::LoadRules(const FlowRuleList& rules) {
 
 bool FlowRuleManager::HasRules(const std::string& resource) {
   absl::ReaderMutexLock lck(&update_mtx_);
-  return rule_map_.find(resource) == rule_map_.end();
+  return rule_map_.find(resource) != rule_map_.end();
 }
 
 FlowRuleList FlowRuleManager::GetRules() const {

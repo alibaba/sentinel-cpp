@@ -1,7 +1,7 @@
 #include <iostream>
 #include <typeinfo>
 
-#include "nlohmann/json.hpp"
+#include "third_party/nlohmann/json.hpp"
 
 int main() {
   try {

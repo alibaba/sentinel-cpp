@@ -26,7 +26,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//:nlohmann_json_lib",
+    "//third_party/nlohmann:nlohmann_json_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
     "//sentinel-core/utils:utils_lib",
     "//sentinel-core/transport/command:command_handler_interface",
