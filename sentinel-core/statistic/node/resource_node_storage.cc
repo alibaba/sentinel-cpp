@@ -8,7 +8,7 @@
 namespace Sentinel {
 namespace Stat {
 
-Stat::ClusterNodePtr ResourceNodeStorage::GetClusterNode(
+Stat::ClusterNodeSharedPtr ResourceNodeStorage::GetClusterNode(
     const std::string& resource_name) const {
   absl::ReaderMutexLock lck(&mtx_);
   auto got = node_map_.find(resource_name);
@@ -18,7 +18,7 @@ Stat::ClusterNodePtr ResourceNodeStorage::GetClusterNode(
   return got->second;
 }
 
-Stat::ClusterNodePtr ResourceNodeStorage::GetOrCreateClusterNode(
+Stat::ClusterNodeSharedPtr ResourceNodeStorage::GetOrCreateClusterNode(
     const std::string& resource_name) {
   auto cluster_node = GetClusterNode(resource_name);
   if (cluster_node == nullptr) {
@@ -48,8 +48,9 @@ void ResourceNodeStorage::ResetClusterNodes() {
   }
 }
 
-const std::unordered_map<std::string, Stat::ClusterNodePtr>&
+const std::unordered_map<std::string, Stat::ClusterNodeSharedPtr>
 ResourceNodeStorage::GetNodeMap() const {
+  absl::ReaderMutexLock lck(&mtx_);
   return this->node_map_;
 }
 

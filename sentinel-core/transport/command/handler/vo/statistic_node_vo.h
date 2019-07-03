@@ -12,7 +12,7 @@ class StatisticNodeVO {
   ~StatisticNodeVO() = default;
 
   static std::shared_ptr<StatisticNodeVO> FromResourceNode(
-      const std::string& name, const Stat::ClusterNodePtr& node);
+      const std::string& name, const Stat::ClusterNodeSharedPtr& node);
 
   const std::string& id() const { return id_; }
   const std::string& parent_id() const { return parent_id_; }
