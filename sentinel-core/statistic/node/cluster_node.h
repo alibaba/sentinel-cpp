@@ -26,7 +26,7 @@ class ClusterNode : public StatisticNode {
   std::mutex mtx_;
 };
 
-using ClusterNodePtr = std::shared_ptr<ClusterNode>;
+using ClusterNodeSharedPtr = std::shared_ptr<ClusterNode>;
 
 }  // namespace Stat
 }  // namespace Sentinel
