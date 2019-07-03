@@ -8,7 +8,7 @@ namespace Sentinel {
 namespace Transport {
 
 std::shared_ptr<StatisticNodeVO> StatisticNodeVO::FromResourceNode(
-    const std::string& name, const Stat::ClusterNodePtr& node) {
+    const std::string& name, const Stat::ClusterNodeSharedPtr& node) {
   if (node == nullptr) {
     return nullptr;
   }

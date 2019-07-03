@@ -43,7 +43,7 @@ void MetricLogTask::RunLogTask() {
       return;
     }
     std::map<int64_t, std::vector<Stat::MetricItemSharedPtr>> map;
-    const auto& resource_node_map =
+    const auto resource_node_map =
         Stat::ResourceNodeStorage::GetInstance().GetNodeMap();
     for (const auto& e : resource_node_map) {
       auto resource_node = e.second;
