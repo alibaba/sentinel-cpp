@@ -20,17 +20,19 @@ class ResourceNodeStorage {
     return *instance;
   }
 
-  Stat::ClusterNodePtr GetClusterNode(const std::string& resource_name) const;
-  Stat::ClusterNodePtr GetOrCreateClusterNode(const std::string& resource_name);
+  Stat::ClusterNodeSharedPtr GetClusterNode(
+      const std::string& resource_name) const;
+  Stat::ClusterNodeSharedPtr GetOrCreateClusterNode(
+      const std::string& resource_name);
   void ResetClusterNodes();
 
-  const std::unordered_map<std::string, Stat::ClusterNodePtr>& GetNodeMap()
+  const std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> GetNodeMap()
       const;
 
  private:
   ResourceNodeStorage() = default;
 
-  std::unordered_map<std::string, Stat::ClusterNodePtr> node_map_;
+  std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> node_map_;
   mutable absl::Mutex mtx_;
 };
 
