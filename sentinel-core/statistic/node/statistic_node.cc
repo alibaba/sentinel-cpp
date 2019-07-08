@@ -85,6 +85,7 @@ std::unordered_map<long, MetricItemSharedPtr> StatisticNode::Metrics() {
   int64_t cur_time = Utils::TimeUtils::CurrentTimeMillis().count();
   cur_time = cur_time - cur_time % 1000;
   std::unordered_map<long, MetricItemSharedPtr> map;
+  // TODO(tianqian.zyf): Replace unique_ptr
   std::vector<MetricItemSharedPtr> items_of_second =
       rolling_counter_minute_->Details();
   int64_t new_last_fetch_time = last_fetch_timestamp_;

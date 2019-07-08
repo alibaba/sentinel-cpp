@@ -9,6 +9,7 @@ namespace Stat {
 class MetricItem;
 
 using MetricItemSharedPtr = std::shared_ptr<MetricItem>;
+using MetricItemPtr = std::unique_ptr<MetricItem>;
 
 class MetricItem {
  public:
