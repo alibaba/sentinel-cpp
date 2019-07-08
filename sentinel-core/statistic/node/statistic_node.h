@@ -55,6 +55,7 @@ class StatisticNode : public Node {
   std::unique_ptr<Metric> rolling_counter_minute_ =
       std::make_unique<SlidingWindowMetric>(60, 60 * 1000);
   std::atomic<uint32_t> cur_thread_num_{0};
+  // Only metrics log task thread serial access, so it is thread safe
   int64_t last_fetch_timestamp_ = -1;
 
   bool IsValidMetricItem(const MetricItemSharedPtr& item) const;

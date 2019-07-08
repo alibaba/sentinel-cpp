@@ -90,6 +90,7 @@ cc_library(
         "//sentinel-core/transport/command/handler:fetch_metric_log_handler_lib",
         "//sentinel-core/transport/command/handler:fetch_cluster_node_handler_lib",
         "//sentinel-core/transport/command/handler:sentinel_on_off_switch_handler_lib",
+        "//sentinel-core/transport/command/handler:version_command_handler_lib",
         "@com_google_absl//absl/strings",
     ],
 )

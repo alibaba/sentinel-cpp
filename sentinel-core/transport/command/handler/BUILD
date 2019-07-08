@@ -50,6 +50,18 @@ cc_library(
   ]
 )
 
+cc_library(
+  name = "version_command_handler_lib",
+  srcs = [
+    "version_handler.h",
+    "version_handler.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/transport/command:command_handler_interface",
+  ]
+)
+
 cc_test(
   name = "sentinel_on_off_switch_handler_unittests",
   srcs = [

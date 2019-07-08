@@ -1,0 +1,3 @@
+# Clang TSAN
+build:clang-tsan --copt -fsanitize=thread
+build:clang-tsan --linkopt -fsanitize=thread

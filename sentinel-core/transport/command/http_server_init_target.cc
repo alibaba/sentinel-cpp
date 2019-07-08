@@ -7,6 +7,7 @@
 #include "sentinel-core/transport/command/handler/fetch_metric_log_handler.h"
 #include "sentinel-core/transport/command/handler/get_switch_status_handler.h"
 #include "sentinel-core/transport/command/handler/set_switch_status_handler.h"
+#include "sentinel-core/transport/command/handler/version_handler.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
 #include "sentinel-core/transport/constants.h"
 
@@ -44,6 +45,7 @@ void HttpCommandCenterInitTarget::Initialize() {
       std::make_unique<SetSwitchStatusCommandHandler>());
   command_center_->RegisterCommand(
       std::make_unique<GetSwitchStatusCommandHandler>());
+  command_center_->RegisterCommand(std::make_unique<VersionCommandHandler>());
 
   uint32_t port = GetAvailablePort();
   command_center_->Start(port);
