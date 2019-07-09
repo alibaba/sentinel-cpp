@@ -22,6 +22,7 @@ cc_library(
      "//sentinel-core/config:local_config_lib",
      "//sentinel-core/log:logger_lib",
      "//sentinel-core/log:log_base_impl_lib",
+     "@com_google_absl//absl/synchronization",
   ],
 )
 

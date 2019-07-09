@@ -8,6 +8,8 @@
 
 #include "sentinel-core/statistic/base/metric_item.h"
 
+#include "absl/synchronization/mutex.h"
+
 namespace Sentinel {
 namespace Log {
 
@@ -63,7 +65,7 @@ class MetricWriter {
 
   int pid_;
 
-  std::mutex lock_;
+  absl::Mutex lock_;
 };
 
 }  // namespace Log
