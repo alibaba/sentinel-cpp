@@ -119,7 +119,8 @@ cc_library(
     ":metric_interface",
     ":bucket_leap_array_lib",
     ":window_wrap_lib",
-    "//sentinel-core/common:constants"
+    "//sentinel-core/common:constants",
+    "@com_google_absl//absl/memory",
   ]
 )
 

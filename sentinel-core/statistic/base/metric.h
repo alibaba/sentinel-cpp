@@ -61,7 +61,7 @@ class Metric {
    *
    * @return metric node list of all resources
    */
-  virtual std::vector<MetricItemSharedPtr> Details() = 0;
+  virtual std::vector<MetricItemPtr> Details() = 0;
 
   /**
    * Add current exception count.

@@ -21,7 +21,7 @@ class MetricWriter {
   MetricWriter(int64_t single_file_size, int32_t total_file_count);
   virtual ~MetricWriter() {}
 
-  void Write(int64_t time, std::vector<Stat::MetricItemSharedPtr>& nodes);
+  void Write(int64_t time, std::vector<Stat::MetricItemPtr>& nodes);
   void Close();
 
   static std::string FormSelfMetricFileName(const std::string& app_name);
@@ -36,8 +36,7 @@ class MetricWriter {
                               const std::string& base_file_name);
 
  private:
-  void DoWrite(int64_t time,
-               const std::vector<Stat::MetricItemSharedPtr>& nodes);
+  void DoWrite(int64_t time, const std::vector<Stat::MetricItemPtr>& nodes);
   void WriteIndex(int64_t time, int64_t offset);
 
   std::string NextFileNameOfDay(int64_t time);

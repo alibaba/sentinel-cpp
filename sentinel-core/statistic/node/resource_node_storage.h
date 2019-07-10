@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "sentinel-core/statistic/base/metric_item.h"
 #include "sentinel-core/statistic/node/cluster_node.h"
 
 #include "absl/synchronization/mutex.h"
@@ -28,6 +29,9 @@ class ResourceNodeStorage {
 
   const std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> GetNodeMap()
       const;
+  std::unordered_map<std::string,
+                     std::unordered_map<int64_t, Stat::MetricItemPtr>>
+  GetMetricsItemMap() const;
 
  private:
   ResourceNodeStorage() = default;

@@ -32,7 +32,7 @@ class Node {
   virtual double PreviousBlockQps() = 0;
   virtual double PreviousPassQps() = 0;
 
-  virtual std::unordered_map<long, MetricItemSharedPtr> Metrics() = 0;
+  virtual std::unordered_map<int64_t, MetricItemPtr> Metrics() = 0;
 
   virtual void AddPassRequest(int32_t count) = 0;
   virtual void AddRtAndCompleteRequest(int32_t rt, int32_t completeCount) = 0;

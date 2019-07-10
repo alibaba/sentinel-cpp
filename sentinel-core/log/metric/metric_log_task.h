@@ -12,8 +12,7 @@
 namespace Sentinel {
 namespace Log {
 
-using MetricItemTimeMap =
-    std::map<int64_t, std::vector<Stat::MetricItemSharedPtr>>;
+using MetricItemTimeMap = std::map<int64_t, std::vector<Stat::MetricItemPtr>>;
 
 class MetricLogTask : public Init::Target {
  public:
@@ -30,7 +29,7 @@ class MetricLogTask : public Init::Target {
   void RunLogTask();
   void AggregateMetrics(
       MetricItemTimeMap& map,
-      std::unordered_map<long, Stat::MetricItemSharedPtr>&& metrics,
+      std::unordered_map<int64_t, Stat::MetricItemPtr>&& metrics,
       const std::string& resource);
 };
 

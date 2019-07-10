@@ -54,7 +54,7 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
 }
 
 void MetricWriter::Write(int64_t time,
-                         std::vector<Stat::MetricItemSharedPtr> &nodes) {
+                         std::vector<Stat::MetricItemPtr> &nodes) {
   absl::WriterMutexLock lck(&lock_);
   if (time != -1) {
     for (auto &node : nodes) {
@@ -91,8 +91,8 @@ void MetricWriter::Write(int64_t time,
   }
 }
 
-void MetricWriter::DoWrite(
-    int64_t time, const std::vector<Stat::MetricItemSharedPtr> &nodes) {
+void MetricWriter::DoWrite(int64_t time,
+                           const std::vector<Stat::MetricItemPtr> &nodes) {
   for (auto &node : nodes) {
     metric_out_ << node->ToFatString() << "\n";
   }
