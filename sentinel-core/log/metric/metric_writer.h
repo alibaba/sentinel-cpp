@@ -63,8 +63,6 @@ class MetricWriter {
   bool first_write_ = true;
 
   int pid_;
-
-  absl::Mutex lock_;
 };
 
 }  // namespace Log

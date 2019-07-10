@@ -28,6 +28,9 @@ class Logger {
   static bool InitDefaultLogger(const std::string& file_path);
   static bool InitDefaultLogger(const std::string& file_path,
                                 const std::string& log_format);
+  static bool InitMetricLogger(const std::string& file_path,
+                               int64_t single_file_size,
+                               int32_t max_file_count);
   static void Uninitialization();
   static void SetAllLoggerLevel(levels level);
   static void FlushAllLogger();
@@ -70,6 +73,7 @@ class Logger {
     }
   }
   static const char kDefaultFileLogger[];
+  static const char kMetricsFileLogger[];
 };
 
 #define SENTINEL_LOG(LEVEL, ...) \
