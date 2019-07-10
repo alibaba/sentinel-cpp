@@ -36,7 +36,8 @@ class ResourceNodeStorage {
  private:
   ResourceNodeStorage() = default;
 
-  std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> node_map_;
+  std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> node_map_
+      GUARDED_BY(mtx_);
   mutable absl::Mutex mtx_;
 };
 
