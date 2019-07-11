@@ -19,7 +19,7 @@ static constexpr auto kMetricIndexFileSuffix = ".idx";
 class MetricWriter {
  public:
   MetricWriter(int64_t single_file_size, int32_t total_file_count);
-  virtual ~MetricWriter() {}
+  virtual ~MetricWriter() { Close(); }
 
   void Write(int64_t time, std::vector<Stat::MetricItemPtr>& nodes);
   void Close();
@@ -55,8 +55,8 @@ class MetricWriter {
   std::string base_dir_;
   std::string base_file_name_;
 
-  std::ofstream metric_out_;
-  std::ofstream metric_index_out_;
+  int metric_out_ = -1;
+  int metric_index_out_ = -1;
 
   int64_t time_second_base_;
   int64_t last_second_ = -1;

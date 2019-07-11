@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#include <fcntl.h>
 #include <cstdio>
 #include <fstream>
 
@@ -133,19 +134,20 @@ TEST(MetricWriterTest, TestIsExceedMaxSingleFileSize) {
   MetricWriter writer(kSingleFileSize, kTotalFileCount);
 
   auto file_name = "./test_max_single_file_size";
-  writer.metric_out_.open(file_name, std::ios::out);
+  writer.metric_out_ = open(file_name, O_CREAT | O_APPEND | O_WRONLY);
 
-  writer.metric_out_ << "text";
+  ASSERT_TRUE(write(writer.metric_out_, "text", 4) == 4);
 
   auto ret = writer.IsExceedMaxSingleFileSize();
   EXPECT_EQ(ret, false);
 
   std::string content("a", kSingleFileSize);
-  writer.metric_out_ << content;
+  ASSERT_TRUE(write(writer.metric_out_, content.c_str(), content.size()) ==
+              content.size());
   ret = writer.IsExceedMaxSingleFileSize();
   EXPECT_EQ(ret, true);
 
-  writer.metric_out_.close();
+  close(writer.metric_out_);
 
   remove(file_name);
 }
