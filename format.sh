@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CMD=clang-format-7
+CMD=clang-format-8
 $CMD -version
 $CMD -i -style=Google $(git ls-files|grep -E ".*\.(cc|h)$")
 CHANGED="$(git ls-files --modified)"
