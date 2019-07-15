@@ -17,6 +17,8 @@ addons:
     packages:
       - clang-format-8
       - clang-8
+env:
+  - CXX=clang++
 
 before_install:
   - wget https://github.com/bazelbuild/bazel/releases/download/0.26.0/bazel_0.26.0-linux-x86_64.deb
@@ -28,10 +30,13 @@ jobs:
       name: "clang format checker"
       script: bash format.sh
     - stage: "Build"
-      name: "third party build"
+      name: "library build"
       script: bazel build //sentinel-core/... && bazel build //sentinel-datasource-extension/...
     - stage: "Test"
       name: "sentinel core unit tests"
       script: bazel test --test_output=errors --strategy=TestRunner=standalone //sentinel-core/...
     - script: bazel test --test_output=errors --strategy=TestRunner=standalone //sentinel-datasource-extension/...
       name: "sentinel datasource extension tests"
+    - stage: "tsan-flow"
+      name: "tsan for flow control"
+      script: bazel build -c dbg --config=clang-tsan //tests/... && ./bazel-bin/tests/tsan-flow
