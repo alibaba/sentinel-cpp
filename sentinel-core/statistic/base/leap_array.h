@@ -8,6 +8,8 @@
 #include "sentinel-core/statistic/base/window_wrap.h"
 #include "sentinel-core/utils/time_utils.h"
 
+#include "absl/synchronization/mutex.h"
+
 namespace Sentinel {
 namespace Stat {
 
@@ -46,8 +48,8 @@ class LeapArray {
   const int32_t sample_count_;      // divide the sliding window into n parts
   const int32_t bucket_length_ms_;  // time length of each bucket
  private:
-  const std::unique_ptr<WindowWrapSharedPtr<T>[]> array_;
-  std::mutex mtx_;
+  const std::unique_ptr<WindowWrapSharedPtr<T>[]> array_ GUARDED_BY(mtx_);
+  mutable absl::Mutex mtx_;
 
   int32_t CalculateTimeIdx(/*@Valid*/ int64_t time_millis) const;
   int64_t CalculateWindowStart(/*@Valid*/ int64_t time_millis) const;
@@ -77,23 +79,21 @@ WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
   int64_t bucket_start = CalculateWindowStart(time_millis);
 
   while (true) {
+    mtx_.Lock();
     WindowWrapSharedPtr<T> old = array_[idx];
+    mtx_.Unlock();
     if (old == nullptr) {
-      std::unique_lock<std::mutex> lck(mtx_, std::defer_lock);
-      if (lck.try_lock() && array_[idx] == nullptr) {
-        WindowWrapSharedPtr<T> bucket = std::make_shared<WindowWrap<T>>(
-            bucket_length_ms_, bucket_start, NewEmptyBucket(time_millis));
-        array_[idx] = bucket;
-        return bucket;
-      }
+      WindowWrapSharedPtr<T> bucket = std::make_shared<WindowWrap<T>>(
+          bucket_length_ms_, bucket_start, NewEmptyBucket(time_millis));
+      mtx_.Lock();
+      array_[idx] = bucket;
+      mtx_.Unlock();
+      return bucket;
     } else if (bucket_start == old->BucketStart()) {
       return old;
     } else if (bucket_start > old->BucketStart()) {
-      std::unique_lock<std::mutex> lck(mtx_, std::defer_lock);
-      if (lck.try_lock()) {
-        ResetWindowTo(old, bucket_start);
-        return old;
-      }
+      ResetWindowTo(old, bucket_start);
+      return old;
     } else if (bucket_start < old->BucketStart()) {
       // Should not go through here, as the provided time is already behind.
       return std::make_shared<WindowWrap<T>>(bucket_length_ms_, bucket_start,
@@ -147,7 +147,9 @@ std::vector<WindowWrapSharedPtr<T>> LeapArray<T>::Buckets(
   }
   int size = sample_count_;  // array_.size()
   for (int i = 0; i < size; i++) {
+    mtx_.Lock();
     auto w = array_[i];
+    mtx_.Unlock();
     if (w == nullptr || IsBucketDeprecated(time_millis, w)) {
       continue;
     }
@@ -165,7 +167,9 @@ std::vector<std::shared_ptr<T>> LeapArray<T>::Values(
   }
   int size = sample_count_;  // array_.size()
   for (int i = 0; i < size; i++) {
+    mtx_.Lock();
     WindowWrapSharedPtr<T> w = array_[i];
+    mtx_.Unlock();
     if (w == nullptr || IsBucketDeprecated(time_millis, w)) {
       continue;
     }

@@ -19,7 +19,7 @@ int64_t MetricBucket::Get(const MetricEvent& event) const {
   return counters_[i].load();
 }
 
-int64_t MetricBucket::MinRt() const { return min_rt_; }
+int64_t MetricBucket::MinRt() const { return min_rt_.load(); }
 
 void MetricBucket::Add(const MetricEvent& event, int64_t n) {
   int i = (int)event;
@@ -29,12 +29,12 @@ void MetricBucket::Add(const MetricEvent& event, int64_t n) {
 void MetricBucket::AddRt(int64_t rt) {
   Add(MetricEvent::RT, rt);
   // Not thread-safe, but it's okay.
-  if (rt < min_rt_) {
-    min_rt_ = rt;
+  if (rt < min_rt_.load()) {
+    min_rt_.store(rt);
   }
 }
 
-void MetricBucket::InitMinRt() { min_rt_ = Constants::kMaxAllowedRt; }
+void MetricBucket::InitMinRt() { min_rt_.store(Constants::kMaxAllowedRt); }
 
 }  // namespace Stat
 }  // namespace Sentinel

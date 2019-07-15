@@ -20,8 +20,7 @@ class ClusterNode : public StatisticNode {
   void TraceException(int32_t count);
 
  private:
-  const absl::flat_hash_map<std::string, StatisticNodeSharedPtr>
-      origin_node_map_;
+  absl::flat_hash_map<std::string, StatisticNodeSharedPtr> origin_node_map_;
 
   std::mutex mtx_;
 };

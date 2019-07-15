@@ -54,5 +54,21 @@ ResourceNodeStorage::GetNodeMap() const {
   return this->node_map_;
 }
 
+std::unordered_map<std::string,
+                   std::unordered_map<int64_t, Stat::MetricItemPtr>>
+ResourceNodeStorage::GetMetricsItemMap() const {
+  absl::ReaderMutexLock lck(&mtx_);
+  std::unordered_map<std::string,
+                     std::unordered_map<int64_t, Stat::MetricItemPtr>>
+      metric;
+  for (auto& node : node_map_) {
+    if (node.second != nullptr) {
+      metric.emplace(std::make_pair(node.first, node.second->Metrics()));
+    }
+  }
+
+  return metric;
+}
+
 }  // namespace Stat
 }  // namespace Sentinel

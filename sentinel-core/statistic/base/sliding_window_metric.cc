@@ -5,6 +5,8 @@
 #include "sentinel-core/statistic/base/metric_event.h"
 #include "sentinel-core/statistic/base/sliding_window_metric.h"
 
+#include "absl/memory/memory.h"
+
 namespace Sentinel {
 namespace Stat {
 
@@ -91,8 +93,8 @@ void SlidingWindowMetric::AddRt(long rt) {
   wrap->Value()->AddRt(rt);
 }
 
-std::vector<MetricItemSharedPtr> SlidingWindowMetric::Details() {
-  std::vector<MetricItemSharedPtr> items;
+std::vector<MetricItemPtr> SlidingWindowMetric::Details() {
+  std::vector<MetricItemPtr> items;
   sliding_window_->CurrentWindow();
   std::vector<WindowWrapSharedPtr<MetricBucket>> list =
       sliding_window_->Buckets();
@@ -105,7 +107,7 @@ std::vector<MetricItemSharedPtr> SlidingWindowMetric::Details() {
       continue;
     }
 
-    MetricItemSharedPtr item = std::make_shared<MetricItem>();
+    MetricItemPtr item = absl::make_unique<MetricItem>();
     item->set_block_qps(bucket->Get(MetricEvent::BLOCK));
     item->set_pass_qps(bucket->Get(MetricEvent::PASS));
     item->set_exception_qps(bucket->Get(MetricEvent::EXCEPTION));
@@ -118,7 +120,7 @@ std::vector<MetricItemSharedPtr> SlidingWindowMetric::Details() {
     }
     item->set_timestamp(wrap->BucketStart());
 
-    items.push_back(std::move(item));
+    items.emplace_back(std::move(item));
   }
   return items;
 }

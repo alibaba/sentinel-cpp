@@ -1,6 +1,7 @@
 #include "sentinel-core/log/metric/metric_writer.h"
 
 #include <dirent.h>
+#include <fcntl.h>
 #include <unistd.h>
 
 #include <ctime>
@@ -29,6 +30,20 @@ using namespace Sentinel::Utils;
 namespace Sentinel {
 namespace Log {
 
+namespace {
+void WriteToFile(int fd, absl::string_view data) {
+  if (fd == -1) {
+    return;
+  }
+
+  auto actual_write_bytes = write(fd, data.data(), data.size());
+  if (actual_write_bytes != data.size()) {
+    SENTINEL_LOG(error, "expect write {} bytes data, but actual write {} bytes",
+                 data.size(), actual_write_bytes);
+  }
+}
+}  // namespace
+
 MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
     : single_file_size_(single_file_size), total_file_count_(total_file_count) {
   SENTINEL_LOG(info,
@@ -54,9 +69,7 @@ MetricWriter::MetricWriter(int64_t single_file_size, int32_t total_file_count)
 }
 
 void MetricWriter::Write(int64_t time,
-                         std::vector<Stat::MetricItemSharedPtr> &nodes) {
-  std::lock_guard<std::mutex> lk(lock_);
-
+                         std::vector<Stat::MetricItemPtr> &nodes) {
   if (time != -1) {
     for (auto &node : nodes) {
       node->set_timestamp(time);
@@ -66,7 +79,7 @@ void MetricWriter::Write(int64_t time,
   auto app_name = Config::LocalConfig::GetInstance().app_name();
 
   // first write, should create file
-  if (!metric_out_.is_open()) {
+  if (metric_out_ == -1) {
     base_file_name_ = FormMetricFileName(app_name, pid_);
     CloseAndNewFile(NextFileNameOfDay(time));
   }
@@ -77,11 +90,15 @@ void MetricWriter::Write(int64_t time,
   } else if (second == last_second_) {
     if (first_write_) {
       first_write_ = false;
-      WriteIndex(second, metric_out_.tellp());
+      if (metric_out_ != -1) {
+        WriteIndex(second, lseek(metric_out_, 0, SEEK_CUR));
+      }
     }
     DoWrite(time, nodes);
   } else {
-    WriteIndex(second, metric_out_.tellp());
+    if (metric_out_ != -1) {
+      WriteIndex(second, lseek(metric_out_, 0, SEEK_CUR));
+    }
     if (IsNewDay(last_second_, second)) {
       CloseAndNewFile(NextFileNameOfDay(time));
       DoWrite(time, nodes);
@@ -92,12 +109,13 @@ void MetricWriter::Write(int64_t time,
   }
 }
 
-void MetricWriter::DoWrite(
-    int64_t time, const std::vector<Stat::MetricItemSharedPtr> &nodes) {
+void MetricWriter::DoWrite(int64_t time,
+                           const std::vector<Stat::MetricItemPtr> &nodes) {
   for (auto &node : nodes) {
-    metric_out_ << node->ToFatString() << "\n";
+    auto data = node->ToFatString() + "\n";
+    WriteToFile(metric_out_, data);
   }
-  metric_out_.flush();
+
   if (IsExceedMaxSingleFileSize()) {
     CloseAndNewFile(NextFileNameOfDay(time));
   }
@@ -110,13 +128,22 @@ bool MetricWriter::IsNewDay(int64_t last_second, int64_t second) {
 }
 
 void MetricWriter::WriteIndex(int64_t time, int64_t offset) {
-  metric_index_out_ << time << " ";
-  metric_index_out_ << offset << "\n";
-  metric_index_out_.flush();
+  auto data = fmt::format("{} {}\n", time, offset);
+  WriteToFile(metric_index_out_, data);
 }
 
 bool MetricWriter::IsExceedMaxSingleFileSize() {
-  auto size = metric_out_.tellp();
+  if (metric_out_ == -1) {
+    SENTINEL_LOG(error, "invalid metrics write fd");
+    return false;
+  }
+
+  auto size = lseek(metric_out_, 0, SEEK_END);
+  if (size == -1) {
+    SENTINEL_LOG(error, "lseek failed {}", strerror(errno));
+    return false;
+  }
+
   return size >= single_file_size_;
 }
 
@@ -224,27 +251,27 @@ void MetricWriter::CloseAndNewFile(const std::string &file_name) {
 
   DoClose();
 
-  metric_out_.open(file_name, std::ios::out);
+  metric_out_ = open(file_name.c_str(), O_CREAT | O_APPEND | O_WRONLY, 0755);
 
   auto idx_file_name = FormIndexFileName(file_name);
-  metric_index_out_.open(idx_file_name, std::ios::out);
+  metric_index_out_ =
+      open(idx_file_name.c_str(), O_CREAT | O_APPEND | O_WRONLY, 0755);
 
   SENTINEL_LOG(info, "[MetricWriter] New metric file created: {}", file_name);
   SENTINEL_LOG(info, "[MetricWriter] New metric index file created: {}",
                idx_file_name);
 }
 
-void MetricWriter::Close() {
-  std::lock_guard<std::mutex> lk(lock_);
-  DoClose();
-}
+void MetricWriter::Close() { DoClose(); }
 
 void MetricWriter::DoClose() {
-  if (metric_out_.is_open()) {
-    metric_out_.close();
+  if (metric_out_ != -1) {
+    close(metric_out_);
+    metric_out_ = -1;
   }
-  if (metric_index_out_.is_open()) {
-    metric_index_out_.close();
+  if (metric_index_out_ != -1) {
+    close(metric_index_out_);
+    metric_index_out_ = -1;
   }
 }
 

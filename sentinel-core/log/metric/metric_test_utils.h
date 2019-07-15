@@ -20,8 +20,8 @@ constexpr int64_t kTotalFileCount = 10000;
 void TestWriteMetricLog(int64_t time) {
   MetricWriter writer(kSingleFileSize, kTotalFileCount);
 
-  std::vector<Stat::MetricItemSharedPtr> nodes;
-  Stat::MetricItemSharedPtr node = std::make_shared<Stat::MetricItem>();
+  std::vector<Stat::MetricItemPtr> nodes;
+  Stat::MetricItemPtr node = std::make_unique<Stat::MetricItem>();
   node->set_timestamp(123456);
   node->set_pass_qps(123);
   node->set_block_qps(456);
@@ -29,7 +29,7 @@ void TestWriteMetricLog(int64_t time) {
   node->set_exception_qps(13323);
   node->set_rt(11);
   node->set_resource("resource_context");
-  nodes.push_back(node);
+  nodes.emplace_back(std::move(node));
 
   writer.Write(time, nodes);
   writer.Write(time + 1000, nodes);

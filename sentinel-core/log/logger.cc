@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-#include <spdlog/async.h>
-#include <spdlog/sinks/daily_file_sink.h>
+#include "spdlog/async.h"
+#include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/sinks/rotating_file_sink.h"
 
 namespace Sentinel {
 namespace Log {
@@ -11,6 +12,7 @@ namespace Log {
 static constexpr const char* kDefaultRecordLogFormat = "[%H:%M:%S] [%l] %v";
 
 const char Logger::kDefaultFileLogger[] = "default_sentinel_logger";
+const char Logger::kMetricsFileLogger[] = "metrics_sentinel_logger";
 
 bool Logger::InitDefaultLogger() {
   return Logger::InitDefaultLogger(Logger::GetDefaultLogPath());
@@ -38,6 +40,27 @@ bool Logger::InitDefaultLogger(const std::string& file_path,
     std::cerr << "Log initialization failed: " << ex.what() << std::endl;
     return false;
   }
+  return true;
+}
+
+bool Logger::InitMetricLogger(const std::string& file_path,
+                              int64_t single_file_size,
+                              int32_t max_file_count) {
+  try {
+    auto logger = spdlog::rotating_logger_mt(kMetricsFileLogger, file_path,
+                                             single_file_size, max_file_count);
+    if (!logger) {
+      return false;
+    }
+
+    logger->set_pattern("%v");
+    logger->set_level(spdlog::level::info);
+    logger->flush_on(spdlog::level::info);
+  } catch (const spdlog::spdlog_ex& ex) {
+    std::cerr << "Log initialization failed: " << ex.what() << std::endl;
+    return false;
+  }
+
   return true;
 }
 

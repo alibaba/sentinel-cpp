@@ -8,6 +8,8 @@
 
 #include "sentinel-core/statistic/base/metric_item.h"
 
+#include "absl/synchronization/mutex.h"
+
 namespace Sentinel {
 namespace Log {
 
@@ -17,9 +19,9 @@ static constexpr auto kMetricIndexFileSuffix = ".idx";
 class MetricWriter {
  public:
   MetricWriter(int64_t single_file_size, int32_t total_file_count);
-  virtual ~MetricWriter() {}
+  virtual ~MetricWriter() { Close(); }
 
-  void Write(int64_t time, std::vector<Stat::MetricItemSharedPtr>& nodes);
+  void Write(int64_t time, std::vector<Stat::MetricItemPtr>& nodes);
   void Close();
 
   static std::string FormSelfMetricFileName(const std::string& app_name);
@@ -34,8 +36,7 @@ class MetricWriter {
                               const std::string& base_file_name);
 
  private:
-  void DoWrite(int64_t time,
-               const std::vector<Stat::MetricItemSharedPtr>& nodes);
+  void DoWrite(int64_t time, const std::vector<Stat::MetricItemPtr>& nodes);
   void WriteIndex(int64_t time, int64_t offset);
 
   std::string NextFileNameOfDay(int64_t time);
@@ -54,16 +55,14 @@ class MetricWriter {
   std::string base_dir_;
   std::string base_file_name_;
 
-  std::ofstream metric_out_;
-  std::ofstream metric_index_out_;
+  int metric_out_ = -1;
+  int metric_index_out_ = -1;
 
   int64_t time_second_base_;
   int64_t last_second_ = -1;
   bool first_write_ = true;
 
   int pid_;
-
-  std::mutex lock_;
 };
 
 }  // namespace Log

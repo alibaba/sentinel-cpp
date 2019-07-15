@@ -21,18 +21,18 @@ MetricLogTask::MetricLogTask() {
 
 void MetricLogTask::AggregateMetrics(
     MetricItemTimeMap& map,
-    std::unordered_map<long, Stat::MetricItemSharedPtr>&& metrics,
+    std::unordered_map<int64_t, Stat::MetricItemPtr>&& metrics,
     const std::string& resource) {
-  for (const auto& e : metrics) {
+  for (auto& e : metrics) {
     int64_t t = e.first;
-    auto item = e.second;
+    auto& item = e.second;
     item->set_resource(resource);
     if (map.find(t) == map.end()) {
-      map.insert(std::make_pair(t, std::vector<Stat::MetricItemSharedPtr>{}));
+      map.emplace(std::make_pair(t, std::vector<Stat::MetricItemPtr>{}));
     }
     auto iter = map.find(t);
     if (iter != map.end()) {
-      iter->second.push_back(item);
+      iter->second.emplace_back(std::move(item));
     }
   }
 }
@@ -42,16 +42,13 @@ void MetricLogTask::RunLogTask() {
     if (stopped_) {
       return;
     }
-    std::map<int64_t, std::vector<Stat::MetricItemSharedPtr>> map;
-    const auto resource_node_map =
-        Stat::ResourceNodeStorage::GetInstance().GetNodeMap();
-    for (const auto& e : resource_node_map) {
-      auto resource_node = e.second;
-      assert(resource_node != nullptr);
-      if (resource_node != nullptr) {
-        AggregateMetrics(map, resource_node->Metrics(), e.first);
-      }
+    std::map<int64_t, std::vector<Stat::MetricItemPtr>> map;
+    auto metrics_map =
+        Stat::ResourceNodeStorage::GetInstance().GetMetricsItemMap();
+    for (auto& e : metrics_map) {
+      AggregateMetrics(map, std::move(e.second), e.first);
     }
+
     if (!map.empty()) {
       for (auto& e : map) {
         writer_->Write(e.first, e.second);

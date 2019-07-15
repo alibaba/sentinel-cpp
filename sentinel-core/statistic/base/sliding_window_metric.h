@@ -34,7 +34,7 @@ class SlidingWindowMetric : public Metric {
   void AddPass(int n) override;
   void AddRt(long rt) override;
 
-  std::vector<MetricItemSharedPtr> Details() override;
+  std::vector<MetricItemPtr> Details() override;
 
   double WindowIntervalInSec() const override;
   int SampleCount() const override;

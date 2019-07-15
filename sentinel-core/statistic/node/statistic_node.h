@@ -35,7 +35,7 @@ class StatisticNode : public Node {
   virtual double PreviousBlockQps() override;
   virtual double PreviousPassQps() override;
 
-  virtual std::unordered_map<long, MetricItemSharedPtr> Metrics() override;
+  virtual std::unordered_map<int64_t, MetricItemPtr> Metrics() override;
 
   virtual void AddPassRequest(int32_t count) override;
   virtual void AddRtAndCompleteRequest(int32_t rt,
@@ -55,10 +55,11 @@ class StatisticNode : public Node {
   std::unique_ptr<Metric> rolling_counter_minute_ =
       std::make_unique<SlidingWindowMetric>(60, 60 * 1000);
   std::atomic<uint32_t> cur_thread_num_{0};
+  // Only metrics log task thread serial access, so it is thread safe
   int64_t last_fetch_timestamp_ = -1;
 
-  bool IsValidMetricItem(const MetricItemSharedPtr& item) const;
-  bool IsNodeInTime(const MetricItemSharedPtr& item, int64_t cur_time) const;
+  bool IsValidMetricItem(const MetricItemPtr& item) const;
+  bool IsNodeInTime(const MetricItemPtr& item, int64_t cur_time) const;
 };
 
 using StatisticNodeSharedPtr = std::shared_ptr<StatisticNode>;
