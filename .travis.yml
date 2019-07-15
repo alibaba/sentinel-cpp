@@ -13,17 +13,25 @@ addons:
     sources:
       - sourceline: 'deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8'
         key_url: 'https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg'
-      - llvm-toolchain-xenial-7
+      - llvm-toolchain-xenial-8
     packages:
-      - clang-format-7
-      - clang-7
+      - clang-format-8
+      - clang-8
 
 before_install:
   - wget https://github.com/bazelbuild/bazel/releases/download/0.26.0/bazel_0.26.0-linux-x86_64.deb
   - sudo dpkg -i bazel_0.26.0-linux-x86_64.deb
 
-script:
-  - bash format.sh
-  - bazel clean --expunge && bazel build //sentinel-core/... && bazel build //sentinel-datasource-extension/...
-  - bazel clean --expunge && bazel test --test_output=errors --strategy=TestRunner=standalone //sentinel-datasource-extension/...
-  - bazel test --test_output=errors --strategy=TestRunner=standalone //sentinel-core/...
+jobs:
+  include:
+    - stage: "Format"
+      name: "clang format checker"
+      script: bash format.sh
+    - stage: "Build"
+      name: "third party build"
+      script: bazel build //sentinel-core/... && bazel build //sentinel-datasource-extension/...
+    - stage: "Test"
+      name: "sentinel core unit tests"
+      script: bazel test --test_output=errors --strategy=TestRunner=standalone //sentinel-core/...
+    - script: bazel test --test_output=errors --strategy=TestRunner=standalone //sentinel-datasource-extension/...
+      name: "sentinel datasource extension tests"
