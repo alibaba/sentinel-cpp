@@ -17,6 +17,7 @@ addons:
     packages:
       - clang-format-8
       - clang-8
+      - ninja-build
 env:
   - CXX=clang++
 
