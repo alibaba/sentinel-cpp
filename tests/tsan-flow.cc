@@ -14,10 +14,6 @@
 
 std::atomic<int> g_count{0};
 
-Sentinel::Init::InitTargetRegister<
-    Sentinel::Transport::HttpCommandCenterInitTarget>
-    HCCIT_registered;
-
 void doEntry(const char* resource) {
   while (g_count < 10000) {
     auto r = Sentinel::SphU::Entry(resource);
