@@ -11,6 +11,7 @@ cc_library(
         ],
     deps = [
         "//:libevent",
+        "@com_google_absl//absl/synchronization",
     ],
     visibility = ["//visibility:public"],
 )

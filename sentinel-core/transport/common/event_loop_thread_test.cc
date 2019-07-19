@@ -36,7 +36,7 @@ TEST(CommandRequestTest, TestRunTask) {
 
   auto task = [&promise]() { promise.set_value(std::this_thread::get_id()); };
 
-  loop.RunTask(task);
+  loop.RunTask(std::move(task));
 
   auto run_task_thread_id = future.get();
   EXPECT_EQ(run_task_thread_id, loop.thd_->get_id());

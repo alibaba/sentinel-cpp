@@ -25,7 +25,7 @@ class HttpServer {
   void Stop();
 
  private:
-  void InternalStart(std::promise<bool> &promise);
+  void InternalStart(std::promise<bool> &&promise);
   void OnHttpRequest(struct evhttp_request *req);
 
  private:
@@ -35,8 +35,6 @@ class HttpServer {
   http_request_callback_t request_callback_;
 
   static void HttpGenCallback(struct evhttp_request *req, void *arg);
-
- private:
   int port_;
 };
 

@@ -14,6 +14,10 @@
 
 std::atomic<int> g_count{0};
 
+void doEntry(const char*);
+void doOneEntry();
+void doAnotherEntry();
+
 void doEntry(const char* resource) {
   while (g_count < 10000) {
     auto r = Sentinel::SphU::Entry(resource);

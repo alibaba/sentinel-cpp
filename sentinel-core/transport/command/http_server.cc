@@ -28,9 +28,9 @@ bool HttpServer::Start(int port) {
 
   std::promise<bool> start_promise;
   auto start_future = start_promise.get_future();
-  auto task = [&start_promise, this]() { InternalStart(start_promise); };
-
-  event_loop_thread_.RunTask(task);
+  event_loop_thread_.RunTask([mise{std::move(start_promise)}, this]() mutable {
+    InternalStart(std::move(mise));
+  });
 
   return start_future.get();
 }
@@ -44,7 +44,7 @@ void HttpServer::Stop() {
   }
 }
 
-void HttpServer::InternalStart(std::promise<bool> &promise) {
+void HttpServer::InternalStart(std::promise<bool> &&promise) {
   http_ = evhttp_new(event_loop_thread_.GetEventBase());
   if (!http_) {
     SENTINEL_LOG(error, "HttpServer evhttp_new() failed, pending port={}",
