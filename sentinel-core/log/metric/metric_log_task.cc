@@ -39,9 +39,12 @@ void MetricLogTask::AggregateMetrics(
 
 void MetricLogTask::RunLogTask() {
   while (true) {
-    if (stopped_) {
+    if (stopped_.load()) {
       return;
     }
+    // sleep for 1s
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     std::map<int64_t, std::vector<Stat::MetricItemPtr>> map;
     auto metrics_map =
         Stat::ResourceNodeStorage::GetInstance().GetMetricsItemMap();
@@ -54,21 +57,14 @@ void MetricLogTask::RunLogTask() {
         writer_->Write(e.first, e.second);
       }
     }
-
-    // sleep for 1s
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
 }
 
 void MetricLogTask::Initialize() {
-  std::thread daemon_task(&MetricLogTask::RunLogTask, this);
-  daemon_task.detach();
+  thread_ = absl::make_unique<std::thread>(&MetricLogTask::RunLogTask, this);
 }
 
-void MetricLogTask::Stop() {
-  // Not thread-safe, but it's okay.
-  stopped_ = true;
-}
+void MetricLogTask::Stop() { stopped_.store(true); }
 
 }  // namespace Log
 }  // namespace Sentinel

@@ -17,14 +17,20 @@ using MetricItemTimeMap = std::map<int64_t, std::vector<Stat::MetricItemPtr>>;
 class MetricLogTask : public Init::Target {
  public:
   MetricLogTask();
-  virtual ~MetricLogTask() = default;
+  virtual ~MetricLogTask() {
+    Stop();
+    if (thread_) {
+      thread_->join();
+    }
+  }
   void Initialize() override;
 
   void Stop();
 
  private:
   std::unique_ptr<MetricWriter> writer_;
-  bool stopped_{false};
+  std::unique_ptr<std::thread> thread_;
+  std::atomic<bool> stopped_{false};
 
   void RunLogTask();
   void AggregateMetrics(

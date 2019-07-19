@@ -12,7 +12,7 @@ class VersionCommandHandler : public CommandHandler {
   VersionCommandHandler() : CommandHandler("version") {}
 
   virtual ~VersionCommandHandler() = default;
-  CommandResponsePtr Handle(const CommandRequest& request) override;
+  CommandResponsePtr Handle(const CommandRequest&) override;
 };
 
 }  // namespace Transport

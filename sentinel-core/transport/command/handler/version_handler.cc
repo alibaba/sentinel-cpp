@@ -5,8 +5,7 @@
 namespace Sentinel {
 namespace Transport {
 
-CommandResponsePtr VersionCommandHandler::Handle(
-    const CommandRequest& request) {
+CommandResponsePtr VersionCommandHandler::Handle(const CommandRequest&) {
   return CommandResponse::OfSuccess("0.1.0");
 }
 
