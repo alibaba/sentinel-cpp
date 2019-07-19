@@ -11,12 +11,7 @@ namespace Transport {
 HttpServer::HttpServer(http_request_callback_t callback)
     : request_callback_(callback) {}
 
-HttpServer::~HttpServer() {
-  if (http_) {
-    evhttp_free(http_);
-    http_ = nullptr;
-  }
-}
+HttpServer::~HttpServer() { Stop(); }
 
 bool HttpServer::Start(int port) {
   auto ret = event_loop_thread_.Start();
@@ -26,25 +21,16 @@ bool HttpServer::Start(int port) {
 
   port_ = port;
 
-  std::promise<bool> start_promise;
-  auto start_future = start_promise.get_future();
-  event_loop_thread_.RunTask([mise{std::move(start_promise)}, this]() mutable {
-    InternalStart(std::move(mise));
-  });
+  auto start_future = start_promise_.get_future();
+  event_loop_thread_.RunTask(
+      [this](void) mutable { InternalStart(start_promise_); });
 
   return start_future.get();
 }
 
-void HttpServer::Stop() {
-  event_loop_thread_.Stop();
+void HttpServer::Stop() { event_loop_thread_.Stop(); }
 
-  if (http_) {
-    evhttp_free(http_);
-    http_ = nullptr;
-  }
-}
-
-void HttpServer::InternalStart(std::promise<bool> &&promise) {
+void HttpServer::InternalStart(std::promise<bool> &promise) {
   http_ = evhttp_new(event_loop_thread_.GetEventBase());
   if (!http_) {
     SENTINEL_LOG(error, "HttpServer evhttp_new() failed, pending port={}",

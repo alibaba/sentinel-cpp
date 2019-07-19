@@ -22,11 +22,10 @@ bool EventLoopThread::Start() {
 }
 
 void EventLoopThread::Stop() {
-  if (stoped_.load()) {
+  bool expected = false;
+  if (!stoped_.compare_exchange_strong(expected, true)) {
     return;
   }
-
-  stoped_ = true;
 
   Wakeup();
 
@@ -145,11 +144,7 @@ void EventLoopThread::DoPendingTasks() {
 
   {
     absl::WriterMutexLock lck(&task_mutex_);
-    for (Functor& functor : pending_tasks_) {
-      functors.emplace_back(functor);
-    }
-
-    pending_tasks_.clear();
+    functors.swap(pending_tasks_);
   }
 
   for (const Functor& functor : functors) {
