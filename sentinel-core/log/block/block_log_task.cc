@@ -30,7 +30,9 @@ BlockLogTask::BlockLogTask(const std::string& log_path) {
 
 BlockLogTask::~BlockLogTask() {
   Stop();
-  spdlog::drop(kBlockLoggerName);
+  if (thread_) {
+    thread_->join();
+  }
 }
 
 void BlockLogTask::LoopWriteBlockLog() {
@@ -38,6 +40,9 @@ void BlockLogTask::LoopWriteBlockLog() {
     if (!started()) {
       return;
     }
+    // sleep for 1s
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     if (logger_ != nullptr) {
       absl::WriterMutexLock lck(&mtx_);
       for (auto& e : map_) {
@@ -55,9 +60,6 @@ void BlockLogTask::LoopWriteBlockLog() {
       logger_->flush();
       map_.clear();
     }
-
-    // sleep for 1s
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
 }
 
@@ -70,8 +72,9 @@ void BlockLogTask::Start() {
   }
   bool expected = false;
   if (started_.compare_exchange_strong(expected, true)) {
-    std::thread daemon_task(&BlockLogTask::LoopWriteBlockLog, this);
-    daemon_task.detach();
+    assert(thread_ == nullptr);
+    thread_ =
+        absl::make_unique<std::thread>(&BlockLogTask::LoopWriteBlockLog, this);
   }
 }
 

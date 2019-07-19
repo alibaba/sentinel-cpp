@@ -43,6 +43,7 @@ class BlockLogTask {
   std::shared_ptr<spdlog::logger> logger_;
   absl::flat_hash_map<std::string, BlockLogRecord> map_;
   mutable absl::Mutex mtx_;
+  std::unique_ptr<std::thread> thread_;
 
   void LoopWriteBlockLog();
 };
