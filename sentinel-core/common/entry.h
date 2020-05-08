@@ -28,10 +28,15 @@ class Entry {
   EntryContextSharedPtr context() const { return context_; }
   Stat::NodeSharedPtr cur_node() const { return cur_node_; }
   Stat::NodeSharedPtr origin_node() const { return origin_node_; }
+  int64_t rt() const { return rt_; }
   bool exited() const { return exited_; }
+  std::string error() const { return error_; }
   bool HasError() const { return !error_.empty(); };
+  bool HasBlockError() const { return !block_error_.empty(); };
 
+  void set_rt(int64_t rt) { rt_ = rt; }
   void set_error(const std::string& message) { error_ = message; }
+  void set_block_error(const std::string& message) { block_error_ = message; }
   void set_cur_node(const Stat::NodeSharedPtr& node) { cur_node_ = node; }
   void set_origin_node(const Stat::NodeSharedPtr& node) { origin_node_ = node; }
 
@@ -41,7 +46,9 @@ class Entry {
   const std::chrono::milliseconds create_time_;
 
   bool exited_{false};
+  int64_t rt_{-1};
   std::string error_{};
+  std::string block_error_{};
   Stat::NodeSharedPtr cur_node_;
   Stat::NodeSharedPtr origin_node_;
 };

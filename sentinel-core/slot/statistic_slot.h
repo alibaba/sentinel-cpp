@@ -34,7 +34,8 @@ class StatisticSlot : public StatsSlot {
 
   void RecordPassFor(const Stat::NodeSharedPtr& node, int count);
   void RecordBlockFor(const Stat::NodeSharedPtr& node, int count);
-  void RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt, int count);
+  void RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
+                         const std::string& err, int count);
 };
 
 }  // namespace Slot

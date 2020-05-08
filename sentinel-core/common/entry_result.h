@@ -24,6 +24,8 @@ class EntryResult {
   bool Exit();
   bool Exit(int count);
 
+  void SetError(const std::string& err);
+
  private:
   const EntrySharedPtr entry_;
   const absl::optional<std::string> blocked_reason_;
