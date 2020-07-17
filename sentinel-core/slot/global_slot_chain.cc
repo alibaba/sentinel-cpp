@@ -6,6 +6,7 @@
 #include "sentinel-core/slot/log_slot.h"
 #include "sentinel-core/slot/resource_node_builder_slot.h"
 #include "sentinel-core/slot/statistic_slot.h"
+#include "sentinel-core/system/system_slot.h"
 
 namespace Sentinel {
 namespace Slot {
@@ -17,6 +18,7 @@ SlotChainSharedPtr BuildDefaultSlotChain() {
   chain->AddLast(std::make_unique<FlowSlot>());
   chain->AddLast(std::make_unique<StatisticSlot>());
   chain->AddLast(std::make_unique<LogSlot>());
+  chain->AddLast(std::make_unique<SystemSlot>());
   return chain;
 }
 }  // namespace
