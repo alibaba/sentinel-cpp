@@ -39,6 +39,8 @@ TokenResultSharedPtr StatisticSlot::OnPass(const EntrySharedPtr& entry,
                                            const Stat::NodeSharedPtr& node,
                                            int count, int) {
   this->RecordPassFor(node, count);
+  this->RecordPassFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
+                      count);
   if (entry != nullptr) {
     this->RecordPassFor(entry->origin_node(), count);
   }
@@ -58,6 +60,8 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 
   this->RecordBlockFor(node, count);
   this->RecordBlockFor(entry->origin_node(), count);
+  this->RecordBlockFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
+                       count);
 
   return prev_result;
 }
@@ -101,6 +105,8 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry,
 
   this->RecordCompleteFor(node, rt, count);
   this->RecordCompleteFor(entry->origin_node(), rt, count);
+  this->RecordCompleteFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
+                          rt, count);
 }
 
 }  // namespace Slot
