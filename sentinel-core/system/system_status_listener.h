@@ -1,37 +1,45 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <iostream>
-#include <iomanip>
 #include <memory.h>
-#include <thread>
+#include <atomic>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <vector>
 
-#include "system_status_listener.h"
-
-#define NUM_Cpu_STATES	10
-#define STR_CPU		"cpu"
+#define STR_CPU "cpu"
 
 namespace Sentinel {
-namespace System{
+namespace System {
 
+constexpr size_t NUM_CPU_STATES = 10;
 enum CpuStates {
-	S_USER = 0, S_NICE, S_SYSTEM, S_IDLE, S_IOWAIT,
-	S_IRQ, S_SOFTIRQ, S_STEAL, S_GUEST, S_GUEST_NICE
+  S_USER = 0,
+  S_NICE,
+  S_SYSTEM,
+  S_IDLE,
+  S_IOWAIT,
+  S_IRQ,
+  S_SOFTIRQ,
+  S_STEAL,
+  S_GUEST,
+  S_GUEST_NICE
 };
 
 class CpuLoadInfo {
-public:
+ public:
   double usage[3];
   std::string curProNum;
   size_t curProId;
 };
 
 class CpuUsageInfo {
-public:
-	std::string cpu;
-	size_t times[10];
+ public:
+  std::string cpu;
+  size_t times[10];
 };
 
 class SystemStatusListener {
@@ -39,11 +47,12 @@ class SystemStatusListener {
   SystemStatusListener();
   virtual ~SystemStatusListener() {
     file_stat_.close();
+    file_load_.close();
   }
   void RunCpuListener();
   void Initialize();
-  double GetCurLoad() {return cur_load_;}
-  double GetCurCpuUsage() {return cur_cpu_usage_;}
+  double GetCurLoad() { return cur_load_.load(); }
+  double GetCurCpuUsage() { return cur_cpu_usage_.load(); }
 
  private:
   size_t GetIdleTime(std::shared_ptr<CpuUsageInfo> p);
@@ -56,8 +65,11 @@ class SystemStatusListener {
   std::shared_ptr<CpuUsageInfo> usage_info_p1_, usage_info_p2_;
   std::shared_ptr<CpuLoadInfo> load_info_p_;
 
-  volatile double cur_load_ = -1, cur_cpu_usage_ = -1;
+  std::atomic<double> cur_load_{-1};
+  std::atomic<double> cur_cpu_usage_{-1};
 };
+
+using SystemStatusListenerSharedPtr = std::shared_ptr<SystemStatusListener>;
 
 }  // namespace System
 }  // namespace Sentinel
