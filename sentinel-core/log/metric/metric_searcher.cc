@@ -54,7 +54,7 @@ int64_t MetricSearcher::FindOffset(int64_t begin_time_ms,
   int64_t tmp_offset = -1;
   int64_t offset = -1;
 
-  while (!in.eof()) {
+  while (!in.eof() && !in.fail()) {
     in >> second >> tmp_offset;
     if (second < begin_second) {
       last_pos_.offset_in_index = in.tellg();
