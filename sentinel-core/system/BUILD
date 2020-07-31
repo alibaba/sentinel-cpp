@@ -37,6 +37,7 @@ cc_library(
   deps = [
     ":system_rule_lib",
     ":system_status_listener_lib",
+    # ":system_slot_lib",
     "//sentinel-core/common:entry_lib",
     "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/property:dynamic_sentinel_property_lib",

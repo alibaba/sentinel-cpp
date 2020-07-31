@@ -9,21 +9,11 @@ SystemRuleManager::SystemRuleManager() {
   cur_property_ =
       std::make_shared<Property::DynamicSentinelProperty<SystemRuleList>>();
   cur_property_->AddListener(
-      std::unique_ptr<SystemPropertyListener>(new SystemPropertyListener()));
+      std::make_unique<SystemPropertyListener>());
 }
 
 bool SystemRuleManager::LoadRules(const SystemRuleList &rules) {
   return cur_property_->UpdateValue(rules);
-}
-
-// rule_map_ is put into argument reference map `ret`, reentrant
-// NOTE: output map shares the same set of SystemRule instances with
-// `rule_map_` of SystemManager (share_ptr)
-void SystemRuleManager::GetRuleMap(SystemRuleMap &ret) const {
-  absl::ReaderMutexLock lck(&update_mtx_);
-  for (const auto &e : rule_map_) {
-    ret.insert(e);
-  }
 }
 
 void SystemRuleManager::RegisterToProperty(
@@ -32,31 +22,31 @@ void SystemRuleManager::RegisterToProperty(
     return;
   }
   std::lock_guard<std::mutex> lck(property_mtx_);
-  SENTINEL_LOG(info, "Registering new property to FlowRuleManager");
+  SENTINEL_LOG(info, "Registering new property to SystemRuleManager");
   cur_property_->RemoveListener(kSystemPropertyListenerName);
   cur_property_ = property;
   cur_property_->AddListener(std::make_unique<SystemPropertyListener>());
 }
 
-// Reentrant, since we use lock to protect `m.rule_map_`
-// Ensure that `values` are updated atomically, and only the most
-// strict rule of each type are loaded.
+// Reentrant, since we use lock to protect `m.rule_map_`.
+// This ensure that `values` are updated atomically.
+// Only the most strict rule of each type are loaded.
 void SystemPropertyListener::ConfigUpdate(const SystemRuleList &values, bool) {
-  std::unordered_map<SystemRuleType, SystemRulePtr> new_rule_map;
+  SystemRuleMapPtr new_rule_map = std::make_shared<SystemRuleMap>();
   for (const auto &rule : values) {
-    auto it = new_rule_map.find(rule.rule_type());
-    if (it == new_rule_map.end()) {  // Add a new rule
-      new_rule_map[rule.rule_type()] =
-          std::make_shared<SystemRule>(rule.rule_type(), rule.threshold());
+    auto it = new_rule_map->find(rule.rule_type());
+    if (it == new_rule_map->end()) {  // Add a new rule
+      new_rule_map->insert(std::make_pair<SystemRuleType, SystemRule>(
+          rule.rule_type(), SystemRule(rule.rule_type(), rule.threshold())));
     } else {  // Change to a more strict threshold, or do nothing
-      if (rule.threshold() < it->second->threshold()) {
-        it->second->set_threshold(rule.threshold());
+      if (rule.threshold() < it->second.threshold()) {
+        it->second.set_threshold(rule.threshold());
       }
     }
   }
   SystemRuleManager &m = SystemRuleManager::GetInstance();
   absl::WriterMutexLock lck(&(m.update_mtx_));
-  m.rule_map_ = std::move(new_rule_map);
+  m.rule_map_ = new_rule_map;
 }
 
 const std::string SystemPropertyListener::Name() const {

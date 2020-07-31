@@ -9,14 +9,12 @@
 #include <thread>
 #include <vector>
 
-#include "system_status_listener.h"
-
-#define NUM_Cpu_STATES 10
 #define STR_CPU "cpu"
 
 namespace Sentinel {
 namespace System {
 
+constexpr size_t NUM_CPU_STATES = 10;
 enum CpuStates {
   S_USER = 0,
   S_NICE,

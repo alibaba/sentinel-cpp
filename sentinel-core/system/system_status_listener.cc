@@ -32,7 +32,7 @@ void SystemStatusListener::ReadCpuUsageFromProc(
   std::istringstream ss(line);
   ss >> p->cpu;
 
-  for (int i = 0; i < NUM_Cpu_STATES; ++i) ss >> p->times[i];
+  for (int i = 0; i < NUM_CPU_STATES; ++i) ss >> p->times[i];
 }
 
 void SystemStatusListener::UpdateCpuUsage() {

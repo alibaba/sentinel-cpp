@@ -23,14 +23,13 @@ class SystemSlot : public RuleCheckerSlot {
             const ResourceWrapperSharedPtr& resource, int count) override;
   const std::string& Name() const override;
   TokenResultSharedPtr CheckSystem(
-      const System::SystemRuleMap sysRuleMap, const EntrySharedPtr& entry,
-      const ResourceWrapperSharedPtr& resource,
+      const System::SystemRuleMapPtr sysRuleMap,
       std::shared_ptr<Stat::StatisticNode>& node) const;
-
+  friend class System::SystemRuleManager;
  private:
   const std::string name_{kSystemSlotName};
   System::SystemRuleManager& sysMgr = System::SystemRuleManager::GetInstance();
-  bool CheckBbr(double curThread, const EntrySharedPtr& entry) const;
+  bool CheckBbr(double curThread, std::shared_ptr<Stat::StatisticNode>& node) const;
 };
 
 }  // namespace Slot

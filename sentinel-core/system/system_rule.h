@@ -21,8 +21,8 @@ std::string GetSystemRuleTypeString(SystemRuleType ruleType);
 struct SystemRule : public Rule {
  public:
   SystemRule() = default;
-  SystemRule(SystemRuleType r_t_, double t_)
-      : rule_type_(r_t_), threshold_(t_) {}
+  SystemRule(SystemRuleType rule_type, double threshold)
+      : rule_type_(rule_type), threshold_(threshold) {}
   virtual ~SystemRule() = default;
 
   void set_rule_type(SystemRuleType r_t_) { rule_type_ = r_t_; }

@@ -26,7 +26,8 @@ namespace System {
 using DynamicSystemRulePropertySharedPtr =
     std::shared_ptr<Property::DynamicSentinelProperty<SystemRuleList>>;
 
-using SystemRuleMap = std::unordered_map<SystemRuleType, SystemRulePtr>;
+using SystemRuleMap = std::unordered_map<SystemRuleType, SystemRule>;
+using SystemRuleMapPtr = std::shared_ptr<SystemRuleMap>;
 
 class SystemRuleManager {
  public:
@@ -37,7 +38,7 @@ class SystemRuleManager {
 
   void RegisterToProperty(const DynamicSystemRulePropertySharedPtr& property);
   bool LoadRules(const SystemRuleList& rules);
-  void GetRuleMap(SystemRuleMap& ret) const;
+  SystemRuleMapPtr rule_map(){ return rule_map_; }
 
   // Reentrant
   double GetCurrentSystemAvgLoad() {
@@ -48,14 +49,13 @@ class SystemRuleManager {
   double GetCurrentCpuUsage() { return status_listener_->GetCurLoad(); }
 
   friend class SystemPropertyListener;
-  // friend class Slot::SystemSlot;
 
  private:
   SystemRuleManager();
 
   DynamicSystemRulePropertySharedPtr cur_property_;
   SystemStatusListenerSharedPtr status_listener_;
-  SystemRuleMap rule_map_;
+  SystemRuleMapPtr rule_map_;
 
   mutable std::mutex property_mtx_;  // protect cur_property_
   mutable absl::Mutex update_mtx_;   // protect rule_map_

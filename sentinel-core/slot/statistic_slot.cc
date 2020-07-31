@@ -35,12 +35,14 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
 }
 
 TokenResultSharedPtr StatisticSlot::OnPass(const EntrySharedPtr& entry,
-                                           const ResourceWrapperSharedPtr&,
+                                           const ResourceWrapperSharedPtr& resource,
                                            const Stat::NodeSharedPtr& node,
                                            int count, int) {
   this->RecordPassFor(node, count);
-  this->RecordPassFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
+  if (resource->entry_type() == EntryType::IN) {
+    this->RecordPassFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
                       count);
+  }
   if (entry != nullptr) {
     this->RecordPassFor(entry->origin_node(), count);
   }
@@ -50,7 +52,7 @@ TokenResultSharedPtr StatisticSlot::OnPass(const EntrySharedPtr& entry,
 
 TokenResultSharedPtr StatisticSlot::OnBlock(
     const TokenResultSharedPtr& prev_result, const EntrySharedPtr& entry,
-    const ResourceWrapperSharedPtr&, const Stat::NodeSharedPtr& node, int count,
+    const ResourceWrapperSharedPtr& resource, const Stat::NodeSharedPtr& node, int count,
     int) {
   if (entry == nullptr) {
     return prev_result;
@@ -60,8 +62,10 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 
   this->RecordBlockFor(node, count);
   this->RecordBlockFor(entry->origin_node(), count);
-  this->RecordBlockFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
+  if (resource->entry_type() == EntryType::IN) {
+    this->RecordBlockFor(Stat::ResourceNodeStorage::GetInstance().entry_node(),
                        count);
+  }
 
   return prev_result;
 }
