@@ -8,8 +8,7 @@ constexpr auto kSystemPropertyListenerName = "SystemPropertyListener";
 SystemRuleManager::SystemRuleManager() {
   cur_property_ =
       std::make_shared<Property::DynamicSentinelProperty<SystemRuleList>>();
-  cur_property_->AddListener(
-      std::make_unique<SystemPropertyListener>());
+  cur_property_->AddListener(std::make_unique<SystemPropertyListener>());
 }
 
 bool SystemRuleManager::LoadRules(const SystemRuleList &rules) {

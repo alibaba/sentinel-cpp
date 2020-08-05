@@ -38,15 +38,16 @@ class SystemRuleManager {
 
   void RegisterToProperty(const DynamicSystemRulePropertySharedPtr& property);
   bool LoadRules(const SystemRuleList& rules);
-  SystemRuleMapPtr rule_map(){ return rule_map_; }
+  SystemRuleMapPtr rule_map() {
+    return rule_map_;
+  }  // TODO: should lock be used here?
+  bool SystemRuleIsSet() { return rule_map_ && rule_map_->size() > 0; }
 
   // Reentrant
-  double GetCurrentSystemAvgLoad() {
-    return status_listener_->GetCurCpuUsage();
-  }
+  double GetCurrentSystemAvgLoad() { return status_listener_->GetCurLoad(); }
 
   // Reentrant
-  double GetCurrentCpuUsage() { return status_listener_->GetCurLoad(); }
+  double GetCurrentCpuUsage() { return status_listener_->GetCurCpuUsage(); }
 
   friend class SystemPropertyListener;
 
@@ -54,7 +55,8 @@ class SystemRuleManager {
   SystemRuleManager();
 
   DynamicSystemRulePropertySharedPtr cur_property_;
-  SystemStatusListenerSharedPtr status_listener_;
+  SystemStatusListenerSharedPtr status_listener_ =
+      std::make_shared<SystemStatusListener>();
   SystemRuleMapPtr rule_map_;
 
   mutable std::mutex property_mtx_;  // protect cur_property_

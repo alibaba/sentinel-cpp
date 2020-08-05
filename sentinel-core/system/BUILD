@@ -61,3 +61,20 @@ cc_library(
     "//sentinel-core/slot/base:rule_checker_slot_interface",
   ]
 )
+
+cc_test(
+  name = "system_slot_unittests",
+  srcs = [
+    "system_slot_test.cc",
+    "system_slot_mock.h",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":system_slot_lib",
+    ":system_rule_lib",
+    ":system_rule_manager_lib",
+    "//sentinel-core/common:string_resource_wrapper_lib",
+    "//sentinel-core/test/mock/statistic/node:mock_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)

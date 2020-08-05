@@ -18,6 +18,7 @@ SystemStatusListener::SystemStatusListener() {
   usage_info_p1_ = std::make_shared<CpuUsageInfo>();
   usage_info_p2_ = std::make_shared<CpuUsageInfo>();
   load_info_p_ = std::make_shared<CpuLoadInfo>();
+  Initialize();
 }
 
 void SystemStatusListener::ReadCpuUsageFromProc(

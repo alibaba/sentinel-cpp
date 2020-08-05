@@ -28,7 +28,7 @@ bool SystemRule::operator==(const SystemRule &rule) const {
 }
 
 std::string SystemRule::ToString() const {
-  return absl::StrFormat("SystemRule{rule_type=%s, threshold=%.2lf",
+  return absl::StrFormat("SystemRule{rule_type=%s, threshold=%.2lf}",
                          GetSystemRuleTypeString(rule_type_).c_str(),
                          threshold_);
 }

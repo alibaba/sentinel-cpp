@@ -22,14 +22,21 @@ class SystemSlot : public RuleCheckerSlot {
   void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count) override;
   const std::string& Name() const override;
-  TokenResultSharedPtr CheckSystem(
-      const System::SystemRuleMapPtr sysRuleMap,
-      std::shared_ptr<Stat::StatisticNode>& node) const;
+  TokenResultSharedPtr CheckSystem(const System::SystemRuleMapPtr sysRuleMap,
+                                   Stat::NodeSharedPtr& node,
+                                   int acquire_count) const;
+  virtual double GetCurrentCpuUsage() const {
+    return sysMgr.GetInstance().GetCurrentCpuUsage();
+  }
+  virtual double GetCurrentSystemAvgLoad() const {
+    return sysMgr.GetInstance().GetCurrentSystemAvgLoad();
+  }
   friend class System::SystemRuleManager;
+
  private:
   const std::string name_{kSystemSlotName};
   System::SystemRuleManager& sysMgr = System::SystemRuleManager::GetInstance();
-  bool CheckBbr(double curThread, std::shared_ptr<Stat::StatisticNode>& node) const;
+  bool CheckBbr(double curThread, Stat::NodeSharedPtr& node) const;
 };
 
 }  // namespace Slot
