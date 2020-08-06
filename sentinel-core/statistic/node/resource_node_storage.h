@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-
 #include "sentinel-core/statistic/node/cluster_node.h"
 
 #include "absl/synchronization/mutex.h"
@@ -25,7 +24,7 @@ class ResourceNodeStorage {
   Stat::ClusterNodeSharedPtr GetOrCreateClusterNode(
       const std::string& resource_name);
   void ResetClusterNodes();
-  Stat::ClusterNodeSharedPtr entry_node() { return entry_node_; }
+  Stat::ClusterNodeSharedPtr GetEntryNode() { return entry_node_; }
 
   const std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> GetNodeMap()
       const;
@@ -39,7 +38,7 @@ class ResourceNodeStorage {
   // checking.
   ClusterNodeSharedPtr entry_node_;
 
-  mutable absl::Mutex mtx_;
+  mutable absl::Mutex node_map_mtx_;  // protect `node_map_`
 };
 
 }  // namespace Stat

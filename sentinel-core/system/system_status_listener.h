@@ -10,7 +10,7 @@
 #include <thread>
 #include <vector>
 
-#define STR_CPU "cpu"
+static constexpr const char* STR_CPU = "cpu";
 
 namespace Sentinel {
 namespace System {
@@ -59,7 +59,7 @@ class SystemStatusListener {
   size_t GetActiveTime(std::shared_ptr<CpuUsageInfo> p);
   void ReadCpuUsageFromProc(std::shared_ptr<CpuUsageInfo> p);
   void UpdateCpuUsage();
-  void UpdateCpuLoad();
+  void UpdateSystemLoad();
 
   std::ifstream file_stat_, file_load_;
   std::shared_ptr<CpuUsageInfo> usage_info_p1_, usage_info_p2_;

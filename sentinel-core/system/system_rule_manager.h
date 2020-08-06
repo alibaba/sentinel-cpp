@@ -40,9 +40,9 @@ class SystemRuleManager {
   void RegisterToProperty(const DynamicSystemRulePropertySharedPtr& property);
   bool LoadRules(const SystemRuleList& rules);
   SystemRuleMapSharedPtr rule_map() {
+    absl::ReaderMutexLock lck(&(update_mtx_));
     return rule_map_;
-  }  // TODO: should lock be used here?
-  bool SystemRuleIsSet() { return rule_map_ && rule_map_->size() > 0; }
+  }  // TODO: Use atomic<SharedPtr> here instead?
 
   // Reentrant
   double GetCurrentSystemAvgLoad() { return status_listener_->GetCurLoad(); }

@@ -1,4 +1,5 @@
 #include "sentinel-core/system/system_slot.h"
+#include "absl/strings/str_format.h"
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/slot/base/token_result.h"
 #include "sentinel-core/statistic/node/resource_node_storage.h"
@@ -15,16 +16,25 @@ TokenResultSharedPtr SystemSlot::Entry(const EntrySharedPtr& entry,
                                        int flag) {
   // Fetch global statistic node for inbound traffic
   Stat::NodeSharedPtr entryNode =
-      Stat::ResourceNodeStorage::GetInstance().entry_node();
-  if (sysMgr.SystemRuleIsSet() && entryNode != nullptr &&
-      resource->entry_type() == EntryType::IN) {
+      Stat::ResourceNodeStorage::GetInstance().GetEntryNode();
+  TokenResultSharedPtr res = TokenResult::Ok();
+  if (resource->entry_type() == EntryType::IN && entryNode != nullptr) {
     System::SystemRuleMapSharedPtr ruleMap = sysMgr.rule_map();
-    TokenResultSharedPtr res = CheckSystem(ruleMap, entryNode, count);
-    return res;
+    if (ruleMap && ruleMap->size() > 0) {
+      return CheckSystem(ruleMap, entryNode, count);
+    } else {
+      return TokenResult::Ok();
+    }
+  } else {
+    return TokenResult::Ok();
   }
-  return TokenResult::Ok();
 }
 
+// In fact, except `acquire_count`, other arguments do not need to
+// be passed into `CheckSystem`, since they can be directly obtained
+// from global variables.
+// However, for convenience of passing mocked objects in unit test,
+// we still put them in function signature.
 TokenResultSharedPtr SystemSlot::CheckSystem(
     const System::SystemRuleMapSharedPtr sysRuleMap, Stat::NodeSharedPtr& node,
     int acquire_count) const {
@@ -59,7 +69,6 @@ TokenResultSharedPtr SystemSlot::CheckSystem(
         }
         break;
       case System::MetricType::kCpuUsage:
-        std::cout.flush();
         cpuUsage = GetCurrentCpuUsage();
         if (cpuUsage > e.second.threshold()) {
           return TokenResult::Blocked("SystemException");

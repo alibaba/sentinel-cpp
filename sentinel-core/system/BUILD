@@ -9,6 +9,9 @@ cc_library(
     "system_status_listener.cc",
   ],
   copts = DEFAULT_COPTS,
+  deps = [
+    "//sentinel-core/log:logger_lib",
+  ],
 )
 
 cc_library(
@@ -59,6 +62,7 @@ cc_library(
     ":system_rule_manager_lib", 
     ":system_status_listener_lib",
     "//sentinel-core/slot/base:rule_checker_slot_interface",
+    "@com_google_absl//absl/strings:str_format",
   ]
 )
 

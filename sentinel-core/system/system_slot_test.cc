@@ -20,16 +20,16 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
   EntryContextSharedPtr context =
       std::make_shared<EntryContext>("test_resource");
   Stat::NodeSharedPtr node = std::make_shared<Stat::MockNode>();
-  auto resource =
+  auto resource_in =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::IN);
-  auto entry = std::make_shared<Entry>(resource, context);
+  auto resource_out =
+      std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
+  auto entry = std::make_shared<Entry>(resource_in, context);
   SystemSlot slot;
 
   // No rule set
-  {
-    auto result = slot.Entry(entry, resource, node, 1000, 0);
-    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
-  }
+  EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+            slot.Entry(entry, resource_in, node, 1000, 0)->status());
 
   System::SystemRule rule1(System::MetricType::kCpuUsage, 0.6);
   System::SystemRule rule2(System::MetricType::kQps, 1);
@@ -39,6 +39,12 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
   System::SystemRuleMapSharedPtr p = std::make_shared<System::SystemRuleMap>();
   p->insert(std::make_pair<System::MetricType, System::SystemRule>(
       System::MetricType::kCpuUsage, std::move(rule1)));
+
+  // OUT entry type should not be blocked by system rule
+  EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+            slot.Entry(entry, resource_out, node, 1000, 0)->status());
+  EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+            slot.Entry(entry, resource_in, node, 10, 0)->status());
 
   MockSystemSlot mock_system_slot;
   ON_CALL(mock_system_slot, CheckSystem(testing::_, testing::_, testing::_))
@@ -50,6 +56,7 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
           });
 
   // SystemRule: CPU usage
+  // SystemSlot and ClusterNode are mocked here
   {
     EXPECT_CALL(mock_system_slot,
                 CheckSystem(testing::_, testing::_, testing::_))
