@@ -45,10 +45,14 @@ class SystemRuleManager {
   }  // TODO: Use atomic<SharedPtr> here instead?
 
   // Reentrant
-  double GetCurrentSystemAvgLoad() { return status_listener_->GetCurLoad(); }
+  double GetCurrentSystemAvgLoad() {
+    return SystemStatusListener::GetInstance().GetCurLoad();
+  }
 
   // Reentrant
-  double GetCurrentCpuUsage() { return status_listener_->GetCurCpuUsage(); }
+  double GetCurrentCpuUsage() {
+    return SystemStatusListener::GetInstance().GetCurCpuUsage();
+  }
 
   friend class SystemPropertyListener;
 
@@ -56,8 +60,6 @@ class SystemRuleManager {
   SystemRuleManager();
 
   DynamicSystemRulePropertySharedPtr cur_property_;
-  SystemStatusListenerSharedPtr status_listener_ =
-      std::make_shared<SystemStatusListener>();
   SystemRuleMapSharedPtr rule_map_;
 
   mutable std::mutex property_mtx_;  // protect cur_property_

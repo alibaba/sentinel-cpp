@@ -17,10 +17,6 @@ class MockSystemSlot : public SystemSlot {
  public:
   MockSystemSlot() = default;
   ~MockSystemSlot() = default;
-  // MOCK_METHOD(TokenResultSharedPtr, Entry, (const EntrySharedPtr& entry,
-  //                                           const ResourceWrapperSharedPtr&
-  //                                           resource, Stat::NodeSharedPtr&
-  //                                           node, int count, int flag));
   MOCK_METHOD5(Entry, TokenResultSharedPtr(const EntrySharedPtr&,
                                            const ResourceWrapperSharedPtr&,
                                            Stat::NodeSharedPtr&, int, int));

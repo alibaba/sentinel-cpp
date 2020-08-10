@@ -41,6 +41,8 @@ int main() {
   command_center_init.Initialize();
   Sentinel::Log::MetricLogTask metric_log_task;
   metric_log_task.Initialize();
+  Sentinel::System::SystemStatusListener::GetInstance().Initialize();
+
   Sentinel::System::SystemRule rule1, rule2, rule3;
   rule1.set_rule_type(Sentinel::System::MetricType::kQps);
   rule1.set_threshold(static_cast<double>(300));

@@ -17,7 +17,6 @@ std::string GetMetricTypeString(MetricType ruleType) {
     case MetricType::kSystemLoad:
       return std::string("system_load");
     default:
-      // return std::string("");
       return absl::StrFormat("unknown_type(%d)", ruleType);
   }
 }

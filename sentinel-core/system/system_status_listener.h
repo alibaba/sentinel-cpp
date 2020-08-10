@@ -39,13 +39,19 @@ class CpuLoadInfo {
 class CpuUsageInfo {
  public:
   std::string cpu;
-  size_t times[10];
+  int64_t times[10];
 };
 
 class SystemStatusListener {
  public:
   SystemStatusListener();
+  static SystemStatusListener& GetInstance() {
+    static SystemStatusListener* instance = new SystemStatusListener();
+    return *instance;
+  }
+
   virtual ~SystemStatusListener() {
+    stopListner();
     file_stat_.close();
     file_load_.close();
   }
@@ -55,8 +61,8 @@ class SystemStatusListener {
   double GetCurCpuUsage() { return cur_cpu_usage_.load(); }
 
  private:
-  size_t GetIdleTime(std::shared_ptr<CpuUsageInfo> p);
-  size_t GetActiveTime(std::shared_ptr<CpuUsageInfo> p);
+  int64_t GetIdleTime(std::shared_ptr<CpuUsageInfo> p);
+  int64_t GetActiveTime(std::shared_ptr<CpuUsageInfo> p);
   void ReadCpuUsageFromProc(std::shared_ptr<CpuUsageInfo> p);
   void UpdateCpuUsage();
   void UpdateSystemLoad();
@@ -67,6 +73,16 @@ class SystemStatusListener {
 
   std::atomic<double> cur_load_{-1};
   std::atomic<double> cur_cpu_usage_{-1};
+  std::atomic<bool> stopped_cmd_{false};
+  std::atomic<bool> stopped_{false};
+  std::atomic<bool> inited_{false};
+
+  // wait until loop in RunCpuListener stop
+  void stopListner() {
+    stopped_cmd_.store(true);
+    while (!stopped_.load())
+      ;
+  }
 };
 
 using SystemStatusListenerSharedPtr = std::shared_ptr<SystemStatusListener>;

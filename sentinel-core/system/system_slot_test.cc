@@ -6,11 +6,6 @@
 #include "sentinel-core/system/system_slot_mock.h"
 #include "sentinel-core/test/mock/statistic/node/mock.h"
 
-using testing::_;
-using testing::InSequence;
-using testing::Mock;
-using testing::Return;
-
 namespace Sentinel {
 namespace Slot {
 
@@ -54,19 +49,33 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
             return mock_system_slot.OriginalCheckSystem(sysRuleMap, node,
                                                         acquire_count);
           });
+  ON_CALL(*(static_cast<Stat::MockNode*>(node.get())), CurThreadNum())
+      .WillByDefault(testing::Return(2));
+  EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), CurThreadNum())
+      .Times(testing::AnyNumber());
 
   // SystemRule: CPU usage
   // SystemSlot and ClusterNode are mocked here
   {
     EXPECT_CALL(mock_system_slot,
                 CheckSystem(testing::_, testing::_, testing::_))
-        .Times(1);
+        .Times(2);
     EXPECT_CALL(mock_system_slot, GetCurrentCpuUsage())
-        .WillOnce(testing::Return(0.7));
-    auto result = mock_system_slot.CheckSystem(p, node, 1);
+        .WillOnce(testing::Return(0.7))
+        .WillOnce(testing::Return(0.9));
+    EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), MaxCompleteQps())
+        .WillOnce(testing::Return(1000))
+        .WillOnce(testing::Return(2500));
+    EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), MinRt())
+        .WillOnce(testing::Return(1))
+        .WillOnce(testing::Return(1));
+
     // Block since cpu load excceeds threshold
-    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED, result->status());
-    Mock::VerifyAndClearExpectations(&mock_system_slot);
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+              mock_system_slot.CheckSystem(p, node, 1)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              mock_system_slot.CheckSystem(p, node, 1)->status());
+    testing::Mock::VerifyAndClearExpectations(&mock_system_slot);
   }
 
   // SystemRule: QPS
@@ -86,7 +95,7 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
               mock_system_slot.CheckSystem(p, node, 1)->status());
     EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
               mock_system_slot.CheckSystem(p, node, 1)->status());
-    Mock::VerifyAndClearExpectations(&mock_system_slot);
+    testing::Mock::VerifyAndClearExpectations(&mock_system_slot);
   }
 
   // SystemRule: System Load
@@ -100,10 +109,6 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
         .Times(testing::AnyNumber());
     EXPECT_CALL(mock_system_slot, GetCurrentCpuUsage())
         .Times(testing::AnyNumber());
-
-    EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), CurThreadNum())
-        .WillOnce(testing::Return(2))
-        .WillOnce(testing::Return(2));
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), MaxCompleteQps())
         .WillOnce(testing::Return(1000))
         .WillOnce(testing::Return(2500));
@@ -118,7 +123,7 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
               mock_system_slot.CheckSystem(p, node, 1)->status());
     EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
               mock_system_slot.CheckSystem(p, node, 1)->status());
-    Mock::VerifyAndClearExpectations(&mock_system_slot);
+    testing::Mock::VerifyAndClearExpectations(&mock_system_slot);
   }
 }
 

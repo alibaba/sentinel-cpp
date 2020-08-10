@@ -82,3 +82,16 @@ cc_test(
     "@com_google_googletest//:gtest_main",
   ]
 )
+
+cc_test(
+  name = "system_status_listener_unittests",
+  srcs = [
+    "system_status_listener_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":system_status_listener_lib",
+    ":system_slot_unittests",
+    "@com_google_googletest//:gtest_main",
+  ]
+)

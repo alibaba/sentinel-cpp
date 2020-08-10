@@ -25,9 +25,8 @@ TokenResultSharedPtr SystemSlot::Entry(const EntrySharedPtr& entry,
     } else {
       return TokenResult::Ok();
     }
-  } else {
-    return TokenResult::Ok();
   }
+  return TokenResult::Ok();
 }
 
 // In fact, except `acquire_count`, other arguments do not need to
@@ -70,8 +69,11 @@ TokenResultSharedPtr SystemSlot::CheckSystem(
         break;
       case System::MetricType::kCpuUsage:
         cpuUsage = GetCurrentCpuUsage();
+        concurrency = static_cast<double>(node->CurThreadNum());
         if (cpuUsage > e.second.threshold()) {
-          return TokenResult::Blocked("SystemException");
+          if (!CheckBbr(concurrency, node)) {
+            return TokenResult::Blocked("SystemException");
+          }
         }
         break;
       default:

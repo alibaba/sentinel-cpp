@@ -4,10 +4,10 @@
 namespace Sentinel {
 namespace System {
 
-size_t SystemStatusListener::GetIdleTime(std::shared_ptr<CpuUsageInfo> p) {
+int64_t SystemStatusListener::GetIdleTime(std::shared_ptr<CpuUsageInfo> p) {
   return p->times[S_IDLE] + p->times[S_IOWAIT];
 }
-size_t SystemStatusListener::GetActiveTime(std::shared_ptr<CpuUsageInfo> p) {
+int64_t SystemStatusListener::GetActiveTime(std::shared_ptr<CpuUsageInfo> p) {
   return p->times[S_USER] + p->times[S_NICE] + p->times[S_SYSTEM] +
          p->times[S_IRQ] + p->times[S_SOFTIRQ] + p->times[S_STEAL] +
          p->times[S_GUEST] + p->times[S_GUEST_NICE];
@@ -34,10 +34,6 @@ SystemStatusListener::SystemStatusListener() {
     SENTINEL_LOG(error,
                  "[SystemStatusListener] Open /proc/loadavg error, system load "
                  "listener not enabled");
-  }
-
-  if (load_info_p_ || usage_info_p1_) {
-    Initialize();
   }
 }
 
@@ -80,11 +76,11 @@ void SystemStatusListener::UpdateCpuUsage() {
   usage_info_p1_.swap(usage_info_p2_);
   ReadCpuUsageFromProc(usage_info_p2_);
   // 100ms pause
-  size_t active_time =
+  int64_t active_time =
       GetActiveTime(usage_info_p2_) - GetActiveTime(usage_info_p1_);
-  size_t idle_time =
+  int64_t idle_time =
       (GetIdleTime(usage_info_p2_) - GetIdleTime(usage_info_p1_));
-  size_t total_time = active_time + idle_time;
+  int64_t total_time = active_time + idle_time;
   cur_cpu_usage_.store(1.f * active_time / total_time);
 }
 
@@ -115,17 +111,28 @@ void SystemStatusListener::UpdateSystemLoad() {
 }
 
 void SystemStatusListener::RunCpuListener() {
-  // 1s per loop
-  while (true) {
+  // In order to shorten the buzy waiting time in `stopListner`
+  // we make the listener as if has stopped the loop while sleeping
+  // TODO
+  while (!stopped_cmd_.load()) {
+    stopped_.store(false);
     UpdateCpuUsage();
     UpdateSystemLoad();
+    stopped_.store(true);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
+  stopped_.store(true);
 }
 
 void SystemStatusListener::Initialize() {
-  std::thread listen_task(&SystemStatusListener::RunCpuListener, this);
-  listen_task.detach();
+  bool b = false;
+  if (inited_.compare_exchange_strong(b, true)) {
+    if (load_info_p_ || usage_info_p1_) {
+      stopped_cmd_.store(false);
+      std::thread listen_task(&SystemStatusListener::RunCpuListener, this);
+      listen_task.detach();
+    }
+  }
 }
 
 }  // namespace System
