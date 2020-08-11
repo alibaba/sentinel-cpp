@@ -4,16 +4,6 @@
 namespace Sentinel {
 namespace System {
 
-int64_t SystemStatusListener::GetIdleTime(std::unique_ptr<CpuUsageInfo> &p) {
-  return p->times[S_IDLE] + p->times[S_IOWAIT];
-}
-int64_t SystemStatusListener::GetActiveTime(std::unique_ptr<CpuUsageInfo> &p) {
-  return p->times[S_USER] + p->times[S_NICE] + p->times[S_SYSTEM] +
-         p->times[S_IRQ] + p->times[S_SOFTIRQ] + p->times[S_STEAL] +
-         p->times[S_GUEST] + p->times[S_GUEST_NICE];
-}
-
-// `Initialize()` is called automatically in this constructor
 // Unless both of two /proc/* files read error, the listener thread should be
 // started
 SystemStatusListener::SystemStatusListener() {
@@ -37,8 +27,7 @@ SystemStatusListener::SystemStatusListener() {
   }
 }
 
-void SystemStatusListener::ReadCpuUsageFromProc(
-    std::unique_ptr<CpuUsageInfo> &p) {
+void SystemStatusListener::ReadCpuUsageFromProc() {
   std::string line;
   file_stat_.seekg(std::ios::beg);
   if (file_stat_.fail() || file_stat_.bad()) {
@@ -61,10 +50,10 @@ void SystemStatusListener::ReadCpuUsageFromProc(
     return;
   }
   std::istringstream ss(line);
-  ss >> p->cpu;
+  ss >> usage_info_p2_->cpu;
 
   for (int i = 0; i < NUM_CPU_STATES; ++i) {
-    ss >> p->times[i];
+    ss >> usage_info_p2_->times[i];
   }
 }
 
@@ -72,14 +61,13 @@ void SystemStatusListener::UpdateCpuUsage() {
   if (!usage_info_p1_ || !usage_info_p2_) {
     return;
   }
-  // TODO: why data race in `swap`?
   usage_info_p1_.swap(usage_info_p2_);
-  ReadCpuUsageFromProc(usage_info_p2_);
+  ReadCpuUsageFromProc();
   // 100ms pause
   int64_t active_time =
-      GetActiveTime(usage_info_p2_) - GetActiveTime(usage_info_p1_);
+      usage_info_p2_->GetActiveTime() - usage_info_p1_->GetActiveTime();
   int64_t idle_time =
-      (GetIdleTime(usage_info_p2_) - GetIdleTime(usage_info_p1_));
+      usage_info_p2_->GetIdleTime() - usage_info_p1_->GetIdleTime();
   int64_t total_time = active_time + idle_time;
   cur_cpu_usage_.store(1.f * active_time / total_time);
 }
@@ -113,7 +101,6 @@ void SystemStatusListener::UpdateSystemLoad() {
 void SystemStatusListener::RunCpuListener() {
   // In order to shorten the buzy waiting time in `stopListner`
   // we make the listener as if has stopped the loop while sleeping
-  // TODO
   while (!stopped_cmd_.load()) {
     stopped_.store(false);
     UpdateCpuUsage();
@@ -124,6 +111,7 @@ void SystemStatusListener::RunCpuListener() {
   stopped_.store(true);
 }
 
+// `Initialize()` should be called explicitly after construction
 void SystemStatusListener::Initialize() {
   bool b = false;
   if (inited_.compare_exchange_strong(b, true)) {

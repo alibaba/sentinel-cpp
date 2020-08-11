@@ -40,6 +40,12 @@ class CpuUsageInfo {
  public:
   std::string cpu;
   int64_t times[10];
+  int64_t GetIdleTime() { return times[S_IDLE] + times[S_IOWAIT]; }
+  int64_t GetActiveTime() {
+    return times[S_USER] + times[S_NICE] + times[S_SYSTEM] + times[S_IRQ] +
+           times[S_SOFTIRQ] + times[S_STEAL] + times[S_GUEST] +
+           times[S_GUEST_NICE];
+  }
 };
 
 class SystemStatusListener {
@@ -51,7 +57,7 @@ class SystemStatusListener {
   }
 
   virtual ~SystemStatusListener() {
-    stopListner();
+    StopListner();
     file_stat_.close();
     file_load_.close();
   }
@@ -61,13 +67,14 @@ class SystemStatusListener {
   double GetCurCpuUsage() { return cur_cpu_usage_.load(); }
 
  private:
-  int64_t GetIdleTime(std::unique_ptr<CpuUsageInfo>& p);
-  int64_t GetActiveTime(std::unique_ptr<CpuUsageInfo>& p);
-  void ReadCpuUsageFromProc(std::unique_ptr<CpuUsageInfo>& p);
+  void ReadCpuUsageFromProc();
   void UpdateCpuUsage();
   void UpdateSystemLoad();
 
   std::ifstream file_stat_, file_load_;
+
+  // Two snapshots of cpu stat are required to get
+  // usage percentage. `p2` is newer than `p1`
   std::unique_ptr<CpuUsageInfo> usage_info_p1_, usage_info_p2_;
   std::unique_ptr<CpuLoadInfo> load_info_p_;
 
@@ -78,7 +85,7 @@ class SystemStatusListener {
   std::atomic<bool> inited_{false};
 
   // wait until loop in RunCpuListener stop
-  void stopListner() {
+  void StopListner() {
     stopped_cmd_.store(true);
     while (!stopped_.load())
       ;
