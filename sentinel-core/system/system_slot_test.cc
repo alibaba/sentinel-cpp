@@ -60,7 +60,7 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
     EXPECT_CALL(mock_system_slot,
                 CheckSystem(testing::_, testing::_, testing::_))
         .Times(2);
-    EXPECT_CALL(mock_system_slot, GetCurrentCpuUsage())
+    EXPECT_CALL(mock_system_slot, GetCurCpuUsage())
         .WillOnce(testing::Return(0.7))
         .WillOnce(testing::Return(0.9));
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), MaxCompleteQps())
@@ -85,8 +85,7 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
     EXPECT_CALL(mock_system_slot,
                 CheckSystem(testing::_, testing::_, testing::_))
         .Times(2);
-    EXPECT_CALL(mock_system_slot, GetCurrentCpuUsage())
-        .Times(testing::AnyNumber());
+    EXPECT_CALL(mock_system_slot, GetCurCpuUsage()).Times(testing::AnyNumber());
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
         .WillOnce(testing::Return(0))
         .WillOnce(testing::Return(1));
@@ -107,15 +106,14 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
         .Times(2);
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
         .Times(testing::AnyNumber());
-    EXPECT_CALL(mock_system_slot, GetCurrentCpuUsage())
-        .Times(testing::AnyNumber());
+    EXPECT_CALL(mock_system_slot, GetCurCpuUsage()).Times(testing::AnyNumber());
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), MaxCompleteQps())
         .WillOnce(testing::Return(1000))
         .WillOnce(testing::Return(2500));
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), MinRt())
         .WillOnce(testing::Return(1))
         .WillOnce(testing::Return(1));
-    EXPECT_CALL(mock_system_slot, GetCurrentSystemAvgLoad())
+    EXPECT_CALL(mock_system_slot, GetCurLoad())
         .WillOnce(testing::Return(0.9))
         .WillOnce(testing::Return(1.1));
     // Block since system load excceeds threshold

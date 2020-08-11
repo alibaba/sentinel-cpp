@@ -44,16 +44,6 @@ class SystemRuleManager {
     return rule_map_;
   }  // TODO: Use atomic<SharedPtr> here instead?
 
-  // Reentrant
-  double GetCurrentSystemAvgLoad() {
-    return SystemStatusListener::GetInstance().GetCurLoad();
-  }
-
-  // Reentrant
-  double GetCurrentCpuUsage() {
-    return SystemStatusListener::GetInstance().GetCurCpuUsage();
-  }
-
   friend class SystemPropertyListener;
 
  private:

@@ -61,15 +61,15 @@ class SystemStatusListener {
   double GetCurCpuUsage() { return cur_cpu_usage_.load(); }
 
  private:
-  int64_t GetIdleTime(std::shared_ptr<CpuUsageInfo> p);
-  int64_t GetActiveTime(std::shared_ptr<CpuUsageInfo> p);
-  void ReadCpuUsageFromProc(std::shared_ptr<CpuUsageInfo> p);
+  int64_t GetIdleTime(std::unique_ptr<CpuUsageInfo>& p);
+  int64_t GetActiveTime(std::unique_ptr<CpuUsageInfo>& p);
+  void ReadCpuUsageFromProc(std::unique_ptr<CpuUsageInfo>& p);
   void UpdateCpuUsage();
   void UpdateSystemLoad();
 
   std::ifstream file_stat_, file_load_;
-  std::shared_ptr<CpuUsageInfo> usage_info_p1_, usage_info_p2_;
-  std::shared_ptr<CpuLoadInfo> load_info_p_;
+  std::unique_ptr<CpuUsageInfo> usage_info_p1_, usage_info_p2_;
+  std::unique_ptr<CpuLoadInfo> load_info_p_;
 
   std::atomic<double> cur_load_{-1};
   std::atomic<double> cur_cpu_usage_{-1};
@@ -84,8 +84,6 @@ class SystemStatusListener {
       ;
   }
 };
-
-using SystemStatusListenerSharedPtr = std::shared_ptr<SystemStatusListener>;
 
 }  // namespace System
 }  // namespace Sentinel

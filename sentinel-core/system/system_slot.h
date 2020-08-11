@@ -25,11 +25,11 @@ class SystemSlot : public RuleCheckerSlot {
   TokenResultSharedPtr CheckSystem(
       const System::SystemRuleMapSharedPtr sysRuleMap,
       Stat::NodeSharedPtr& node, int acquire_count) const;
-  virtual double GetCurrentCpuUsage() const {
-    return sysMgr.GetInstance().GetCurrentCpuUsage();
+  virtual double GetCurCpuUsage() const {
+    return System::SystemStatusListener::GetInstance().GetCurCpuUsage();
   }
-  virtual double GetCurrentSystemAvgLoad() const {
-    return sysMgr.GetInstance().GetCurrentSystemAvgLoad();
+  virtual double GetCurLoad() const {
+    return System::SystemStatusListener::GetInstance().GetCurLoad();
   }
   friend class System::SystemRuleManager;
 

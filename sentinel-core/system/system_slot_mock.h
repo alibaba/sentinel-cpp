@@ -25,8 +25,8 @@ class MockSystemSlot : public SystemSlot {
   MOCK_CONST_METHOD3(CheckSystem,
                      TokenResultSharedPtr(const System::SystemRuleMapSharedPtr,
                                           Stat::NodeSharedPtr&, int));
-  MOCK_CONST_METHOD0(GetCurrentCpuUsage, double(void));
-  MOCK_CONST_METHOD0(GetCurrentSystemAvgLoad, double(void));
+  MOCK_CONST_METHOD0(GetCurCpuUsage, double(void));
+  MOCK_CONST_METHOD0(GetCurLoad, double(void));
   MOCK_CONST_METHOD0(Name, const std::string&(void));
 
   TokenResultSharedPtr OriginalCheckSystem(

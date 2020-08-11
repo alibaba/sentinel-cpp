@@ -59,7 +59,7 @@ TokenResultSharedPtr SystemSlot::CheckSystem(
         }
         break;
       case System::MetricType::kSystemLoad:
-        load = GetCurrentSystemAvgLoad();
+        load = GetCurLoad();
         concurrency = static_cast<double>(node->CurThreadNum());
         if (load > e.second.threshold()) {
           if (!CheckBbr(concurrency, node)) {
@@ -68,7 +68,7 @@ TokenResultSharedPtr SystemSlot::CheckSystem(
         }
         break;
       case System::MetricType::kCpuUsage:
-        cpuUsage = GetCurrentCpuUsage();
+        cpuUsage = GetCurCpuUsage();
         concurrency = static_cast<double>(node->CurThreadNum());
         if (cpuUsage > e.second.threshold()) {
           if (!CheckBbr(concurrency, node)) {

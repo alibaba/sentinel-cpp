@@ -4,10 +4,10 @@
 namespace Sentinel {
 namespace System {
 
-int64_t SystemStatusListener::GetIdleTime(std::shared_ptr<CpuUsageInfo> p) {
+int64_t SystemStatusListener::GetIdleTime(std::unique_ptr<CpuUsageInfo> &p) {
   return p->times[S_IDLE] + p->times[S_IOWAIT];
 }
-int64_t SystemStatusListener::GetActiveTime(std::shared_ptr<CpuUsageInfo> p) {
+int64_t SystemStatusListener::GetActiveTime(std::unique_ptr<CpuUsageInfo> &p) {
   return p->times[S_USER] + p->times[S_NICE] + p->times[S_SYSTEM] +
          p->times[S_IRQ] + p->times[S_SOFTIRQ] + p->times[S_STEAL] +
          p->times[S_GUEST] + p->times[S_GUEST_NICE];
@@ -19,8 +19,8 @@ int64_t SystemStatusListener::GetActiveTime(std::shared_ptr<CpuUsageInfo> p) {
 SystemStatusListener::SystemStatusListener() {
   file_stat_ = std::ifstream("/proc/stat");
   if (file_stat_.is_open()) {
-    usage_info_p1_ = std::make_shared<CpuUsageInfo>();
-    usage_info_p2_ = std::make_shared<CpuUsageInfo>();
+    usage_info_p1_ = std::make_unique<CpuUsageInfo>();
+    usage_info_p2_ = std::make_unique<CpuUsageInfo>();
   } else {
     SENTINEL_LOG(error,
                  "[SystemStatusListener] Open /proc/stat error, cpu usage "
@@ -29,7 +29,7 @@ SystemStatusListener::SystemStatusListener() {
 
   file_load_ = std::ifstream("/proc/loadavg");
   if (file_load_.is_open()) {
-    load_info_p_ = std::make_shared<CpuLoadInfo>();
+    load_info_p_ = std::make_unique<CpuLoadInfo>();
   } else {
     SENTINEL_LOG(error,
                  "[SystemStatusListener] Open /proc/loadavg error, system load "
@@ -38,7 +38,7 @@ SystemStatusListener::SystemStatusListener() {
 }
 
 void SystemStatusListener::ReadCpuUsageFromProc(
-    std::shared_ptr<CpuUsageInfo> p) {
+    std::unique_ptr<CpuUsageInfo> &p) {
   std::string line;
   file_stat_.seekg(std::ios::beg);
   if (file_stat_.fail() || file_stat_.bad()) {
