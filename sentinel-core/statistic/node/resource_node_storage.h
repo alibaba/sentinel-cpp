@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-
 #include "sentinel-core/statistic/node/cluster_node.h"
 
 #include "absl/synchronization/mutex.h"
@@ -25,15 +24,21 @@ class ResourceNodeStorage {
   Stat::ClusterNodeSharedPtr GetOrCreateClusterNode(
       const std::string& resource_name);
   void ResetClusterNodes();
+  Stat::ClusterNodeSharedPtr GetEntryNode() { return entry_node_; }
 
   const std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> GetNodeMap()
       const;
 
  private:
-  ResourceNodeStorage() = default;
+  ResourceNodeStorage() { entry_node_ = std::make_shared<ClusterNode>(); }
 
   std::unordered_map<std::string, Stat::ClusterNodeSharedPtr> node_map_;
-  mutable absl::Mutex mtx_;
+
+  // Global statistic node for inbound traffic. Usually used for SystemRule
+  // checking.
+  ClusterNodeSharedPtr entry_node_;
+
+  mutable absl::Mutex node_map_mtx_;  // protect `node_map_`
 };
 
 }  // namespace Stat

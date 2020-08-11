@@ -34,11 +34,14 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
   }
 }
 
-TokenResultSharedPtr StatisticSlot::OnPass(const EntrySharedPtr& entry,
-                                           const ResourceWrapperSharedPtr&,
-                                           const Stat::NodeSharedPtr& node,
-                                           int count, int) {
+TokenResultSharedPtr StatisticSlot::OnPass(
+    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
+    const Stat::NodeSharedPtr& node, int count, int) {
   this->RecordPassFor(node, count);
+  if (resource->entry_type() == EntryType::IN) {
+    this->RecordPassFor(Stat::ResourceNodeStorage::GetInstance().GetEntryNode(),
+                        count);
+  }
   if (entry != nullptr) {
     this->RecordPassFor(entry->origin_node(), count);
   }
@@ -48,8 +51,8 @@ TokenResultSharedPtr StatisticSlot::OnPass(const EntrySharedPtr& entry,
 
 TokenResultSharedPtr StatisticSlot::OnBlock(
     const TokenResultSharedPtr& prev_result, const EntrySharedPtr& entry,
-    const ResourceWrapperSharedPtr&, const Stat::NodeSharedPtr& node, int count,
-    int) {
+    const ResourceWrapperSharedPtr& resource, const Stat::NodeSharedPtr& node,
+    int count, int) {
   if (entry == nullptr) {
     return prev_result;
   }
@@ -58,6 +61,10 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 
   this->RecordBlockFor(node, count);
   this->RecordBlockFor(entry->origin_node(), count);
+  if (resource->entry_type() == EntryType::IN) {
+    this->RecordBlockFor(
+        Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), count);
+  }
 
   return prev_result;
 }
@@ -82,7 +89,7 @@ TokenResultSharedPtr StatisticSlot::Entry(
 }
 
 void StatisticSlot::Exit(const EntrySharedPtr& entry,
-                         const ResourceWrapperSharedPtr&, int count) {
+                         const ResourceWrapperSharedPtr& resource, int count) {
   if (entry == nullptr) {
     return;
   }
@@ -101,6 +108,10 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry,
 
   this->RecordCompleteFor(node, rt, count);
   this->RecordCompleteFor(entry->origin_node(), rt, count);
+  if (resource->entry_type() == EntryType::IN) {
+    this->RecordCompleteFor(
+        Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt, count);
+  }
 }
 
 }  // namespace Slot

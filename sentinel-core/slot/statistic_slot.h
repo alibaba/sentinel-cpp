@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sentinel-core/slot/base/stats_slot.h"
+#include "sentinel-core/statistic/node/resource_node_storage.h"
 
 namespace Sentinel {
 namespace Slot {

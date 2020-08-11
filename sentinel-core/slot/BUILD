@@ -41,6 +41,7 @@ cc_library(
     "//sentinel-core/common:entry_lib",
     "//sentinel-core/slot/base:stats_slot_interface",
     "//sentinel-core/utils:utils_lib",
+    "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
 
@@ -57,6 +58,7 @@ cc_library(
     ":log_slot_lib",
     "//sentinel-core/flow:flow_slot_lib",
     "//sentinel-core/slot/base:default_slot_chain_impl_lib",
+    "//sentinel-core/system:system_slot_lib",
   ]
 )
 
