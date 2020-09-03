@@ -66,7 +66,7 @@ cc_library(
   name = "flow_slot_lib",
   srcs = [
     "flow_slot.h",
-    "flow_slot.cc",
+    # "flow_slot.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [

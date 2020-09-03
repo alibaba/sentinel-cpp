@@ -8,7 +8,8 @@
 namespace Sentinel {
 namespace Slot {
 
-class StatsSlot : public Slot {
+template <typename... Ts>
+class StatsSlot : public Slot<Ts...> {
  public:
   virtual ~StatsSlot() = default;
 

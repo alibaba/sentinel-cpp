@@ -25,3 +25,11 @@ def include_third_party_repositories():
         strip_prefix = "spdlog-1.3.1",
         urls = ["https://github.com/gabime/spdlog/archive/v1.3.1.tar.gz"],
     )
+
+    # TODO: not completed yet
+    http_archive(
+        name = "com_github_01org_tbb",
+        build_file = "//bazel:tbb.BUILD",
+        url = "https://github.com/01org/tbb/archive/2018_U3.tar.gz",
+        strip_prefix = "oneTBB-2018_U3",
+    )

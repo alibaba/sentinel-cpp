@@ -20,7 +20,7 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
   auto resource_out =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource_in, context);
-  SystemSlot slot;
+  SystemSlot<> slot;
 
   // No rule set
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,

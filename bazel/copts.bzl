@@ -25,7 +25,7 @@ WERROR = ["-Werror=return-type", "-Werror=switch"]
 DEFAULT_COPTS = select({
     "//bazel:windows": ABSL_MSVC_FLAGS,
     "//bazel:llvm_compiler": ABSL_LLVM_FLAGS,
-    "//conditions:default": ABSL_GCC_FLAGS + WERROR + ["-std=c++14"],
+    "//conditions:default": ABSL_GCC_FLAGS + WERROR + ["-std=c++14", "-g"],
 })
 
 TEST_COPTS = DEFAULT_COPTS + select({

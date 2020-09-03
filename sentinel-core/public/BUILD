@@ -6,7 +6,7 @@ cc_library(
   name = "sph_u_lib",
   srcs = [
     "sph_u.h",
-    "sph_u.cc",
+    # "sph_u.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [

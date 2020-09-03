@@ -53,7 +53,7 @@ cc_library(
 cc_library(
   name = "system_slot_lib",
   srcs = [
-    "system_slot.cc",
+    # "system_slot.cc",
     "system_slot.h",
   ],
   copts = DEFAULT_COPTS,
@@ -91,7 +91,7 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":system_status_listener_lib",
-    ":system_slot_unittests",
+    ":system_rule_manager_lib",
     "@com_google_googletest//:gtest_main",
   ]
 )

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "sentinel-core/common/entry.h"
 #include "sentinel-core/common/resource_wrapper.h"
@@ -11,15 +12,17 @@
 namespace Sentinel {
 namespace Slot {
 
+template <typename... Ts>
 class SlotBase {
  public:
   virtual ~SlotBase() = default;
   virtual TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
                                      Stat::NodeSharedPtr& node, int count,
-                                     int flag) = 0;
+                                     int flag, Ts... args) = 0;
   virtual void Exit(const EntrySharedPtr& entry,
-                    const ResourceWrapperSharedPtr& resource, int count) = 0;
+                    const ResourceWrapperSharedPtr& resource, int count,
+                    Ts... args) = 0;
 };
 
 }  // namespace Slot

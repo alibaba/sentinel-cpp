@@ -35,6 +35,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":entry_type_enum",
+    "@com_google_absl//absl/types:any",
   ]
 )
 
@@ -46,6 +47,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":resource_wrapper_interface",
+    "@com_google_absl//absl/types:any",
   ]
 )
 
@@ -91,7 +93,7 @@ cc_library(
   name = "entry_result_lib",
   srcs = [
     "entry_result.h",
-    "entry_result.cc",
+    # "entry_result.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [

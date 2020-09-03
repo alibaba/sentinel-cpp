@@ -13,7 +13,7 @@
 
 namespace Sentinel {
 namespace Slot {
-class MockSystemSlot : public SystemSlot {
+class MockSystemSlot : public SystemSlot<> {
  public:
   MockSystemSlot() = default;
   ~MockSystemSlot() = default;

@@ -27,8 +27,7 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);
   entry->set_cur_node(node);
-
-  FlowSlot slot;
+  FlowSlot<> slot;
   {
     // Test flow checking when no rule exists.
     auto result = slot.Entry(entry, resource, node, 1000, 0);

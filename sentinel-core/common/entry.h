@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <memory>
+#include <vector>
 
 #include "sentinel-core/common/entry_context.h"
 #include "sentinel-core/common/resource_wrapper.h"

@@ -25,12 +25,11 @@ TEST(StatisticSlotTest, TestEntryAndExitSingleThread) {
       std::make_shared<StringResourceWrapper>("test_resource", EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);
   entry->set_cur_node(node);
-  StatisticSlot slot;
+  StatisticSlot<> slot;
 
   // Make the slot pass.
   auto pass_result = TokenResult::Ok();
   slot.IsContinue(pass_result, context);
-
   auto result1 = slot.Entry(entry, resource, node, 1, 0);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result1->status());
   EXPECT_EQ(1, node->CurThreadNum());

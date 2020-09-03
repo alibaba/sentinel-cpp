@@ -17,7 +17,7 @@ namespace System {
 enum MetricType { kSystemLoad = 0, kRt, kConcurrency, kQps, kCpuUsage };
 struct MetricTypeHash {
   std::size_t operator()(const MetricType metric_type) const noexcept {
-    return (int)metric_type;
+    return static_cast<int>(metric_type);
   }
 };
 

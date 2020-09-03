@@ -7,7 +7,8 @@
 namespace Sentinel {
 namespace Slot {
 
-class RuleCheckerSlot : public Slot {
+template <typename... Ts>
+class RuleCheckerSlot : public Slot<Ts...> {
  public:
   virtual ~RuleCheckerSlot() = default;
   bool IsContinue(const TokenResultSharedPtr& token,

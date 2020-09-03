@@ -21,7 +21,7 @@ namespace Slot {
 
 TEST(DefaultSlotChainImplTest, Basic) {
   {
-    DefaultSlotChainImpl slot_chain;
+    DefaultSlotChainImpl<> slot_chain;
     Stat::NodeSharedPtr node = std::make_shared<Stat::MockNode>();
     auto mock_rule_checker_slot = std::make_unique<MockRuleCheckerSlot>();
     auto mock_stat_slot = std::make_unique<MockStatsSlot>();
@@ -37,12 +37,11 @@ TEST(DefaultSlotChainImplTest, Basic) {
     ResourceWrapperSharedPtr test_resource =
         std::make_shared<StringResourceWrapper>("test_resource", EntryType::IN);
     auto entry = std::make_shared<Entry>(test_resource, context);
-
     slot_chain.Entry(entry, test_resource, node, 1, 1);
   }
 
   {
-    DefaultSlotChainImpl slot_chain;
+    DefaultSlotChainImpl<> slot_chain;
     Stat::NodeSharedPtr node = std::make_shared<Stat::MockNode>();
     auto mock_rule_checker_slot1 = std::make_unique<MockRuleCheckerSlot>();
     auto mock_rule_checker_slot2 = std::make_unique<MockRuleCheckerSlot>();

@@ -11,7 +11,8 @@ enum class SlotType {
   STATS_PREPARE_SLOT,
 };
 
-class Slot : public SlotBase {
+template <typename... Ts>
+class Slot : public SlotBase<Ts...> {
  public:
   virtual ~Slot() = default;
   virtual bool IsContinue(const TokenResultSharedPtr& token,
