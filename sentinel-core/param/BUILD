@@ -17,7 +17,9 @@ cc_library(
     "param_flow_item.h",
   ],
   deps = [
+    "//sentinel-core/param/statistic:any_cmp_lib",
     "@com_google_absl//absl/types:any",
+    "@com_google_absl//absl/strings:str_format",
   ],
   copts = DEFAULT_COPTS,
 )
@@ -52,6 +54,7 @@ cc_library(
     "//sentinel-core/common:constants",
     "//sentinel-core/common:rule_lib",
     "@com_google_absl//absl/strings:str_format",
+    "@com_github_libtbb//:tbb",
   ],
 )
 
@@ -77,7 +80,7 @@ cc_library(
 cc_library(
   name = "param_flow_slot_lib",
   srcs = [
-    # "param_flow_slot.cc",
+    "param_flow_slot.cc",
     "param_flow_slot.h",
   ],
   copts = DEFAULT_COPTS,
@@ -91,5 +94,20 @@ cc_library(
     "//sentinel-core/statistic/node:resource_node_storage_lib",
     "//sentinel-core/slot/base:rule_checker_slot_interface",
     "@com_google_absl//absl/strings:str_format",
-  ]
+  ],
+)
+
+cc_test(
+  name = "param_slot_unittests",
+  srcs = [
+    "param_flow_slot_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    "//sentinel-core/common:string_resource_wrapper_lib",
+    "//sentinel-core/param:param_flow_rule_manager_lib",
+    "//sentinel-core/param:param_flow_slot_lib",
+    "//sentinel-core/test/mock/statistic/node:mock_lib",
+    "@com_google_googletest//:gtest_main",
+  ],
 )

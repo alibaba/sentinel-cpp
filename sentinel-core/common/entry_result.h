@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <string>
+#include <vector>
 #include "absl/types/optional.h"
 #include "sentinel-core/common/entry_result.h"
 #include "sentinel-core/slot/global_slot_chain.h"
@@ -21,8 +23,8 @@ class EntryResult {
 
   bool IsBlocked() const;
   bool Exit();
-  template <typename... Ts>
-  bool Exit(int count, Ts... args);
+  bool Exit(int count);
+  bool Exit(int count, const std::vector<absl::any>& params);
 
  private:
   const EntrySharedPtr entry_;
@@ -33,16 +35,15 @@ using EntryResultPtr = std::unique_ptr<EntryResult>;
 
 bool EntryResult::IsBlocked() const { return blocked_reason_.has_value(); }
 
-template <typename... Ts>
-bool EntryResult::Exit(int count, Ts... args) {
+bool EntryResult::Exit(int count, const std::vector<absl::any>& params) {
   if (entry_ == nullptr) {
     return false;
   }
   if (!entry_->exited()) {
-    Slot::SlotChainSharedPtr<Ts...> chain = Slot::GetGlobalSlotChain<Ts...>();
+    Slot::SlotChainSharedPtr chain = Slot::GetGlobalSlotChain();
     if (chain != nullptr) {
       // NOTE: keep consistent with exit operation in SphU::Entry when blocked.
-      chain->Exit(entry_, entry_->resource(), count);
+      chain->Exit(entry_, entry_->resource(), count, params);
     }
     entry_->exited_ = true;
     return true;
@@ -50,6 +51,11 @@ bool EntryResult::Exit(int count, Ts... args) {
   return false;
 }
 
-bool EntryResult::Exit() { return Exit<>(1); }
+bool EntryResult::Exit() { return Exit(1); }
+
+bool EntryResult::Exit(int count) {
+  std::vector<absl::any> empty_params;
+  return Exit(1, empty_params);
+}
 
 }  // namespace Sentinel

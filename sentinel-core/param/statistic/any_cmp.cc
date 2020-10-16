@@ -4,9 +4,13 @@
 namespace Sentinel {
 namespace Param {
 
+const std::string INT_TYPE_STR(typeid(3).name());
 const std::string INT64_TYPE_STR(typeid(static_cast<int64_t>(3L)).name());
 const std::string STRING_TYPE_STR(typeid(std::string("example_str")).name());
 
+bool IsInt(const absl::any& a) {
+  return INT_TYPE_STR.compare(a.type().name()) == 0;
+}
 bool IsInt64(const absl::any& a) {
   return INT64_TYPE_STR.compare(a.type().name()) == 0;
 }
@@ -16,7 +20,9 @@ bool IsString(const absl::any& a) {
 }
 
 size_t PubAnyHash(const absl::any& any) {
-  if (IsInt64(any)) {
+  if (IsInt(any)) {
+    return 31 * absl::any_cast<int>(any);
+  } else if (IsInt64(any)) {
     return 31 * absl::any_cast<int64_t>(any);
   } else if (IsString(any)) {
     return std::hash<std::string>{}(absl::any_cast<std::string>(any));
@@ -26,7 +32,9 @@ size_t PubAnyHash(const absl::any& any) {
 }
 
 bool PubAnyEq(const absl::any& any1, const absl::any& any2) {
-  if (IsInt64(any1) && IsInt64(any2)) {
+  if (IsInt(any1) && IsInt(any2)) {
+    return absl::any_cast<int>(any1) == absl::any_cast<int>(any2);
+  } else if (IsInt64(any1) && IsInt64(any2)) {
     return absl::any_cast<int64_t>(any1) == absl::any_cast<int64_t>(any2);
   } else if (IsString(any1) && IsString(any2)) {
     return absl::any_cast<std::string>(any1).compare(

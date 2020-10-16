@@ -85,7 +85,7 @@ cc_library(
   name = "default_slot_chain_impl_lib",
   srcs = [
     "default_slot_chain_impl.h",
-    # "default_slot_chain_impl.cc",
+    "default_slot_chain_impl.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [

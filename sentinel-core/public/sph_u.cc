@@ -24,7 +24,7 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
 
   Slot::SlotChainSharedPtr<Ts...> chain = Slot::GetGlobalSlotChain<Ts...>();
   if (chain == nullptr) {
-    // TODO: should warn here.
+    SENTINEL_LOG(warn, "[SphU::Entry] GlobalSlotChain is nullptr");
     return std::make_unique<EntryResult>(e);
   }
 

@@ -11,63 +11,25 @@
 namespace Sentinel {
 namespace Slot {
 
-template <typename... Ts>
-class DefaultSlotChainImpl : public SlotChain<Ts...> {
+class DefaultSlotChainImpl : public SlotChain {
  public:
   DefaultSlotChainImpl() = default;
   virtual ~DefaultSlotChainImpl() = default;
 
   // SlotChain<RuleCheckerSlot>
-  void AddFirst(std::unique_ptr<Slot<Ts...>>&& slot) override;
-  void AddLast(std::unique_ptr<Slot<Ts...>>&& slot) override;
+  void AddFirst(std::unique_ptr<Slot>&& slot) override;
+  void AddLast(std::unique_ptr<Slot>&& slot) override;
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              Stat::NodeSharedPtr& node, int count, int flag,
-                             Ts... args) override;
+                             const std::vector<absl::any>& params) override;
   void Exit(const EntrySharedPtr& entry,
             const ResourceWrapperSharedPtr& resource, int count,
-            Ts... args) override;
+            const std::vector<absl::any>& params) override;
 
  private:
-  std::deque<std::unique_ptr<Slot<Ts...>>> slots_;
+  std::deque<std::unique_ptr<Slot>> slots_;
 };
-
-template <typename... Ts>
-void DefaultSlotChainImpl<Ts...>::AddFirst(
-    std::unique_ptr<Slot<Ts...>>&& slot) {
-  // The StatsSlot type slot is forbidden to be placed in the first position
-  assert(slot->Type() != SlotType::STATS_SLOT);
-  slots_.emplace_front(std::move(slot));
-}
-
-template <typename... Ts>
-void DefaultSlotChainImpl<Ts...>::AddLast(std::unique_ptr<Slot<Ts...>>&& slot) {
-  slots_.emplace_back(std::move(slot));
-}
-
-template <typename... Ts>
-TokenResultSharedPtr DefaultSlotChainImpl<Ts...>::Entry(
-    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    Stat::NodeSharedPtr& node, int count, int flag, Ts... args) {
-  auto context = entry != nullptr ? entry->context() : nullptr;
-  auto token_result = TokenResult::Ok();
-  for (auto elem = slots_.begin(); elem != slots_.end(); ++elem) {
-    if ((*elem)->IsContinue(token_result, context)) {
-      token_result =
-          (*elem)->Entry(entry, resource, node, count, flag, args...);
-    }
-  }
-  return token_result;
-}
-
-template <typename... Ts>
-void DefaultSlotChainImpl<Ts...>::Exit(const EntrySharedPtr& entry,
-                                       const ResourceWrapperSharedPtr& resource,
-                                       int count, Ts... args) {
-  for (auto elem = slots_.begin(); elem != slots_.end(); ++elem) {
-    (*elem)->Exit(entry, resource, count, args...);
-  }
-}
 
 }  // namespace Slot
 }  // namespace Sentinel

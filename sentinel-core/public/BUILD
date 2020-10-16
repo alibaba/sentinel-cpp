@@ -29,6 +29,7 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     ":sph_u_lib",
+    "//sentinel-core/log:logger_lib",
     "//sentinel-core/flow:flow_rule_manager_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
     "@com_google_googletest//:gtest_main",

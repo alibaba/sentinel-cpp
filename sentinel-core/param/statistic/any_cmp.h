@@ -6,9 +6,11 @@
 namespace Sentinel {
 namespace Param {
 
+extern const std::string INT_TYPE_STR;
 extern const std::string INT64_TYPE_STR;
 extern const std::string STRING_TYPE_STR;
 
+bool IsInt(const absl::any& a);
 bool IsInt64(const absl::any& a);
 bool IsString(const absl::any& a);
 

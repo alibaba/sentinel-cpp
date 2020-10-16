@@ -1,52 +1,35 @@
 #pragma once
-#include <tbb/concurrent_hash_map.h>
+
 #include <atomic>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 #include "absl/types/any.h"
+#include "any_cmp.h"
 #include "sentinel-core/param/statistic/param_event.h"
+#include "sentinel-core/param/statistic/scalable_cache.h"
 
 namespace Sentinel {
 namespace Param {
 
 using ScalableCache = ThreadSafeScalableCache<absl::any, AnyCmp>;
 using ScalableCacheUniquePtr = std::unique_ptr<ScalableCache>;
+using HotPair = std::pair<absl::any, int>;
+using HotPairList = std::vector<HotPair>;
 
 class ParamBucket {
  public:
   ParamBucket() : ParamBucket(DEFAULT_MAX_CAPACITY) {}
-  ParamBucket(int capacity) {
-    for (int i = 0; i < static_cast<int>(ParamMetricEvent::Count); i++) {
-      counters_.push_back(std::make_unique<ScalableCache>(capacity));
-    }
-  }
+  ParamBucket(int capacity);
 
-  int Get(const ParamMetricEvent event, const absl::any& value) const {
-    int i = static_cast<int>(event);
-    ScalableCache::HashMapConstAccessor cac;
-    if (counters_[i]->find(cac, value)) {
-      return cac->second.m_value->load();
-    } else {
-      return 0;
-    }
-  }
-
-  void Add(ParamMetricEvent event, int count, const absl::any& value) {
-    int i = static_cast<int>(event);
-    counters_[i]->increase(value, count);  // Create a new pair if not present
-  }
-
-  void Reset() {
-    for (int i = 0; i < static_cast<int>(ParamMetricEvent::Count); i++) {
-      counters_[i]->clear();
-    }
-  }
+  int Get(const ParamMetricEvent& e, const absl::any& value) const;
+  void Add(const ParamMetricEvent& e, int count, const absl::any& value);
+  void Reset();
+  void GetPairSet(const ParamMetricEvent& e, HotPairList& pairs) const;
 
  private:
-  std::vector<ScalableCacheUniquePtr>
-      counters_;  // TODO: initialize on declaration?
+  std::vector<ScalableCacheUniquePtr> counters_;
   const static int DEFAULT_MAX_CAPACITY = 200;
 };
 

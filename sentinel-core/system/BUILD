@@ -53,7 +53,7 @@ cc_library(
 cc_library(
   name = "system_slot_lib",
   srcs = [
-    # "system_slot.cc",
+    "system_slot.cc",
     "system_slot.h",
   ],
   copts = DEFAULT_COPTS,

@@ -18,8 +18,7 @@ using testing::Return;
 namespace Sentinel {
 namespace Slot {
 
-template <typename... Ts>
-class RequireNodeFakeStatsSlot : public StatsSlot<Ts...> {
+class RequireNodeFakeStatsSlot : public StatsSlot {
  public:
   RequireNodeFakeStatsSlot() = default;
   virtual ~RequireNodeFakeStatsSlot() = default;
@@ -27,7 +26,7 @@ class RequireNodeFakeStatsSlot : public StatsSlot<Ts...> {
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              Stat::NodeSharedPtr& node, int count, int flag,
-                             Ts... args) {
+                             const std::vector<absl::any>& params) {
     if (node == nullptr) {
       return TokenResult::Blocked("null");
     }
@@ -35,7 +34,8 @@ class RequireNodeFakeStatsSlot : public StatsSlot<Ts...> {
   };
 
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count, Ts... args){};
+            const ResourceWrapperSharedPtr& resource, int count,
+            const std::vector<absl::any>& params){};
 
   const std::string& Name() const { return name_; };
 
@@ -44,11 +44,11 @@ class RequireNodeFakeStatsSlot : public StatsSlot<Ts...> {
 };
 
 TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
-  DefaultSlotChainImpl<> slot_chain;
-  std::unique_ptr<Slot<>> resource_node_slot =
-      std::make_unique<ResourceNodeBuilderSlot<>>();
-  std::unique_ptr<Slot<>> fake_stat_slot =
-      std::make_unique<RequireNodeFakeStatsSlot<>>();
+  DefaultSlotChainImpl slot_chain;
+  std::unique_ptr<Slot> resource_node_slot =
+      std::make_unique<ResourceNodeBuilderSlot>();
+  std::unique_ptr<Slot> fake_stat_slot =
+      std::make_unique<RequireNodeFakeStatsSlot>();
   slot_chain.AddLast(std::move(resource_node_slot));
   slot_chain.AddLast(std::move(fake_stat_slot));
 
@@ -63,14 +63,16 @@ TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
   Stat::ResourceNodeStorage& s = Stat::ResourceNodeStorage::GetInstance();
   EXPECT_TRUE(s.GetClusterNode(resource_name) == nullptr);
   Stat::NodeSharedPtr empty_node = nullptr;
+  const std::vector<absl::any> myParams;
 
-  auto result = slot_chain.Entry(entry, resource, empty_node, 1, 0);
+  auto result = slot_chain.Entry(entry, resource, empty_node, 1, 0, myParams);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
 
   auto res_node = s.GetClusterNode(resource_name);
   EXPECT_FALSE(res_node == nullptr);
-  EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-            slot_chain.Entry(entry, resource, empty_node, 1, 0)->status());
+  EXPECT_EQ(
+      TokenStatus::RESULT_STATUS_OK,
+      slot_chain.Entry(entry, resource, empty_node, 1, 0, myParams)->status());
   EXPECT_EQ(res_node, s.GetClusterNode(resource_name));
 }
 

@@ -8,16 +8,14 @@
 namespace Sentinel {
 namespace Slot {
 
-template <typename... Ts>
-class SlotChain : public SlotBase<Ts...> {
+class SlotChain : public SlotBase {
  public:
   virtual ~SlotChain() = default;
-  virtual void AddFirst(std::unique_ptr<Slot<Ts...>>&& slot) = 0;
-  virtual void AddLast(std::unique_ptr<Slot<Ts...>>&& slot) = 0;
+  virtual void AddFirst(std::unique_ptr<Slot>&& slot) = 0;
+  virtual void AddLast(std::unique_ptr<Slot>&& slot) = 0;
 };
 
-template <typename... Ts>
-using SlotChainSharedPtr = std::shared_ptr<SlotChain<Ts...>>;
+using SlotChainSharedPtr = std::shared_ptr<SlotChain>;
 
 }  // namespace Slot
 }  // namespace Sentinel

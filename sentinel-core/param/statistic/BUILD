@@ -12,7 +12,56 @@ cc_library(
   deps = [
     "@com_google_absl//absl/types:any",
     "//sentinel-core/log:logger_lib",
-  ]
+  ],
+)
+
+cc_library(
+  name = "scalable_cache_lib",
+  srcs = [
+    "scalable_cache.h",
+    "lru_cache.h",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = ["@com_github_libtbb//:tbb"]
+)
+
+cc_library(
+  name = "param_events_lib",
+  srcs = [
+    "param_event.h",
+  ],
+  copts = DEFAULT_COPTS,
+)
+
+cc_library(
+  name = "param_leap_array_lib",
+  srcs = [
+    "param_leap_array.h",
+    "param_leap_array.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":param_bucket_lib",
+    "//sentinel-core/statistic/base:leap_array_lib",
+  ],
+)
+
+cc_library(
+  name = "param_bucket_lib",
+  srcs = [
+    "param_bucket.h",
+    "param_bucket.cc",
+  ],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":any_cmp_lib",
+    ":param_events_lib",
+    ":scalable_cache_lib",
+    "@com_google_absl//absl/types:any",
+  ],
+  # linkopts = select({
+  #     "//conditions:default": ["-ltbb"],
+  # }),
 )
 
 cc_library(
@@ -20,41 +69,26 @@ cc_library(
   srcs = [
     "param_metric.h",
     "param_metric.cc",
-    "param_event.h",
-    "param_bucket.h",
-    "param_leap_array.h",
-    "scalable_cache.h",
-    "lru_cache.h",
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":any_cmp_lib",
-    "@com_google_absl//absl/types:any",
+    ":param_leap_array_lib",
     "//sentinel-core/log:logger_lib",
     "//sentinel-core/param:param_flow_rule_lib",
-    "//sentinel-core/statistic/base:leap_array_lib"
-    # "@com_github_01org_tbb//:tbb",
+    "@com_github_libtbb//:tbb",
   ],
-  linkopts = select({
-      "//conditions:default": ["-ltbb"],
-  }),
 )
 
-cc_library(
-  name = "param_flow_slot_lib",
+cc_test(
+  name = "param_metric_unittests",
   srcs = [
-    # "param_flow_slot.cc",
-    "param_flow_slot.h",
+    "param_metric_test.cc",
   ],
-  copts = DEFAULT_COPTS,
+  copts = TEST_COPTS,
   deps = [
-    ":param_flow_rule_lib",
-    ":param_flow_item_lib",
-    ":param_flow_rule_manager_lib",
-    "//sentinel-core/common:resource_wrapper_interface",
-    "//sentinel-core/slot/base:token_result_lib",
-    "//sentinel-core/statistic/node:resource_node_storage_lib",
-    "//sentinel-core/slot/base:rule_checker_slot_interface",
-    "@com_google_absl//absl/strings:str_format",
-  ]
+    ":any_cmp_lib",
+    ":param_metric_lib",
+    "//sentinel-core/param:param_flow_rule_manager_lib",
+    "@com_google_googletest//:gtest_main",
+  ],
 )

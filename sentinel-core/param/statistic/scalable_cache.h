@@ -96,6 +96,7 @@ class ThreadSafeScalableCache {
    * completes. The keys will be inserted in a random order.
    */
   void snapshotKeys(std::vector<TKey>& keys);
+  void snapshotPairs(std::vector<std::pair<TKey, int>>& pairs);
 
   /**
    * Get the approximate size of the container. May be slightly too low when
@@ -212,6 +213,14 @@ void ThreadSafeScalableCache<TKey, THash>::snapshotKeys(
     std::vector<TKey>& keys) {
   for (size_t i = 0; i < m_numShards; i++) {
     m_shards[i]->snapshotKeys(keys);
+  }
+}
+
+template <class TKey, class THash>
+void ThreadSafeScalableCache<TKey, THash>::snapshotPairs(
+    std::vector<std::pair<TKey, int>>& pairs) {
+  for (size_t i = 0; i < m_numShards; i++) {
+    m_shards[i]->snapshotPairs(pairs);
   }
 }
 

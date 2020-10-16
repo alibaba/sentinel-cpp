@@ -36,7 +36,7 @@ ParamFlowRulePtrListSharedPtr ParamFlowRuleManager::GetRuleOfResource(
   absl::ReaderMutexLock lck(&update_mtx_);
   auto it = rule_map_->find(resource);
   if (it == rule_map_->end()) {
-    return {};
+    return nullptr;
   }
   return it->second;
 }
@@ -64,15 +64,12 @@ ParamFlowRulePtrMapSharedPtr ParamPropertyListener::AggregatedHotParamRules(
     }
     ParamFlowRuleSharedPtr p = std::make_shared<ParamFlowRule>(rule);
 
-    // [P1]TODO: fillExceptionFlowItems()
-    ParamFlowRulePtrMap::iterator it = new_map->find(p->resource());
+    rule.FillExceptionFlowItems();
+    // Insert directly. Existing key will not disturb
+    auto pair = new_map->insert(std::make_pair<>(
+        p->resource(), std::make_shared<ParamFlowRulePtrList>()));
+    ParamFlowRulePtrMap::iterator it = pair.first;
 
-    // [P2]TODO: Can we insert here directly? Existing key will not disturb
-    if (it == new_map->end()) {
-      auto pair = new_map->insert(std::make_pair<>(
-          p->resource(), std::make_shared<ParamFlowRulePtrList>()));
-      it = pair.first;
-    }
     it->second->push_back(p);
   }
   return new_map;

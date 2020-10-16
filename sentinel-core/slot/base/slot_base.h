@@ -12,17 +12,17 @@
 namespace Sentinel {
 namespace Slot {
 
-template <typename... Ts>
 class SlotBase {
  public:
   virtual ~SlotBase() = default;
   virtual TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                                      const ResourceWrapperSharedPtr& resource,
                                      Stat::NodeSharedPtr& node, int count,
-                                     int flag, Ts... args) = 0;
+                                     int flag,
+                                     const std::vector<absl::any>& params) = 0;
   virtual void Exit(const EntrySharedPtr& entry,
                     const ResourceWrapperSharedPtr& resource, int count,
-                    Ts... args) = 0;
+                    const std::vector<absl::any>& params) = 0;
 };
 
 }  // namespace Slot

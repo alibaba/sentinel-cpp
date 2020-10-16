@@ -1,7 +1,10 @@
 #pragma once
 
+#include <initializer_list>
 #include <string>
+#include <vector>
 #include "absl/types/any.h"
+#include "sentinel-core/param/statistic/any_cmp.h"
 
 namespace Sentinel {
 namespace Param {
@@ -21,6 +24,9 @@ class ParamFlowItem {
   void set_param_type(std::string param_type) { param_type_ = param_type; }
   void set_param_value(absl::any param_value) { param_value_ = param_value; }
   void set_threshold(int threshold) { threshold_ = threshold; }
+  bool operator==(const ParamFlowItem& item) const noexcept;
+  int HashCode() const;
+  std::string ToString() const;
 
  private:
   std::string param_type_;
@@ -28,14 +34,13 @@ class ParamFlowItem {
   int threshold_ = -1;
 };
 
-class ParamFlowItemHash {
-  std::size_t operator()(const ParamFlowItem& item) const noexcept {
-    std::size_t result = std::hash<std::string>{}(item.param_type());
-    // result = 31 * result + static_cast<int>(item.param_value_()); // TODO:
-    // ???
-    result = 31 * result + item.threshold();
-    return result;
-  }
+class ParamFlowItemList : public std::vector<ParamFlowItem> {
+ public:
+  ParamFlowItemList() = default;
+  ParamFlowItemList(std::initializer_list<ParamFlowItem> args);
+  bool operator==(const ParamFlowItemList& list) const noexcept;
+  int HashCode() const noexcept;
+  std::string ToString() const;
 };
 
 }  // namespace Param

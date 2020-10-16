@@ -8,6 +8,7 @@
 #include "sentinel-core/log/logger.h"
 #include "sentinel-core/log/metric/metric_log_task.h"
 #include "sentinel-core/public/sph_u.h"
+#include "sentinel-core/system/system_rule_manager.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
 
 void DoEntry(const char* resource, Sentinel::EntryType trafficType) {
@@ -55,16 +56,16 @@ int main() {
   Sentinel::System::SystemRuleManager::GetInstance().LoadRules(
       {rule1, rule2, rule3, rule4, badRule});
   std::thread t1(DoEntry, "my_open_api_abc", Sentinel::EntryType::IN);
-  // std::thread t2(DoEntry, "my_open_api_abc", Sentinel::EntryType::IN);
-  // std::this_thread::sleep_for(std::chrono::milliseconds(13));
-  // std::thread t3(DoEntry, "my_open_api_abc", Sentinel::EntryType::IN);
+  std::thread t2(DoEntry, "my_open_api_abc", Sentinel::EntryType::IN);
+  std::this_thread::sleep_for(std::chrono::milliseconds(13));
+  std::thread t3(DoEntry, "my_open_api_abc", Sentinel::EntryType::IN);
   // std::this_thread::sleep_for(std::chrono::milliseconds(19));
   // std::thread t4(DoEntry, "my_open_api_abc", Sentinel::EntryType::IN);
   // std::thread t5(DoEntry, "foo", Sentinel::EntryType::OUT);
 
   t1.join();
-  // t2.join();
-  // t3.join();
+  t2.join();
+  t3.join();
   // t4.join();
   // t5.join();
   return 0;

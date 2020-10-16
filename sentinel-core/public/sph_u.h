@@ -9,6 +9,7 @@
 #include "sentinel-core/common/global_status.h"
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/common/string_resource_wrapper.h"
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/slot/base/slot_chain.h"
 #include "sentinel-core/slot/global_slot_chain.h"
 
@@ -17,6 +18,14 @@ namespace Sentinel {
 class SphU {
  public:
   ~SphU() = default;
+
+  static void FetchParams(std::vector<absl::any>& params) {}
+
+  template <typename T>
+  static void FetchParams(std::vector<absl::any>& params, T arg);
+
+  template <typename T, typename... Ts>
+  static void FetchParams(std::vector<absl::any>& params, T arg, Ts... args);
 
   template <typename... Ts>
   static EntryResultPtr Entry(const std::string& r, EntryType t, int count,
@@ -34,6 +43,17 @@ class SphU {
                               int flag, Ts... args);
 };
 
+template <typename T>
+void SphU::FetchParams(std::vector<absl::any>& params, T arg) {
+  params.push_back(arg);
+}
+
+template <typename T, typename... Ts>
+void SphU::FetchParams(std::vector<absl::any>& params, T arg, Ts... args) {
+  params.push_back(arg);
+  FetchParams(params, args...);
+}
+
 template <typename... Ts>
 EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
                            const std::string& r, EntryType t, int count,
@@ -45,19 +65,21 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
     return std::make_unique<EntryResult>(e);
   }
 
-  Slot::SlotChainSharedPtr<Ts...> chain = Slot::GetGlobalSlotChain<Ts...>();
+  Slot::SlotChainSharedPtr chain = Slot::GetGlobalSlotChain();
   if (chain == nullptr) {
-    // TODO: should warn here.
+    SENTINEL_LOG(warn, "[EntryResultPtr] SlotChain is nullptr");
     return std::make_unique<EntryResult>(e);
   }
 
+  std::vector<absl::any> params;
+  FetchParams(params, args...);
   Stat::NodeSharedPtr empty_node = nullptr;
-  auto result = chain->Entry(e, resource, empty_node, count, flag, args...);
+  auto result = chain->Entry(e, resource, empty_node, count, flag, params);
 
   if (result->status() == Slot::TokenStatus::RESULT_STATUS_BLOCKED) {
     // NOTE: keep consistent with EntryResult::exit.
     if (chain != nullptr) {
-      chain->Exit(e, e->resource(), count, args...);
+      chain->Exit(e, e->resource(), count, params);
     }
     return std::make_unique<EntryResult>(result->blocked_reason().value());
   }

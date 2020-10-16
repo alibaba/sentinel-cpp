@@ -16,12 +16,12 @@
 
 #pragma once
 
-#include <tbb/concurrent_hash_map.h>
 #include <atomic>
 #include <mutex>
 #include <new>
 #include <thread>
 #include <vector>
+#include "tbb/concurrent_hash_map.h"
 
 namespace Sentinel {
 namespace Param {
@@ -158,6 +158,7 @@ class ThreadSafeLRUCache {
    * least-recently used.
    */
   void snapshotKeys(std::vector<TKey>& keys);
+  void snapshotPairs(std::vector<std::pair<TKey, int>>& pairs);
 
   /**
    * Get the approximate size of the container. May be slightly too low when
@@ -400,6 +401,21 @@ void ThreadSafeLRUCache<TKey, THash>::snapshotKeys(std::vector<TKey>& keys) {
   std::lock_guard<ListMutex> lock(m_listMutex);
   for (ListNode* node = m_head.m_next; node != &m_tail; node = node->m_next) {
     keys.push_back(node->m_key);
+  }
+}
+
+template <class TKey, class THash>
+void ThreadSafeLRUCache<TKey, THash>::snapshotPairs(
+    std::vector<std::pair<TKey, int>>& pairs) {
+  pairs.reserve(pairs.size() + m_size.load());
+  std::lock_guard<ListMutex> lock(m_listMutex);
+  for (ListNode* node = m_head.m_next; node != &m_tail; node = node->m_next) {
+    HashMapConstAccessor cac;
+    if (!m_map.find(cac, node->m_key)) {
+      // may have already been delinked
+      continue;
+    }
+    pairs.push_back(std::make_pair<>(node->m_key, cac->second.m_value->load()));
   }
 }
 

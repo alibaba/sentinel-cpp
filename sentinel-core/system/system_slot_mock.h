@@ -13,15 +13,17 @@
 
 namespace Sentinel {
 namespace Slot {
-class MockSystemSlot : public SystemSlot<> {
+class MockSystemSlot : public SystemSlot {
  public:
   MockSystemSlot() = default;
   ~MockSystemSlot() = default;
-  MOCK_METHOD5(Entry, TokenResultSharedPtr(const EntrySharedPtr&,
+  MOCK_METHOD6(Entry, TokenResultSharedPtr(const EntrySharedPtr&,
                                            const ResourceWrapperSharedPtr&,
-                                           Stat::NodeSharedPtr&, int, int));
-  MOCK_METHOD3(Exit, void(const EntrySharedPtr&,
-                          const ResourceWrapperSharedPtr&, int));
+                                           Stat::NodeSharedPtr&, int, int,
+                                           const std::vector<absl::any>&));
+  MOCK_METHOD4(Exit,
+               void(const EntrySharedPtr&, const ResourceWrapperSharedPtr&, int,
+                    const std::vector<absl::any>&));
   MOCK_CONST_METHOD3(CheckSystem,
                      TokenResultSharedPtr(const System::SystemRuleMapSharedPtr,
                                           Stat::NodeSharedPtr&, int));
