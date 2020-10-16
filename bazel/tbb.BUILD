@@ -11,13 +11,17 @@ genrule(
          cd $$(dirname $(location :Makefile))
          make
 
-         echo cp build/*/*.so $$DEST_DIR
-         cp build/*/*.so $$DEST_DIR
+         echo cp build/*/*.so* $$DEST_DIR
+         cp build/*/*.so* $$DEST_DIR
          cd $$WORK_DIR
   """,
   outs = [
-    "libtbb.so",
-    "libtbbmalloc.so",
+      "libtbb.so",
+      "libtbb.so.2",
+      "libtbbmalloc.so",
+      "libtbbmalloc.so.2",
+      "libtbbmalloc_proxy.so",
+      "libtbbmalloc_proxy.so.2",
   ] 
 )
 
@@ -27,7 +31,14 @@ cc_library(
         "include/serial/**",
         "include/tbb/**/**",
         ]),
-    srcs = ["libtbb.so"],
+    srcs = [
+      "libtbb.so",
+      "libtbb.so.2",
+      "libtbbmalloc.so",
+      "libtbbmalloc.so.2",
+      "libtbbmalloc_proxy.so",
+      "libtbbmalloc_proxy.so.2",
+    ],
     includes = ["include"],
     visibility = ["//visibility:public"],
 )
