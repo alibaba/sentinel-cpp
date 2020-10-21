@@ -22,7 +22,14 @@ cc_library(
     "lru_cache.h",
   ],
   copts = DEFAULT_COPTS,
-  deps = ["@com_github_libtbb//:tbb"]
+  deps = select({
+    "//bazel:is_osx": [
+      "@com_github_libtbb_osx//:tbb_osx",
+    ],
+    "//conditions:default": [
+      "@com_github_libtbb//:tbb",
+    ],
+  }),
 )
 
 cc_library(
@@ -73,9 +80,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":param_leap_array_lib",
-    "//sentinel-core/log:logger_lib",
     "//sentinel-core/param:param_flow_rule_lib",
-    "@com_github_libtbb//:tbb",
   ],
 )
 
@@ -86,7 +91,6 @@ cc_test(
   ],
   copts = TEST_COPTS,
   deps = [
-    ":any_cmp_lib",
     ":param_metric_lib",
     "//sentinel-core/param:param_flow_rule_manager_lib",
     "@com_google_googletest//:gtest_main",

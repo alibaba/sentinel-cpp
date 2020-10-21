@@ -10,8 +10,6 @@
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/common/string_resource_wrapper.h"
 #include "sentinel-core/log/logger.h"
-#include "sentinel-core/slot/base/slot_chain.h"
-#include "sentinel-core/slot/global_slot_chain.h"
 
 namespace Sentinel {
 

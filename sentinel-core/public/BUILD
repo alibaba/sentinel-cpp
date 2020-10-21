@@ -15,9 +15,6 @@ cc_library(
     "//sentinel-core/common:entry_type_enum",
     "//sentinel-core/common:entry_result_lib",
     "//sentinel-core/common:string_resource_wrapper_lib",
-    "//sentinel-core/slot/base:slot_chain_interface",
-    "//sentinel-core/slot:global_slot_chain_header",
-    "//sentinel-core/utils:utils_lib",
   ]
 )
 

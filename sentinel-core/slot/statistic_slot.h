@@ -1,13 +1,11 @@
 #pragma once
 
 #include "sentinel-core/common/constants.h"
-#include "sentinel-core/common/entry.h"
 #include "sentinel-core/param/param_flow_slot.h"
 #include "sentinel-core/slot/base/stats_slot.h"
 #include "sentinel-core/slot/base/token_result.h"
 #include "sentinel-core/statistic/node/node.h"
 #include "sentinel-core/statistic/node/resource_node_storage.h"
-#include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
 namespace Slot {

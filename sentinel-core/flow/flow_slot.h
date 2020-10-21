@@ -2,7 +2,6 @@
 #include <thread>
 
 #include "sentinel-core/flow/flow_rule_checker.h"
-#include "sentinel-core/flow/flow_rule_manager.h"
 #include "sentinel-core/slot/base/rule_checker_slot.h"
 
 namespace Sentinel {

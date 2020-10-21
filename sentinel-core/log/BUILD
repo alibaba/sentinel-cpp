@@ -36,7 +36,6 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
       "@com_google_absl//absl/strings",
-      "//sentinel-core/utils:utils_lib",
       "//sentinel-core/utils:file_utils_lib",
       "//sentinel-core/init:init_target_registry_lib",
   ]

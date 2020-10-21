@@ -32,12 +32,9 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":param_flow_rule_lib",
     "//sentinel-core/common:entry_lib",
     "//sentinel-core/param/statistic:param_metric_lib",
     "//sentinel-core/slot/base:token_result_lib",
-    "//sentinel-core/statistic/node:node_interface",
-    "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
 
@@ -48,14 +45,24 @@ cc_library(
     "param_flow_rule.h",
   ],
   copts = DEFAULT_COPTS,
-  deps = [
-    ":param_flow_rule_constants_lib",
-    ":param_flow_item_lib",
-    "//sentinel-core/common:constants",
-    "//sentinel-core/common:rule_lib",
-    "@com_google_absl//absl/strings:str_format",
-    "@com_github_libtbb//:tbb",
-  ],
+  deps = select({
+    "//bazel:is_osx": [
+      ":param_flow_rule_constants_lib",
+      ":param_flow_item_lib",
+      "//sentinel-core/common:constants",
+      "//sentinel-core/common:rule_lib",
+      "@com_google_absl//absl/strings:str_format",
+      "@com_github_libtbb_osx//:tbb_osx",
+    ],
+    "//conditions:default": [
+      ":param_flow_rule_constants_lib",
+      ":param_flow_item_lib",
+      "//sentinel-core/common:constants",
+      "//sentinel-core/common:rule_lib",
+      "@com_google_absl//absl/strings:str_format",
+      "@com_github_libtbb//:tbb",
+    ],
+  }),
 )
 
 # https://docs.bazel.build/versions/master/be/c-cpp.html#cc_library
@@ -68,11 +75,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":param_flow_rule_lib",
-    ":param_flow_rule_checker_lib",
-    "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/property:dynamic_sentinel_property_lib",
-    "//sentinel-core/statistic/node:resource_node_storage_lib",
-    "//sentinel-core/log:logger_lib",
     "@com_google_absl//absl/synchronization",
   ],
 )
@@ -85,13 +88,10 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":param_flow_rule_lib",
-    ":param_flow_item_lib",
     ":param_flow_rule_manager_lib",
-    "//sentinel-core/param/statistic:param_metric_lib",
+    ":param_flow_rule_checker_lib",
     "//sentinel-core/common:resource_wrapper_interface",
     "//sentinel-core/slot/base:token_result_lib",
-    "//sentinel-core/statistic/node:resource_node_storage_lib",
     "//sentinel-core/slot/base:rule_checker_slot_interface",
     "@com_google_absl//absl/strings:str_format",
   ],
@@ -105,7 +105,6 @@ cc_test(
   copts = TEST_COPTS,
   deps = [
     "//sentinel-core/common:string_resource_wrapper_lib",
-    "//sentinel-core/param:param_flow_rule_manager_lib",
     "//sentinel-core/param:param_flow_slot_lib",
     "//sentinel-core/test/mock/statistic/node:mock_lib",
     "@com_google_googletest//:gtest_main",

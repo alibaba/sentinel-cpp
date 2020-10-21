@@ -2,7 +2,6 @@
 
 #include "sentinel-core/param/param_flow_rule_checker.h"
 #include "sentinel-core/param/param_flow_rule_manager.h"
-#include "sentinel-core/param/statistic/param_metric.h"
 #include "sentinel-core/slot/base/rule_checker_slot.h"
 
 namespace Sentinel {

@@ -40,9 +40,6 @@ cc_library(
   deps = [
     ":system_rule_lib",
     ":system_status_listener_lib",
-    # ":system_slot_lib",
-    "//sentinel-core/common:entry_lib",
-    "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/property:dynamic_sentinel_property_lib",
     "//sentinel-core/slot/base:token_result_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
@@ -58,9 +55,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":system_rule_lib",
     ":system_rule_manager_lib", 
-    ":system_status_listener_lib",
     "//sentinel-core/slot/base:rule_checker_slot_interface",
     "@com_google_absl//absl/strings:str_format",
   ]

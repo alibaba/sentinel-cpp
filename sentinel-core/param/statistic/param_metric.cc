@@ -135,6 +135,10 @@ HotPairList&& ParamMetric::GetTopPassParamCount(
 
 void ParamMetric::initializeForRule(const ParamFlowRuleSharedPtr& rule) {
   tbb::concurrent_hash_map<int, ScalableCacheUniquePtr>::const_accessor cac0;
+  if (!rule) {
+    SENTINEL_LOG(error, "[ParamMetric::initializeForRule] rule is nullptr");
+    return;
+  }
   thread_count_map_.insert(
       cac0, std::make_pair<>(rule->param_idx(), std::make_unique<ScalableCache>(
                                                     rule->cache_size())));

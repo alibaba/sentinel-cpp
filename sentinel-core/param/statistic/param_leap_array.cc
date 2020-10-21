@@ -10,7 +10,7 @@ void ParamLeapArray::set_cache_size(int cache_size) noexcept {
 
 ParamLeapArray::ParamLeapArray(int32_t sample_count, int32_t interval_ms,
                                int32_t cache_size)
-    : cache_size_(cache_size_),
+    : cache_size_(cache_size),
       Stat::LeapArray<ParamBucket>(sample_count, interval_ms) {}
 
 std::shared_ptr<ParamBucket> ParamLeapArray::NewEmptyBucket(

@@ -2,7 +2,7 @@ licenses(["notice"])  # Apache 2
 package(default_visibility = ["//visibility:public"])
 
 genrule(
-  name = "build_tbb",
+  name = "build_tbb_osx",
   srcs = glob(["**"]) + [
     "@local_config_cc//:toolchain",
   ],
@@ -23,22 +23,22 @@ genrule(
          cd $$WORK_DIR
   """,
   outs = [
-            "libtbb.so",
-            "libtbbmalloc.so",
-            "libtbbmalloc_proxy.so",
+            "libtbb.dylib",
+            "libtbbmalloc.dylib",
+            "libtbbmalloc_proxy.dylib",
          ],
 )
 
 cc_library(
-    name = "tbb",
+    name = "tbb_osx",
     hdrs = glob([
         "include/serial/**",
         "include/tbb/**/**",
         ]),
     srcs = [
-      "libtbb.so",
-      "libtbbmalloc.so",
-      "libtbbmalloc_proxy.so",
+      "libtbb.dylib",
+      "libtbbmalloc.dylib",
+      "libtbbmalloc_proxy.dylib",
     ],
     includes = ["include"],
     visibility = ["//visibility:public"],

@@ -4,7 +4,6 @@
 #include <deque>
 #include <memory>
 
-#include "sentinel-core/slot/base/slot.h"
 #include "sentinel-core/slot/base/slot_chain.h"
 #include "sentinel-core/slot/base/token_result.h"
 

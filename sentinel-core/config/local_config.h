@@ -4,7 +4,6 @@
 #include <unordered_map>
 
 #include "sentinel-core/init/init_target.h"
-#include "sentinel-core/utils/utils.h"
 
 namespace Sentinel {
 namespace Config {

@@ -6,7 +6,6 @@
 
 #include "sentinel-core/common/entry_context.h"
 #include "sentinel-core/common/resource_wrapper.h"
-#include "sentinel-core/statistic/node/node.h"
 #include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {

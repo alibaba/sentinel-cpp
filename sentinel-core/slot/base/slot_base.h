@@ -7,7 +7,6 @@
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/slot/base/slot_base.h"
 #include "sentinel-core/slot/base/token_result.h"
-#include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
 namespace Slot {

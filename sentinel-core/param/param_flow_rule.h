@@ -59,7 +59,7 @@ class ParamFlowRule : public Rule {
 
   ParamFlowRule() : ParamFlowRule("") {}
   explicit ParamFlowRule(const std::string& resource)
-      : ParamFlowRule(resource, "") {}  // [P2]TODO: the role of limit_origin???
+      : ParamFlowRule(resource, "") {}
   explicit ParamFlowRule(const std::string& resource,
                          const std::string& limit_origin)
       : resource_(resource),

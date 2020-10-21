@@ -24,8 +24,6 @@ cc_library(
     ":token_result_lib",
     ":slot_interface",
     "//sentinel-core/common:resource_wrapper_interface",
-    "//sentinel-core/common:entry_lib",
-    "//sentinel-core/statistic/node:node_interface"
   ]
 )
 
@@ -39,8 +37,6 @@ cc_library(
     ":token_result_lib",
     ":slot_interface",
     "//sentinel-core/common:resource_wrapper_interface",
-    "//sentinel-core/common:entry_lib",
-    "//sentinel-core/statistic/node:node_interface"
   ]
 )
 
@@ -62,7 +58,6 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":slot_base",
     ":slot_interface",
   ]
 )
@@ -77,7 +72,6 @@ cc_library(
     ":token_result_lib",
     "//sentinel-core/common:resource_wrapper_interface",
     "//sentinel-core/common:entry_lib",
-    "//sentinel-core/statistic/node:node_interface"
   ]
 )
 
@@ -91,7 +85,6 @@ cc_library(
   deps = [
     ":slot_chain_interface",
     ":token_result_lib",
-    ":slot_interface",
   ]
 )
 

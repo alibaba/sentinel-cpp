@@ -5,7 +5,6 @@
 #include <thread>
 
 #include "sentinel-core/init/init_target_registry.h"
-#include "sentinel-core/log/logger.h"
 #include "sentinel-core/log/metric/metric_log_task.h"
 #include "sentinel-core/public/sph_u.h"
 #include "sentinel-core/system/system_rule_manager.h"

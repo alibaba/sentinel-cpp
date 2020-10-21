@@ -62,8 +62,8 @@ TokenResultSharedPtr ParamFlowSlot::CheckFlow(
 
       if (!checker_.PassCheck(metric, rule, count, params)) {
         metric->AddBlock(count, params);
-        return TokenResult::Blocked(
-            std::string("Parameter flow control on rule: ") + rule->ToString());
+        return TokenResult::Blocked("");
+        // std::string("Parameter flow control on rule: ") + rule->ToString());
       }
     }
   }

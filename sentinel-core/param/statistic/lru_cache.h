@@ -93,6 +93,7 @@ class ThreadSafeLRUCache {
   };
 
   typedef tbb::concurrent_hash_map<TKey, HashMapValue, THash> HashMap;
+  typedef std::shared_ptr<HashMap> HashMapSharedPtr;
   typedef typename HashMap::const_accessor HashMapConstAccessor;
   typedef typename HashMap::accessor HashMapAccessor;
   typedef typename HashMap::value_type HashMapValuePair;
@@ -146,8 +147,7 @@ class ThreadSafeLRUCache {
   bool insert(HashMapAccessor& ac, const TKey& key, int value);
 
   /**
-   * Clear the container. NOT THREAD SAFE -- do not use while other threads
-   * are accessing the container.
+   * Clear the container.
    */
   void clear();
 
@@ -200,7 +200,7 @@ class ThreadSafeLRUCache {
   /**
    * The underlying TBB hash map.
    */
-  HashMap m_map;
+  HashMapSharedPtr m_map;
 
   /**
    * The linked list. The "head" is the most-recently used node, and the
@@ -209,8 +209,8 @@ class ThreadSafeLRUCache {
    */
   ListNode m_head;
   ListNode m_tail;
-  typedef std::mutex ListMutex;
-  ListMutex m_listMutex;
+  std::mutex m_listMutex;
+  std::mutex m_mapMutex;
 };
 
 template <class TKey, class THash>
@@ -221,8 +221,8 @@ template <class TKey, class THash>
 ThreadSafeLRUCache<TKey, THash>::ThreadSafeLRUCache(size_t maxSize)
     : m_maxSize(maxSize),
       m_size(0),
-      m_map(std::thread::hardware_concurrency() *
-            4)  // it will automatically grow
+      m_map(std::make_unique<HashMap>(std::thread::hardware_concurrency() *
+                                      4))  // it will automatically grow
 {
   m_head.m_prev = nullptr;
   m_head.m_next = &m_tail;
@@ -232,7 +232,11 @@ ThreadSafeLRUCache<TKey, THash>::ThreadSafeLRUCache(size_t maxSize)
 template <class TKey, class THash>
 bool ThreadSafeLRUCache<TKey, THash>::silentFind(HashMapConstAccessor& ac,
                                                  const TKey& key) {
-  if (!m_map.find(ac, key)) {
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  if (!local_map->find(ac, key)) {
     return false;
   }
   return true;
@@ -241,7 +245,11 @@ bool ThreadSafeLRUCache<TKey, THash>::silentFind(HashMapConstAccessor& ac,
 template <class TKey, class THash>
 bool ThreadSafeLRUCache<TKey, THash>::silentFind(HashMapAccessor& ac,
                                                  const TKey& key) {
-  if (!m_map.find(ac, key)) {
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  if (!local_map->find(ac, key)) {
     return false;
   }
   return true;
@@ -250,12 +258,16 @@ bool ThreadSafeLRUCache<TKey, THash>::silentFind(HashMapAccessor& ac,
 template <class TKey, class THash>
 bool ThreadSafeLRUCache<TKey, THash>::find(HashMapAccessor& ac,
                                            const TKey& key) {
-  if (!m_map.find(ac, key)) {
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  if (!local_map->find(ac, key)) {
     return false;
   }
 
   // Acquire the lock, but don't block if it is already held
-  std::unique_lock<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lock(m_listMutex);
   if (lock) {
     ListNode* node = ac->second.m_listNode;
     // The list node may be out of the list if it is in the process of being
@@ -273,11 +285,15 @@ bool ThreadSafeLRUCache<TKey, THash>::find(HashMapAccessor& ac,
 template <class TKey, class THash>
 bool ThreadSafeLRUCache<TKey, THash>::find(HashMapConstAccessor& ac,
                                            const TKey& key) {
-  if (!m_map.find(ac, key)) {
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  if (!local_map->find(ac, key)) {
     return false;
   }
 
-  std::unique_lock<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lock(m_listMutex);
   if (lock) {
     ListNode* node = ac->second.m_listNode;
     if (node->isInList()) {
@@ -298,7 +314,11 @@ bool ThreadSafeLRUCache<TKey, THash>::increase(const TKey& key, int value) {
 template <class TKey, class THash>
 bool ThreadSafeLRUCache<TKey, THash>::increase(HashMapAccessor& ac,
                                                const TKey& key, int value) {
-  if (!m_map.find(ac, key)) {
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  if (!local_map->find(ac, key)) {
     // Key not found, insert the <key, value> pair.
     // When multiple threads reach here, only one thread successfully
     // inserts the key while others just increase the value on the
@@ -310,7 +330,7 @@ bool ThreadSafeLRUCache<TKey, THash>::increase(HashMapAccessor& ac,
   }
   ac->second.m_value->fetch_add(value);
 
-  std::unique_lock<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lock(m_listMutex);
   if (lock) {
     ListNode* node = ac->second.m_listNode;
     // The list node may be out of the list if it is in the process of being
@@ -337,7 +357,12 @@ bool ThreadSafeLRUCache<TKey, THash>::insert(HashMapAccessor& ac,
   // Insert into the CHM
   ListNode* node = new ListNode(key);
   HashMapValuePair hashMapValue(key, HashMapValue(value, node));
-  if (!m_map.insert(ac, hashMapValue)) {
+
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  if (!local_map->insert(ac, hashMapValue)) {
     delete node;
     return false;
   }
@@ -356,7 +381,7 @@ bool ThreadSafeLRUCache<TKey, THash>::insert(HashMapAccessor& ac,
   // Note that we have to update the LRU list before we increment m_size, so
   // that other threads don't attempt to evict list items before they even
   // exist.
-  std::unique_lock<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lock(m_listMutex);
   pushFront(node);
   lock.unlock();
   if (!evictionDone) {
@@ -382,23 +407,30 @@ bool ThreadSafeLRUCache<TKey, THash>::insert(HashMapAccessor& ac,
 
 template <class TKey, class THash>
 void ThreadSafeLRUCache<TKey, THash>::clear() {
-  m_map.clear();
-  ListNode* node = m_head.m_next;
-  ListNode* next;
-  while (node != &m_tail) {
-    next = node->m_next;
-    delete node;
-    node = next;
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  m_map = std::make_unique<HashMap>(std::thread::hardware_concurrency() * 4);
+  lck.unlock();
+
+  std::unique_lock<std::mutex> lock(m_listMutex, std::defer_lock);
+  if (lock.try_lock()) {
+    ListNode* node = m_head.m_next;
+    ListNode* next;
+    while (node != &m_tail) {
+      next = node->m_next;
+      delete node;
+      node = next;
+    }
+    m_head.m_next = &m_tail;
+    m_tail.m_prev = &m_head;
+    lock.unlock();
   }
-  m_head.m_next = &m_tail;
-  m_tail.m_prev = &m_head;
-  m_size = 0;
+  m_size.store(0);
 }
 
 template <class TKey, class THash>
 void ThreadSafeLRUCache<TKey, THash>::snapshotKeys(std::vector<TKey>& keys) {
   keys.reserve(keys.size() + m_size.load());
-  std::lock_guard<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lock(m_listMutex);
   for (ListNode* node = m_head.m_next; node != &m_tail; node = node->m_next) {
     keys.push_back(node->m_key);
   }
@@ -408,10 +440,14 @@ template <class TKey, class THash>
 void ThreadSafeLRUCache<TKey, THash>::snapshotPairs(
     std::vector<std::pair<TKey, int>>& pairs) {
   pairs.reserve(pairs.size() + m_size.load());
-  std::lock_guard<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
+  std::lock_guard<std::mutex> lock(m_listMutex);
   for (ListNode* node = m_head.m_next; node != &m_tail; node = node->m_next) {
     HashMapConstAccessor cac;
-    if (!m_map.find(cac, node->m_key)) {
+    if (!local_map->find(cac, node->m_key)) {
       // may have already been delinked
       continue;
     }
@@ -439,7 +475,7 @@ inline void ThreadSafeLRUCache<TKey, THash>::pushFront(ListNode* node) {
 
 template <class TKey, class THash>
 void ThreadSafeLRUCache<TKey, THash>::evict() {
-  std::unique_lock<ListMutex> lock(m_listMutex);
+  std::unique_lock<std::mutex> lock(m_listMutex);
   ListNode* moribund = m_tail.m_prev;
   if (moribund == &m_head) {
     // List is empty, can't evict
@@ -448,12 +484,16 @@ void ThreadSafeLRUCache<TKey, THash>::evict() {
   delink(moribund);
   lock.unlock();
 
+  std::unique_lock<std::mutex> lck(m_mapMutex);
+  HashMapSharedPtr local_map = m_map;
+  lck.unlock();
+
   HashMapAccessor hashAccessor;
-  if (!m_map.find(hashAccessor, moribund->m_key)) {
+  if (!local_map->find(hashAccessor, moribund->m_key)) {
     // Presumably unreachable
     return;
   }
-  m_map.erase(hashAccessor);
+  local_map->erase(hashAccessor);
   delete moribund;
 }
 

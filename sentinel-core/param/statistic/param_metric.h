@@ -3,7 +3,6 @@
 #include <memory.h>
 #include <algorithm>
 #include <vector>
-#include "sentinel-core/log/logger.h"
 #include "sentinel-core/param/param_flow_rule.h"
 #include "sentinel-core/param/statistic/param_leap_array.h"
 #include "tbb/concurrent_unordered_map.h"
@@ -41,7 +40,7 @@ class ParamMetric {
   HotPairList&& GetTopPassParamCount(
       const ParamFlowRule::ParamLeapArrayKeySharedPtr& key, int number);
 
-  // [P0]TODO: thread safe?
+  // WARNING: Not thread safe
   void Clear() {
     thread_count_map_.clear();
     index_map_.clear();

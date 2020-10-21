@@ -7,7 +7,6 @@
 #include "sentinel-core/test/mock/statistic/node/mock.h"
 
 #include "sentinel-core/common/string_resource_wrapper.h"
-#include "sentinel-core/param/param_flow_rule_manager.h"
 #include "sentinel-core/param/param_flow_slot.h"
 
 using testing::_;

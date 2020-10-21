@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -96,6 +97,7 @@ WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
       }
     } else if (bucket_start < old->BucketStart()) {
       // Should not go through here, as the provided time is already behind.
+      std::cout << "[LeapArray::CurrentWindow] Error timestamp" << std::endl;
       return std::make_shared<WindowWrap<T>>(bucket_length_ms_, bucket_start,
                                              NewEmptyBucket(time_millis));
     }

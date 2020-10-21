@@ -1,9 +1,7 @@
 #pragma once
 
 #include "sentinel-core/slot/base/rule_checker_slot.h"
-#include "sentinel-core/system/system_rule.h"
 #include "sentinel-core/system/system_rule_manager.h"
-#include "sentinel-core/system/system_status_listener.h"
 
 namespace Sentinel {
 namespace Slot {

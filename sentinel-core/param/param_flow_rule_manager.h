@@ -7,7 +7,6 @@
 
 #include "absl/synchronization/mutex.h"
 #include "absl/types/any.h"
-#include "sentinel-core/log/logger.h"
 #include "sentinel-core/param/param_flow_rule.h"
 #include "sentinel-core/property/dynamic_sentinel_property.h"
 #include "sentinel-core/property/property_listener.h"
