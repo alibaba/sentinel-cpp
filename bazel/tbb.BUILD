@@ -15,7 +15,7 @@ genrule(
          make
 
          if [[ $$(echo `uname` | grep 'Dar') != "" ]]; then
-          echo files=build/*/*.dylib;
+          files=build/*/*.dylib;
           else files=build/*/*.so;
          fi
          echo cp $$files $$DEST_DIR

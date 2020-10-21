@@ -14,10 +14,7 @@ genrule(
          cd $$(dirname $(location :Makefile))
          make
 
-         if [[ $$(echo `uname` | grep 'Dar') != "" ]]; then
-          echo files=build/*/*.dylib;
-          else files=build/*/*.so;
-         fi
+         files=build/*/*.dylib;
          echo cp $$files $$DEST_DIR
          cp $$files $$DEST_DIR
          cd $$WORK_DIR
