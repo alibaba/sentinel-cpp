@@ -25,9 +25,9 @@ void Increase(int id, int cnt) {
   for (int i = 0; i < 100; i++) {
     int64_t curTime = CurrentTimeMillis();
     if (curTime - 500 > winStart) {
-      int64_t sz = cache.size();
-      Sentinel::Log::Logger::Log(Sentinel::Log::Logger::kDefaultFileLogger,
-                                 Sentinel::info, "size={}", sz);
+      // int64_t sz = cache.size();
+      // Sentinel::Log::Logger::Log(Sentinel::Log::Logger::kDefaultFileLogger,
+      //                            Sentinel::info, "size={}", sz);
       cache.clear();
       winStart.store(curTime - curTime % 500);
     }

@@ -96,3 +96,12 @@ cc_test(
     "@com_google_googletest//:gtest_main",
   ],
 )
+# https://docs.bazel.build/versions/master/be/c-cpp.html#cc_binary
+cc_binary(
+  name = "any_cmp_test",
+  srcs = ["any_cmp_test.cc"],
+  copts = DEFAULT_COPTS,
+  deps = [
+    ":any_cmp_lib",
+  ],
+)
