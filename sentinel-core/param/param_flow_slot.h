@@ -8,10 +8,6 @@ namespace Sentinel {
 namespace Slot {
 
 constexpr auto kParamFlowSlotName = "ParamFlowSlot";
-using MetricMap0 =
-    std::unordered_map<ResourceWrapperSharedPtr, Param::ParamMetricSharedPtr,
-                       ResourceWrapperHash, ResourceWrapperEq>;
-
 using MetricMap =
     tbb::concurrent_hash_map<std::string, Param::ParamMetricSharedPtr>;
 using MetricMapSharedPtr = std::shared_ptr<MetricMap>;

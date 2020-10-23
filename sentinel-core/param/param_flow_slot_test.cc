@@ -42,9 +42,7 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
   rule0.set_param_idx(0);
   rule0.set_threshold(10);
   rule0.set_interval_in_ms(5000);  // limit 10 Qs in 5s, QPS=2
-  Param::ParamFlowItem item0;
-  item0.set_param_value(78);
-  item0.set_threshold(100);
+  Param::ParamFlowItem item0(78, "int", 100);
   rule0.set_param_flow_item_list({item0});
 
   rule1.set_param_idx(1);

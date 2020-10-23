@@ -11,8 +11,9 @@ namespace Param {
 
 class ParamFlowItem {
  public:
-  ParamFlowItem() = default;
-  ParamFlowItem(absl::any param_value, int threshold, std::string param_type)
+  ParamFlowItem() : threshold_(-1) {}
+  ParamFlowItem(absl::any param_value, std::string param_type,
+                int threshold = -1)
       : param_value_(param_value),
         threshold_(threshold),
         param_type_(param_type) {}

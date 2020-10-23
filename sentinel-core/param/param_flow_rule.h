@@ -27,7 +27,7 @@ class ParamFlowRule : public Rule {
     int param_idx_ = -1;
     int interval_in_ms_ = 1000;
     int sample_count_ = 1000;
-    int cache_size_ = 3;
+    int cache_size_ = DEFAULT_CACHE_SIZE;
   };
   using ParamLeapArrayKeySharedPtr = std::shared_ptr<ParamLeapArrayKey>;
 
@@ -59,9 +59,6 @@ class ParamFlowRule : public Rule {
 
   ParamFlowRule() : ParamFlowRule("") {}
   explicit ParamFlowRule(const std::string& resource)
-      : ParamFlowRule(resource, "") {}
-  explicit ParamFlowRule(const std::string& resource,
-                         const std::string& limit_origin)
       : resource_(resource),
         metric_key_(std::make_shared<ParamLeapArrayKey>()),
         hot_items_(std::make_shared<HotItemsMap>()) {}
@@ -115,6 +112,7 @@ class ParamFlowRule : public Rule {
   void FillExceptionFlowItems() const;
   bool operator==(const ParamFlowRule& rule) const;
   std::string ToString() const;
+  const static int DEFAULT_CACHE_SIZE = 10;
 
  private:
   ParamLeapArrayKeySharedPtr metric_key_;
@@ -125,7 +123,7 @@ class ParamFlowRule : public Rule {
   double threshold_ = 0;                                        // threshold
   int interval_in_ms_ = 1000;
   int sample_count_ = 1;
-  int cache_size_ = 3;
+  int cache_size_ = DEFAULT_CACHE_SIZE;
 
   mutable ParamFlowItemList param_flow_item_list_;
   mutable HotItemsMapSharedPtr hot_items_;
