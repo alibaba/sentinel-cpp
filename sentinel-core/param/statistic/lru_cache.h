@@ -17,6 +17,7 @@
 #pragma once
 
 #include <atomic>
+#include <iostream>
 #include <mutex>
 #include <new>
 #include <thread>
@@ -100,7 +101,7 @@ class ThreadSafeLRUCache {
   typedef std::shared_ptr<HashMap> HashMapSharedPtr;
   typedef typename HashMap::const_accessor HashMapConstAccessor;
   typedef typename HashMap::accessor HashMapAccessor;
-  typedef typename HashMap::value_type HashMapValuePair;
+  typedef typename HashMap::value_type HashMapKVPair;
   // typedef std::pair<const TKey, std::atomic<int>> SnapshotValue;
 
  public:
@@ -112,7 +113,7 @@ class ThreadSafeLRUCache {
   ThreadSafeLRUCache(const ThreadSafeLRUCache& other) = delete;
   ThreadSafeLRUCache& operator=(const ThreadSafeLRUCache&) = delete;
 
-  ~ThreadSafeLRUCache() { clear(); }
+  ~ThreadSafeLRUCache();
 
   /**
    * Find a value by key, and return it by filling the ConstAccessor, which
@@ -232,6 +233,13 @@ ThreadSafeLRUCache<TKey, THash>::ThreadSafeLRUCache(size_t maxSize)
   m_head->m_next = m_tail;
   m_tail->m_prev = m_head;
   m_tail->m_next = nullptr;
+}
+
+template <class TKey, class THash>
+ThreadSafeLRUCache<TKey, THash>::~ThreadSafeLRUCache() {
+  clear();
+  m_head->m_next.reset();
+  m_tail->m_prev.reset();
 }
 
 template <class TKey, class THash>
@@ -361,13 +369,14 @@ bool ThreadSafeLRUCache<TKey, THash>::insert(HashMapAccessor& ac,
                                              const TKey& key, int value) {
   // Insert into the CHM
   std::shared_ptr<ListNode> node = std::make_shared<ListNode>(key);
-  HashMapValuePair hashMapValue(key, HashMapValue(value, node));
+  HashMapKVPair hashMapKV(key, HashMapValue(value, node));
 
   std::unique_lock<std::mutex> lck(m_mapMutex);
   HashMapSharedPtr local_map = m_map;
   lck.unlock();
 
-  if (!local_map->insert(ac, hashMapValue)) {
+  if (!local_map->insert(ac, hashMapKV)) {
+    node.reset();
     return false;
   }
 
@@ -418,8 +427,10 @@ void ThreadSafeLRUCache<TKey, THash>::clear() {
 
   std::shared_ptr<ListNode> node = m_head->m_next;
   std::shared_ptr<ListNode> next;
-  while (node != m_tail) {  // TODO: is '!=' ok?
+  while (node->m_next) {
     next = node->m_next;
+    node->m_prev.reset();
+    node->m_next.reset();
     node = next;
   }
   m_head->m_next = m_tail;

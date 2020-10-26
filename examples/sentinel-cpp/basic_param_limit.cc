@@ -1,3 +1,5 @@
+#include <math.h>
+#include <atomic>
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
@@ -13,28 +15,68 @@
 #include "sentinel-core/transport/command/http_server_init_target.h"
 
 std::mutex mtx;
+std::atomic<bool> stop(false);
+constexpr int SECONDS = 86400, THREAD_NUM = 3;
 
-void DoEntry(const char* resource, Sentinel::EntryType trafficType) {
-  int cnt = 6000;  // QPS=10, last for 10 min
-  while (cnt--) {
-    int param = rand() % 10;
-    auto r = Sentinel::SphU::Entry(resource, trafficType, 1, 0,
-                                   static_cast<int64_t>(cnt),
-                                   std::string("example"));
+std::atomic<int> pass, block, seconds(SECONDS);
+std::thread myThreads[THREAD_NUM * SECONDS];
+int threadCnt = 0;
+
+int64_t CurrentTimeMillis() {
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+             std::chrono::system_clock::now().time_since_epoch())
+      .count();
+}
+void RunTask() {
+  double ans = 1.001;
+  // std::this_thread::sleep_for(std::chrono::milliseconds(2));
+  for (int i = 0; i < 1000; i++) {
+    double index = (rand() % 5) * ((CurrentTimeMillis() / 1000) % 3);
+    ans = pow(ans, index);
+  }
+}
+
+void DoEntry(const char* resource) {
+  int randParam = rand() % 10;
+  while (!stop.load()) {
+    auto r = Sentinel::SphU::Entry(resource, Sentinel::EntryType::IN, 1, 0,
+                                   randParam, std::string("example"));
     if (r->IsBlocked()) {
-      // Indicating the request is blocked. We can do something for this.
-      std::unique_lock<std::mutex> lck(mtx);
-      std::cout << "Block: " << r->blocked_reason().value() << std::endl;
-      lck.unlock();
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      block.fetch_add(1);
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
     } else {
-      std::unique_lock<std::mutex> lck(mtx);
-      std::cout << "~~Ok~~" << std::endl;
-      lck.unlock();
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      pass.fetch_add(1);
+      RunTask();
       r->Exit();
     }
-    std::cout.flush();
+  }
+}
+
+void TimerTask() {
+  int oldTotal = 0, oldPass = 0, oldBlock = 0;
+  std::cout << "Begin to statistic!!!" << std::endl;
+  while (true) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    int globalPass = pass.load();
+    int globalBlock = block.load();
+    int globalTotal = globalBlock + globalPass;
+
+    int oneSecondPass = globalPass - oldPass;
+    int oneSecondBlock = globalBlock - oldBlock;
+    int oneSecondTotal = globalTotal - oldTotal;
+
+    oldPass = globalPass;
+    oldBlock = globalBlock;
+    oldTotal = globalTotal;
+
+    std::cout << "[" << seconds.load() << "] total=" << oneSecondTotal
+              << ", pass=" << oneSecondPass << ", block=" << oneSecondBlock
+              << std::endl;
+    int leftSec = seconds.fetch_sub(1);
+    if (leftSec <= 0) {
+      stop.store(true);
+      break;
+    }
   }
 }
 
@@ -51,22 +93,21 @@ int main() {
   metric_log_task.Initialize();
 
   std::string myResource("tengjiao.jy");
-  Sentinel::Param::ParamFlowRule rule0, rule1, rule12;
+  Sentinel::Param::ParamFlowRule rule0, rule1, rule12, rule11;
   rule0.set_resource(myResource);
   rule0.set_metric_type(Sentinel::Param::ParamFlowMetricType::kQps);
-  rule0.set_threshold(5);
+  rule0.set_threshold(7000);
   rule0.set_interval_in_ms(1000);
   rule0.set_param_idx(0);
 
   rule1.set_resource(myResource);
   rule1.set_metric_type(Sentinel::Param::ParamFlowMetricType::kQps);
-  rule1.set_threshold(3);
+  rule1.set_threshold(2500);
   rule1.set_param_idx(1);
   rule1.set_interval_in_ms(1000);
-  // Sentinel::Param::ParamFlowItem item0;
-  // item0.set_param_value(100);
-  // item0.set_threshold(1);
-  // rule1.set_param_flow_item_list({item0});
+  Sentinel::Param::ParamFlowItem item0(std::string("nonexisting-str"), "String",
+                                       100);
+  rule1.set_param_flow_item_list({item0});
 
   rule12.set_resource("non-existing-resource");  // should not work
   rule12.set_metric_type(Sentinel::Param::ParamFlowMetricType::kQps);
@@ -76,18 +117,16 @@ int main() {
   Sentinel::Param::ParamFlowRuleManager::GetInstance().LoadRules(
       {rule1, rule0, rule12});
 
-  std::thread t1(DoEntry, myResource.c_str(), Sentinel::EntryType::IN);
-  std::thread t2(DoEntry, myResource.c_str(), Sentinel::EntryType::IN);
-  std::this_thread::sleep_for(std::chrono::milliseconds(13));
-  std::thread t3(DoEntry, myResource.c_str(), Sentinel::EntryType::IN);
-  std::this_thread::sleep_for(std::chrono::milliseconds(19));
-  std::thread t4(DoEntry, myResource.c_str(), Sentinel::EntryType::IN);
-  std::thread t5(DoEntry, "foo", Sentinel::EntryType::OUT);
+  std::thread t0(TimerTask);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::cout << "Thread num is " << THREAD_NUM << std::endl;
+  for (int i = 0; i < THREAD_NUM; i++) {
+    myThreads[i] = std::thread(DoEntry, myResource.c_str());
+  }
+  for (int i = 0; i < THREAD_NUM; i++) {
+    myThreads[i].join();
+  }
+  t0.join();
 
-  t1.join();
-  t2.join();
-  t3.join();
-  t4.join();
-  t5.join();
   return 0;
 }

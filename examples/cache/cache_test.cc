@@ -11,9 +11,11 @@
 using ScalableCache =
     Sentinel::Param::ThreadSafeLRUCache<absl::any, Sentinel::Param::AnyCmp>;
 using ScalableCacheUniquePtr = std::unique_ptr<ScalableCache>;
+
 ScalableCache cache(100);
 std::atomic<int64_t> winStart(0);
-constexpr int THREAD_NUM = 3000;
+std::atomic<bool> stop(false);
+constexpr int THREAD_NUM = 10;
 
 int64_t CurrentTimeMillis() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -22,7 +24,7 @@ int64_t CurrentTimeMillis() {
 }
 
 void Increase(int id, int cnt) {
-  for (int i = 0; i < 100; i++) {
+  while (!stop.load()) {
     int64_t curTime = CurrentTimeMillis();
     if (curTime - 500 > winStart) {
       // int64_t sz = cache.size();
@@ -35,12 +37,25 @@ void Increase(int id, int cnt) {
   }
 }
 
+void Timer() {
+  int cnt = 6;
+  while (!stop.load()) {
+    std::cout << "[" << cnt << "] " << cache.size() << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    if (cnt-- <= 0) {
+      stop.store(true);
+    }
+  }
+}
+
 int main() {
   Sentinel::Log::Logger::InitDefaultLogger();
   std::thread myThreads[THREAD_NUM];
+  std::thread t0(Timer);
   for (int i = 0; i < THREAD_NUM; i++) {
     myThreads[i] = std::thread(Increase, 11000 + 100 * i, 1);
   }
+  t0.join();
   for (int i = 0; i < THREAD_NUM; i++) {
     myThreads[i].join();
   }

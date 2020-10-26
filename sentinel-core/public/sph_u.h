@@ -71,6 +71,7 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
 
   std::vector<absl::any> params;
   FetchParams(params, args...);
+  e->set_params(params);
   Stat::NodeSharedPtr empty_node = nullptr;
   auto result = chain->Entry(e, resource, empty_node, count, flag, params);
 

@@ -28,12 +28,14 @@ class Entry {
   EntryContextSharedPtr context() const { return context_; }
   Stat::NodeSharedPtr cur_node() const { return cur_node_; }
   Stat::NodeSharedPtr origin_node() const { return origin_node_; }
+  std::vector<absl::any> params() const { return params_; }
   bool exited() const { return exited_; }
   bool HasError() const { return !error_.empty(); };
 
   void set_error(const std::string& message) { error_ = message; }
   void set_cur_node(const Stat::NodeSharedPtr& node) { cur_node_ = node; }
   void set_origin_node(const Stat::NodeSharedPtr& node) { origin_node_ = node; }
+  void set_params(const std::vector<absl::any>& params) { params_ = params; }
 
  private:
   const ResourceWrapperSharedPtr resource_;
@@ -44,6 +46,7 @@ class Entry {
   std::string error_{};
   Stat::NodeSharedPtr cur_node_;
   Stat::NodeSharedPtr origin_node_;
+  std::vector<absl::any> params_;
 };
 
 using EntrySharedPtr = std::shared_ptr<Entry>;

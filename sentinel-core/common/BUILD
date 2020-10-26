@@ -92,7 +92,7 @@ cc_library(
   name = "entry_result_lib",
   srcs = [
     "entry_result.h",
-    # "entry_result.cc",
+    "entry_result.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [

@@ -1,6 +1,5 @@
 #include "sentinel-core/param/statistic/param_metric.h"
 #include "sentinel-core/param/param_flow_rule.h"
-
 namespace Sentinel {
 namespace Param {
 
@@ -9,6 +8,11 @@ void ParamMetric::AddThreadCount(const std::vector<absl::any>& params) {
   for (const auto& param : params) {
     decltype(thread_count_map_)::const_accessor cac;
     if (thread_count_map_.find(cac, idx)) {
+      // Due to partial initializing problem, is possible to get a
+      // nullptr here. See ParamMetric::initializeForRule for detail.
+      if (!(cac->second)) {
+        continue;
+      }
       cac->second->increase(param, 1);
     }  // else : do nothing
     idx++;
@@ -32,6 +36,11 @@ int ParamMetric::GetThreadCount(int index, const absl::any& param) const {
     return 0;
   }
   ScalableCache::HashMapConstAccessor counterCac;
+  // Due to partial initializing problem, is possible to get a
+  // nullptr here. See ParamMetric::initializeForRule for detail.
+  if (!(cacheCac->second)) {
+    return 0;
+  }
   if (!cacheCac->second->find(counterCac, param)) {
     return 0;
   }
@@ -61,7 +70,6 @@ void ParamMetric::AddBlock(int count, const std::vector<absl::any>& params) {
 
 int ParamMetric::GetSum(int index, const ParamMetricEvent& e,
                         const absl::any& param) const {
-  tbb::concurrent_hash_map<int, ParamLeapArraySharedPtr>::const_accessor cac;
   int sum = 0;
   auto it = index_map_.find(index);  // Anyone of LeapArray on this index is ok
   if (it != index_map_.end()) {
@@ -134,23 +142,30 @@ HotPairList&& ParamMetric::GetTopPassParamCount(
 }
 
 void ParamMetric::initializeForRule(const ParamFlowRuleSharedPtr& rule) {
-  tbb::concurrent_hash_map<int, ScalableCacheUniquePtr>::const_accessor cac0;
   if (!rule) {
     SENTINEL_LOG(error, "[ParamMetric::initializeForRule] rule is nullptr");
     return;
   }
-  thread_count_map_.insert(
-      cac0, std::make_pair<>(rule->param_idx(), std::make_unique<ScalableCache>(
-                                                    rule->cache_size())));
+  // Here we find then insert the ScalableCache.
+  // On failed insertation cases, this can avoid the unnecessary and
+  // heavy contruction work of ScalableCache.
+  decltype(thread_count_map_)::const_accessor cac0;
+  if (!thread_count_map_.find(cac0, rule->param_idx())) {
+    // Partial initialization: other thread may query this cache before
+    // initialization work ends here
+    thread_count_map_.insert(
+        std::make_pair<>(rule->param_idx(),
+                         std::make_unique<ScalableCache>(rule->cache_size())));
+  }
 
   tbb::concurrent_hash_map<
       ParamFlowRule::ParamLeapArrayKeySharedPtr, ParamLeapArraySharedPtr,
       ParamFlowRule::ParamLeapArrayKeyPtrHashEq>::const_accessor cac1;
 
-  // [P0]TODO: On highly concurrent cases, if interval of the two
-  // insertation elapses too long, other threads may fail to find
-  // an entry in `index_map_` with this index at `AddPass` as they're
-  // expected. How to solve this problem?
+  // Partial initialization problem may arise here: other threads may
+  // fail to find an entry in `index_map_` with this index at `AddPass`
+  // as they're expected.
+  // However, it doesn't matter to miss some QPS.
   if (rolling_params_.insert(
           cac1,
           std::make_pair<>(rule->metric_key(),
