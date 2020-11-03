@@ -19,6 +19,8 @@ MetricLogTask::MetricLogTask() {
                                            conf.TotalMetricFileCount());
 }
 
+MetricLogTask::~MetricLogTask() { Stop(); }
+
 void MetricLogTask::AggregateMetrics(
     MetricItemTimeMap& map,
     std::unordered_map<long, Stat::MetricItemSharedPtr>&& metrics,
@@ -38,10 +40,7 @@ void MetricLogTask::AggregateMetrics(
 }
 
 void MetricLogTask::RunLogTask() {
-  while (true) {
-    if (stopped_) {
-      return;
-    }
+  while (stopped_.load()) {
     std::map<int64_t, std::vector<Stat::MetricItemSharedPtr>> map;
     const auto resource_node_map =
         Stat::ResourceNodeStorage::GetInstance().GetNodeMap();
@@ -64,13 +63,12 @@ void MetricLogTask::RunLogTask() {
 }
 
 void MetricLogTask::Initialize() {
-  std::thread daemon_task(&MetricLogTask::RunLogTask, this);
-  daemon_task.detach();
+  thd_.reset(new std::thread(&MetricLogTask::RunLogTask, this));
 }
 
 void MetricLogTask::Stop() {
-  // Not thread-safe, but it's okay.
-  stopped_ = true;
+  stopped_.store(true);
+  thd_->join();
 }
 
 }  // namespace Log

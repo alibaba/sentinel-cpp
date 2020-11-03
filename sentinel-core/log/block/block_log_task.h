@@ -5,7 +5,6 @@
 #include <string>
 
 #include "absl/container/flat_hash_map.h"
-#include "absl/synchronization/mutex.h"
 #include "spdlog/spdlog.h"
 
 #include "sentinel-core/log/log_base.h"
@@ -40,6 +39,7 @@ class BlockLogTask {
 
  private:
   std::atomic_bool started_{false};
+  std::unique_ptr<std::thread> thd_;
   std::shared_ptr<spdlog::logger> logger_;
   absl::flat_hash_map<std::string, BlockLogRecord> map_;
   mutable absl::Mutex mtx_;
