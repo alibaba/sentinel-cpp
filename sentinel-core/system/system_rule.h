@@ -8,7 +8,6 @@
 
 #include "absl/strings/str_format.h"
 #include "absl/synchronization/mutex.h"
-#include "sentinel-core/common/constants.h"
 #include "sentinel-core/common/rule.h"
 
 namespace Sentinel {

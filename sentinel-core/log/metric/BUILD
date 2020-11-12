@@ -31,7 +31,6 @@ cc_library(
   deps = [
     ":metric_log_lib",
     "//sentinel-core/init:init_target_interface",
-    "//sentinel-core/statistic/base:metric_item_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )

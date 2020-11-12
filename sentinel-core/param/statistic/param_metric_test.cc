@@ -23,8 +23,8 @@ TEST(ParamMetricTest, TestOperateMetric) {
   rule1->set_interval_in_ms(2000);
 
   auto metric = std::make_shared<ParamMetric>();
-  metric->initializeForRule(rule0);
-  metric->initializeForRule(rule1);
+  metric->initializeForRule(rule0->metric_key());
+  metric->initializeForRule(rule1->metric_key());
 
   metric->AddPass(2, {12313, std::string("exampleString"), 456});
   metric->AddPass(3, {12313, std::string("anotherExampleString")});

@@ -34,9 +34,13 @@ cc_library(
 
 cc_library(
   name = "param_events_lib",
-  srcs = [
-    "param_event.h",
-  ],
+  srcs = ["param_event.h",],
+  copts = DEFAULT_COPTS,
+)
+
+cc_library(
+  name = "param_leap_array_key_lib",
+  srcs = ["param_leap_array_key.h"],
   copts = DEFAULT_COPTS,
 )
 
@@ -80,7 +84,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":param_leap_array_lib",
-    "//sentinel-core/param:param_flow_rule_lib",
+    ":param_leap_array_key_lib",
   ],
 )
 

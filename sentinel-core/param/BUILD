@@ -33,9 +33,9 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
+    ":param_flow_rule_lib",
     "//sentinel-core/common:entry_lib",
     "//sentinel-core/param/statistic:param_metric_lib",
-    "//sentinel-core/slot/base:token_result_lib",
   ]
 )
 
@@ -50,16 +50,16 @@ cc_library(
     "//bazel:is_osx": [
       ":param_flow_rule_constants_lib",
       ":param_flow_item_lib",
-      "//sentinel-core/common:constants",
       "//sentinel-core/common:rule_lib",
+      "//sentinel-core/param/statistic:param_leap_array_key_lib",
       "@com_google_absl//absl/strings:str_format",
       "@com_github_libtbb_osx//:tbb_osx",
     ],
     "//conditions:default": [
       ":param_flow_rule_constants_lib",
       ":param_flow_item_lib",
-      "//sentinel-core/common:constants",
       "//sentinel-core/common:rule_lib",
+      "//sentinel-core/param/statistic:param_leap_array_key_lib",
       "@com_google_absl//absl/strings:str_format",
       "@com_github_libtbb//:tbb",
     ],
@@ -91,8 +91,6 @@ cc_library(
   deps = [
     ":param_flow_rule_manager_lib",
     ":param_flow_rule_checker_lib",
-    "//sentinel-core/common:resource_wrapper_interface",
-    "//sentinel-core/slot/base:token_result_lib",
     "//sentinel-core/slot/base:rule_checker_slot_interface",
     "@com_google_absl//absl/strings:str_format",
   ],

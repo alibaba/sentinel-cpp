@@ -11,7 +11,6 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     "//sentinel-core/log/metric:metric_log_lib",
-    "//sentinel-core/statistic/base:metric_item_lib",
     "//sentinel-core/transport/command:command_handler_interface",
   ]
 )

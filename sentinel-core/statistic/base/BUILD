@@ -80,7 +80,6 @@ cc_library(
   deps = [
     ":window_wrap_lib",
     "//sentinel-core/log:logger_lib",
-    "//sentinel-core/utils:utils_lib"
   ]
 )
 
@@ -120,7 +119,6 @@ cc_library(
     ":metric_interface",
     ":bucket_leap_array_lib",
     ":window_wrap_lib",
-    "//sentinel-core/common:constants"
   ]
 )
 

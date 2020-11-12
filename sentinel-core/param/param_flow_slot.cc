@@ -33,7 +33,7 @@ void ParamFlowSlot::initHotParamMetricsFor(
         std::make_pair<>(resource, std::make_shared<Param::ParamMetric>()));
   }
   if (cac->second) {
-    cac->second->initializeForRule(rule);
+    cac->second->initializeForRule(rule->metric_key());
   }
 }
 

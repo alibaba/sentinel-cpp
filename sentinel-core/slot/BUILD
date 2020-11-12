@@ -37,7 +37,6 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     "//sentinel-core/param:param_flow_slot_lib",
-    "//sentinel-core/common:constants",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
     "//sentinel-core/slot/base:stats_slot_interface",
   ]

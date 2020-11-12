@@ -1,5 +1,6 @@
 #pragma once
 #include "sentinel-core/common/entry.h"
+#include "sentinel-core/param/param_flow_rule.h"
 #include "sentinel-core/param/statistic/param_metric.h"
 #include "sentinel-core/slot/base/token_result.h"
 

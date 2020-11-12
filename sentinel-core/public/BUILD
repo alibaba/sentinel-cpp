@@ -10,9 +10,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/common:constants",
     "//sentinel-core/common:global_status",
-    "//sentinel-core/common:entry_type_enum",
     "//sentinel-core/common:entry_result_lib",
     "//sentinel-core/common:string_resource_wrapper_lib",
   ]

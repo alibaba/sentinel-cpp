@@ -20,7 +20,6 @@ cc_library(
   deps = [
     "@com_google_absl//absl/strings:str_format",
     ":flow_rule_constants_lib",
-    "//sentinel-core/common:constants",
     "//sentinel-core/common:rule_lib",
   ]
 )
@@ -54,7 +53,6 @@ cc_library(
   deps = [
     ":flow_rule_manager_lib",
     "//sentinel-core/common:entry_lib",
-    "//sentinel-core/slot/base:token_result_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )

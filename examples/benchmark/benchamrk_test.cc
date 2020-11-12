@@ -1,6 +1,7 @@
 
 #include <benchmark/benchmark.h>
 #include <iostream>
+#include <thread>
 #include "sentinel-core/log/metric/metric_log_task.h"
 #include "sentinel-core/param/param_flow_rule_constants.h"
 #include "sentinel-core/param/param_flow_rule_manager.h"
