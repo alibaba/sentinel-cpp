@@ -11,6 +11,22 @@ def include_third_party_repositories():
     )
 
     http_archive(
+        name = "com_github_libtbb",
+        build_file = "//bazel:tbb.BUILD",
+        strip_prefix = "oneTBB-2020.3",
+        urls = ["https://github.com/oneapi-src/oneTBB/archive/v2020.3.tar.gz"],
+        sha256 = "ebc4f6aa47972daed1f7bf71d100ae5bf6931c2e3144cf299c8cc7d041dca2f3",
+    )
+
+    http_archive(
+        name = "com_github_libtbb_osx",
+        build_file = "//bazel:osx.tbb.BUILD",
+        strip_prefix = "oneTBB-2020.3",
+        urls = ["https://github.com/oneapi-src/oneTBB/archive/v2020.3.tar.gz"],
+        sha256 = "ebc4f6aa47972daed1f7bf71d100ae5bf6931c2e3144cf299c8cc7d041dca2f3",
+    )
+
+    http_archive(
         name = "com_github_fmtlib_fmt",
         sha256 = "4c0741e10183f75d7d6f730b8708a99b329b2f942dad5a9da3385ab92bb4a15c",
         strip_prefix = "fmt-5.3.0",

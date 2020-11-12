@@ -4,7 +4,6 @@
 #include <atomic>
 #include <fstream>
 #include <iomanip>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -56,7 +55,11 @@ class SystemStatusListener {
     return *instance;
   }
 
-  virtual ~SystemStatusListener();
+  virtual ~SystemStatusListener() {
+    StopListner();
+    file_stat_.close();
+    file_load_.close();
+  }
   void RunCpuListener();
   void Initialize();
   double GetCurLoad() { return cur_load_.load(); }
@@ -76,12 +79,16 @@ class SystemStatusListener {
 
   std::atomic<double> cur_load_{-1};
   std::atomic<double> cur_cpu_usage_{-1};
-  std::atomic<bool> started_{false};
-  std::unique_ptr<std::thread> thd_;
+  std::atomic<bool> stopped_cmd_{false};
+  std::atomic<bool> stopped_{false};
   std::atomic<bool> inited_{false};
 
   // wait until loop in RunCpuListener stop
-  void Stop();
+  void StopListner() {
+    stopped_cmd_.store(true);
+    while (!stopped_.load())
+      ;
+  }
 };
 
 }  // namespace System

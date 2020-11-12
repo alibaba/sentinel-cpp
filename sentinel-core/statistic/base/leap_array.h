@@ -5,6 +5,7 @@
 #include <mutex>
 #include <vector>
 
+#include "sentinel-core/log/logger.h"
 #include "sentinel-core/statistic/base/window_wrap.h"
 #include "sentinel-core/utils/time_utils.h"
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <thread>
 
 #include "sentinel-core/flow/flow_rule_checker.h"
 #include "sentinel-core/slot/base/rule_checker_slot.h"
@@ -15,10 +16,11 @@ class FlowSlot : public RuleCheckerSlot {
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodeSharedPtr& node, int count,
-                             int flag) override;
+                             Stat::NodeSharedPtr& node, int count, int flag,
+                             const std::vector<absl::any>& params) override;
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count) override;
+            const ResourceWrapperSharedPtr& resource, int count,
+            const std::vector<absl::any>& params) override;
   const std::string& Name() const override;
 
  private:

@@ -15,3 +15,8 @@ config_setting(
         "cpu": "x64_windows",
     },
 )
+
+config_setting(
+    name = "is_osx",
+    define_values = {"os":"osx"},
+)

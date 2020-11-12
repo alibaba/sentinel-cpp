@@ -35,6 +35,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":entry_type_enum",
+    "@com_google_absl//absl/types:any",
   ]
 )
 
@@ -46,6 +47,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":resource_wrapper_interface",
+    "@com_google_absl//absl/types:any",
   ]
 )
 
@@ -71,7 +73,6 @@ cc_library(
   deps = [
     ":entry_context_lib",
     ":resource_wrapper_interface",
-    "//sentinel-core/statistic/node:node_interface",
     "//sentinel-core/utils:utils_lib",
   ]
 )
@@ -95,7 +96,6 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":entry_lib",
     "//sentinel-core/slot:global_slot_chain_header",
     "@com_google_absl//absl/types:optional",
   ]

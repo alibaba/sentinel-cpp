@@ -6,8 +6,6 @@
 
 #include "sentinel-core/flow/flow_rule_manager.h"
 #include "sentinel-core/init/init_target_registry.h"
-#include "sentinel-core/log/log_base.h"
-#include "sentinel-core/log/logger.h"
 #include "sentinel-core/log/metric/metric_log_task.h"
 #include "sentinel-core/public/sph_u.h"
 #include "sentinel-core/transport/command/http_server_init_target.h"
@@ -46,6 +44,7 @@ int main() {
 
   Sentinel::Flow::FlowRule rule1{"my_open_api_abc"};
   rule1.set_count(10);
+  rule1.set_control_behavior(Sentinel::Flow::FlowControlBehavior::kThrotting);
   Sentinel::Flow::FlowRule rule2{"m1:my_another_api_233"};
   rule2.set_count(5);
   Sentinel::Flow::FlowRuleManager::GetInstance().LoadRules({rule1, rule2});

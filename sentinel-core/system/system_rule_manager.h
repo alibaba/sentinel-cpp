@@ -10,10 +10,9 @@
 
 #include "absl/synchronization/mutex.h"
 
-#include "sentinel-core/common/entry.h"
+// #include "sentinel-core/common/entry.h"
 #include "sentinel-core/property/dynamic_sentinel_property.h"
 #include "sentinel-core/property/property_listener.h"
-#include "sentinel-core/property/sentinel_property.h"
 #include "sentinel-core/slot/base/token_result.h"
 #include "sentinel-core/statistic/node/cluster_node.h"
 #include "sentinel-core/statistic/node/resource_node_storage.h"

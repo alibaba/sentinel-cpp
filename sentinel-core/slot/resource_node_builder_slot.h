@@ -18,10 +18,11 @@ class ResourceNodeBuilderSlot : public StatsSlot {
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodeSharedPtr& node, int count,
-                             int flag) override;
+                             Stat::NodeSharedPtr& node, int count, int flag,
+                             const std::vector<absl::any>& params) override;
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count) override;
+            const ResourceWrapperSharedPtr& resource, int count,
+            const std::vector<absl::any>& params) override;
   const std::string& Name() const override;
 
  private:

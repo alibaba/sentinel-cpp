@@ -3,7 +3,6 @@
 #include "sentinel-core/common/entry.h"
 #include "sentinel-core/flow/flow_rule.h"
 #include "sentinel-core/slot/base/token_result.h"
-#include "sentinel-core/statistic/node/node.h"
 
 namespace Sentinel {
 namespace Flow {

@@ -15,9 +15,7 @@ cc_library(
     "@com_google_absl//absl/strings:str_format",
     "@com_google_absl//absl/time",
     "@com_github_gabime_spdlog//:spdlog",
-    "//sentinel-core/log:log_base_impl_lib",
     "//sentinel-core/log:logger_lib",
-    "//sentinel-core/utils:utils_lib",
   ]
 )
 
