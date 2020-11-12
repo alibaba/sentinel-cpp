@@ -5,8 +5,7 @@ namespace Sentinel {
 namespace Param {
 
 bool ParamFlowItem::operator==(const ParamFlowItem& item) const noexcept {
-  return param_type_ == item.param_type_ &&
-         PubAnyEq(param_value_, item.param_value_) &&
+  return param_type_ == item.param_type_ && param_value_ == item.param_value_ &&
          threshold_ == item.threshold_;
 }
 

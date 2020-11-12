@@ -16,9 +16,7 @@
 namespace Sentinel {
 namespace Param {
 
-using HotItemsMap = std::unordered_map<
-    absl::any, int32_t, std::function<size_t(const absl::any& any)>,
-    std::function<bool(const absl::any& any1, const absl::any& any2)>>;
+using HotItemsMap = std::unordered_map<absl::any, double>;
 using HotItemsMapSharedPtr = std::shared_ptr<HotItemsMap>;
 
 // Deep copy safe
@@ -28,7 +26,7 @@ class ParamFlowRule : public Rule {
   explicit ParamFlowRule(const std::string& resource)
       : resource_(resource),
         metric_key_(std::make_shared<ParamLeapArrayKey>()),
-        hot_items_(std::make_shared<HotItemsMap>(1, PubAnyHash, PubAnyEq)) {}
+        hot_items_(std::make_shared<HotItemsMap>(1)) {}
   virtual ~ParamFlowRule() = default;
 
   const std::string& resource() const noexcept { return resource_; }

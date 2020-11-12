@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -66,12 +67,10 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
   rule4.set_threshold(1);
   rule4.set_sample_count(0);
   rule4.set_metric_type(Param::ParamFlowMetricType::kQps);
-
   Param::ParamFlowRuleManager& m = Param::ParamFlowRuleManager::GetInstance();
   m.LoadRules({rule0, rule1, rule2, rule3, rule4});
   EXPECT_EQ(m.GetRuleOfResource(resourceName)->size(), 2);
   EXPECT_EQ(m.GetRuleOfResource(anotherResourceName)->size(), 1);
-
   myParams.push_back(15213);
 
   // NOTE: If the time of invoking Add and Get of counter are unluckly in two

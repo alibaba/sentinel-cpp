@@ -84,7 +84,6 @@ ParamFlowRulePtrMapSharedPtr ParamPropertyListener::AggregatedHotParamRules(
       continue;
     }
     ParamFlowRuleSharedPtr p = std::make_shared<ParamFlowRule>(rule);
-
     rule.FillExceptionFlowItems();
     // Insert directly. Existing key will not disturb
     auto pair = new_map->insert(std::make_pair<>(

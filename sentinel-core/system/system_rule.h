@@ -14,11 +14,6 @@ namespace Sentinel {
 namespace System {
 
 enum MetricType { kSystemLoad = 0, kRt, kConcurrency, kQps, kCpuUsage };
-struct MetricTypeHash {
-  std::size_t operator()(const MetricType metric_type) const noexcept {
-    return static_cast<int>(metric_type);
-  }
-};
 
 std::string GetMetricTypeString(MetricType ruleType);
 
@@ -34,7 +29,7 @@ struct SystemRule : public Rule {
   MetricType metric_type() const { return metric_type_; }
   double threshold() const { return threshold_; }
 
-  bool operator==(const SystemRule &rule) const;
+  bool operator==(const SystemRule& rule) const;
   std::string ToString() const;
 
  private:
@@ -47,3 +42,12 @@ using SystemRuleList = std::vector<SystemRule>;
 
 }  // namespace System
 }  // namespace Sentinel
+
+namespace std {
+template <>
+struct hash<Sentinel::System::MetricType> {
+  size_t operator()(const Sentinel::System::MetricType& t) const {
+    return hash<int>{}(static_cast<int>(t));
+  }
+};
+}  // namespace std

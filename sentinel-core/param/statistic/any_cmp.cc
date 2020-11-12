@@ -19,19 +19,15 @@ bool IsString(const absl::any& a) {
   return type_str.find(STRING_TYPE_STR) != type_str.npos;
 }
 
-size_t PubAnyHash(const absl::any& any) {
-  if (IsInt(any)) {
-    return 31 * absl::any_cast<int>(any);
-  } else if (IsInt64(any)) {
-    return 31 * absl::any_cast<int64_t>(any);
-  } else if (IsString(any)) {
-    return std::hash<std::string>{}(absl::any_cast<std::string>(any));
-  }
-  SENTINEL_LOG(error, "[AnyCmp] Wrong param type: {}", any.type().name());
-  return -1;
-}
+}  // namespace Param
+}  // namespace Sentinel
 
-bool PubAnyEq(const absl::any& any1, const absl::any& any2) {
+namespace absl {
+using Sentinel::Param::IsInt;
+using Sentinel::Param::IsInt64;
+using Sentinel::Param::IsString;
+
+bool operator==(const absl::any& any1, const absl::any& any2) {
   if (IsInt(any1) && IsInt(any2)) {
     return absl::any_cast<int>(any1) == absl::any_cast<int>(any2);
   } else if (IsInt64(any1) && IsInt64(any2)) {
@@ -43,5 +39,4 @@ bool PubAnyEq(const absl::any& any1, const absl::any& any2) {
   return false;
 }
 
-}  // namespace Param
-}  // namespace Sentinel
+}  // namespace absl

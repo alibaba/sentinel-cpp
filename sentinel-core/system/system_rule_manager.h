@@ -25,8 +25,7 @@ namespace System {
 using DynamicSystemRulePropertySharedPtr =
     std::shared_ptr<Property::DynamicSentinelProperty<SystemRuleList>>;
 
-using SystemRuleMap =
-    std::unordered_map<MetricType, SystemRule, MetricTypeHash>;
+using SystemRuleMap = std::unordered_map<MetricType, SystemRule>;
 using SystemRuleMapSharedPtr = std::shared_ptr<SystemRuleMap>;
 
 class SystemRuleManager {

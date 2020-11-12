@@ -7,7 +7,6 @@ int main() {
 
   std::cout << a.type().name() << std::endl;
   const std::string INT_TYPE_STR(typeid(3).name());
-  std::cout << INT_TYPE_STR.compare(nullptr) << std::endl;
 
   return 0;
 }
