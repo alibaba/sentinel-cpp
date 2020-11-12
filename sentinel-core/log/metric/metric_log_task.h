@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <unordered_map>
@@ -18,14 +19,15 @@ using MetricItemTimeMap =
 class MetricLogTask : public Init::Target {
  public:
   MetricLogTask();
-  virtual ~MetricLogTask() = default;
+  virtual ~MetricLogTask();
   void Initialize() override;
 
   void Stop();
 
  private:
   std::unique_ptr<MetricWriter> writer_;
-  bool stopped_{false};
+  std::atomic<bool> stopped_{false};
+  std::unique_ptr<std::thread> thd_;
 
   void RunLogTask();
   void AggregateMetrics(

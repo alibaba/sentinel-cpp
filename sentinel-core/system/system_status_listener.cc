@@ -27,6 +27,12 @@ SystemStatusListener::SystemStatusListener() {
   }
 }
 
+SystemStatusListener::~SystemStatusListener() {
+  Stop();
+  file_stat_.close();
+  file_load_.close();
+}
+
 void SystemStatusListener::ReadCpuUsageFromProc() {
   std::string line;
   file_stat_.seekg(std::ios::beg);
@@ -101,14 +107,11 @@ void SystemStatusListener::UpdateSystemLoad() {
 void SystemStatusListener::RunCpuListener() {
   // In order to shorten the buzy waiting time in `stopListner`
   // we make the listener as if has stopped the loop while sleeping
-  while (!stopped_cmd_.load()) {
-    stopped_.store(false);
+  while (started_.load()) {
     UpdateCpuUsage();
     UpdateSystemLoad();
-    stopped_.store(true);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
-  stopped_.store(true);
 }
 
 // `Initialize()` should be called explicitly after construction
@@ -116,11 +119,14 @@ void SystemStatusListener::Initialize() {
   bool b = false;
   if (inited_.compare_exchange_strong(b, true)) {
     if (load_info_p_ || usage_info_p1_) {
-      stopped_cmd_.store(false);
-      std::thread listen_task(&SystemStatusListener::RunCpuListener, this);
-      listen_task.detach();
+      thd_.reset(new std::thread(&SystemStatusListener::RunCpuListener, this));
     }
   }
+}
+
+void SystemStatusListener::Stop() {
+  started_.store(false);
+  thd_->join();
 }
 
 }  // namespace System

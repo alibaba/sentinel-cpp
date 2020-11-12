@@ -8,7 +8,6 @@
 #include "sentinel-core/utils/time_utils.h"
 
 #include "absl/strings/str_format.h"
-#include "absl/synchronization/mutex.h"
 #include "absl/time/time.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 
@@ -34,10 +33,7 @@ BlockLogTask::~BlockLogTask() {
 }
 
 void BlockLogTask::LoopWriteBlockLog() {
-  while (true) {
-    if (!started()) {
-      return;
-    }
+  while (started()) {
     if (logger_ != nullptr) {
       absl::WriterMutexLock lck(&mtx_);
       for (auto& e : map_) {
@@ -70,12 +66,14 @@ void BlockLogTask::Start() {
   }
   bool expected = false;
   if (started_.compare_exchange_strong(expected, true)) {
-    std::thread daemon_task(&BlockLogTask::LoopWriteBlockLog, this);
-    daemon_task.detach();
+    thd_.reset(new std::thread(&BlockLogTask::LoopWriteBlockLog, this));
   }
 }
 
-void BlockLogTask::Stop() { started_.store(false); }
+void BlockLogTask::Stop() {
+  started_.store(false);
+  thd_->join();
+}
 
 void BlockLogTask::Log(const std::string& resource, const std::string& cause) {
   if (logger_ == nullptr) {
