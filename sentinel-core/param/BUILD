@@ -17,6 +17,7 @@ cc_library(
     "param_flow_item.h",
   ],
   deps = [
+    ":param_flow_rule_constants_lib",
     "//sentinel-core/param/statistic:any_cmp_lib",
     "@com_google_absl//absl/types:any",
     "@com_google_absl//absl/strings:str_format",

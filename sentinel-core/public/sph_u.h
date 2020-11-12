@@ -43,12 +43,12 @@ class SphU {
 
 template <typename T>
 void SphU::FetchParams(std::vector<absl::any>& params, T arg) {
-  params.push_back(arg);
+  params.push_back(std::move(arg));
 }
 
 template <typename T, typename... Ts>
 void SphU::FetchParams(std::vector<absl::any>& params, T arg, Ts... args) {
-  params.push_back(arg);
+  params.push_back(std::move(arg));
   FetchParams(params, args...);
 }
 
@@ -71,7 +71,6 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
 
   std::vector<absl::any> params;
   FetchParams(params, args...);
-  e->set_params(params);
   Stat::NodeSharedPtr empty_node = nullptr;
   auto result = chain->Entry(e, resource, empty_node, count, flag, params);
 
@@ -82,6 +81,8 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
     }
     return std::make_unique<EntryResult>(result->blocked_reason().value());
   }
+
+  e->set_params(std::move(params));
   return std::make_unique<EntryResult>(e);
 }
 

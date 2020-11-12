@@ -10,17 +10,17 @@ bool ParamFlowItem::operator==(const ParamFlowItem& item) const noexcept {
          threshold_ == item.threshold_;
 }
 
-int ParamFlowItem::HashCode() const {
-  int code = 1;
-  code = 31 * code + std::hash<std::string>{}(param_type_);
-  code = 31 * code + PubAnyHash(param_value_);
-  code = 31 * code + threshold_;
-  return code;
-}
-
 std::string ParamFlowItem::ToString() const {
+  std::string typeName;
+  if (IsInt(param_value_) || IsInt64(param_value_)) {
+    typeName = "int";
+  } else if (IsString(param_value_)) {
+    typeName = "String";
+  } else {
+    typeName = "unknown";
+  }
   return absl::StrFormat("ParamFlowItem{threshold=%d, type=%s}", threshold_,
-                         param_value_.type().name());
+                         typeName);
 }
 
 ParamFlowItemList::ParamFlowItemList(
@@ -41,14 +41,6 @@ bool ParamFlowItemList::operator==(const ParamFlowItemList& list) const
     }
   }
   return true;
-}
-
-int ParamFlowItemList::HashCode() const noexcept {
-  int code = 1;
-  for (const auto& item : *this) {
-    code = 31 * code + item.HashCode();
-  }
-  return code;
 }
 
 std::string ParamFlowItemList::ToString() const {

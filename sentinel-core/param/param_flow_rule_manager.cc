@@ -5,7 +5,28 @@ namespace Param {
 
 constexpr auto kParamPropertyListenerName = "ParamPropertyListener";
 
-bool IsValidRule(const ParamFlowRule& rule) { return true; }
+bool IsValidRule(const ParamFlowRule& rule) {
+  bool isOK = static_cast<int32_t>(rule.metric_type()) >= 0 &&
+              static_cast<int32_t>(rule.metric_type()) <
+                  static_cast<int32_t>(ParamFlowMetricType::kNum);
+  isOK = isOK && rule.threshold() >= 0 && rule.param_idx() >= 0 &&
+         rule.cache_size() > 0 && rule.sample_count() > 0 &&
+         rule.interval_in_ms() > 0;
+  if (!isOK) {
+    return false;
+  }
+
+  // Check each item
+  for (const auto& item : rule.param_item_list()) {
+    if (item.threshold() < 0 || !item.param_value().has_value() ||
+        (std::string(kString).compare(item.param_type()) != 0 &&
+         std::string(kInt32).compare(item.param_type()) != 0 &&
+         std::string(kInt64).compare(item.param_type()) != 0)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 void LogParamMap(const ParamFlowRulePtrMapSharedPtr map) {
   std::string s("[");

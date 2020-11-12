@@ -3,14 +3,14 @@
 namespace Sentinel {
 namespace Param {
 
-bool ParamFlowChecker::PassCheck(ParamMetricSharedPtr metric,
-                                 const ParamFlowRuleSharedPtr rule, int count,
+bool ParamFlowChecker::PassCheck(ParamMetricSharedPtr& metric,
+                                 const ParamFlowRuleSharedPtr& rule, int count,
                                  const std::vector<absl::any>& params) {
   return PassLocalCheck(metric, rule, count, params);
 }
 
-bool ParamFlowChecker::PassLocalCheck(ParamMetricSharedPtr metric,
-                                      const ParamFlowRuleSharedPtr rule,
+bool ParamFlowChecker::PassLocalCheck(ParamMetricSharedPtr& metric,
+                                      const ParamFlowRuleSharedPtr& rule,
                                       int count,
                                       const std::vector<absl::any>& params) {
   for (const auto& param : params) {
@@ -21,23 +21,25 @@ bool ParamFlowChecker::PassLocalCheck(ParamMetricSharedPtr metric,
   return true;
 }
 
-bool ParamFlowChecker::PassSingleValueCheck(ParamMetricSharedPtr metric,
-                                            const ParamFlowRuleSharedPtr rule,
+bool ParamFlowChecker::PassSingleValueCheck(ParamMetricSharedPtr& metric,
+                                            const ParamFlowRuleSharedPtr& rule,
                                             int count, const absl::any& param) {
   bool result = true;
-  HotItemsMap::const_accessor cac;
+  auto item_map = rule->hot_items();
   if (rule->metric_type() == ParamFlowMetricType::kQps) {
     int threshold = static_cast<int>(rule->threshold());
     int curCount = metric->PassInterval(rule->metric_key(), param);
-    if (rule->hot_items()->find(cac, param)) {
-      threshold = cac->second;
+    auto it = item_map->find(param);
+    if (it != item_map->end()) {
+      threshold = it->second;
     }
     result = (count + curCount <= threshold);
   } else if (rule->metric_type() == ParamFlowMetricType::kThreadCount) {
     int threshold = static_cast<int>(rule->threshold());
     int threadCount = metric->GetThreadCount(rule->param_idx(), param);
-    if (rule->hot_items()->find(cac, param)) {
-      threshold = cac->second;
+    auto it = item_map->find(param);
+    if (it != item_map->end()) {
+      threshold = it->second;
     }
     result = (++threadCount <= threshold);
   } else {

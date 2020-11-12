@@ -5,7 +5,8 @@ namespace Param {
 
 enum class ParamFlowMetricType {
   kThreadCount = 0,
-  kQps = 1  // default mode
+  kQps = 1,  // default mode
+  kNum
 };
 
 enum class ParamFlowRelationStrategy {
@@ -20,6 +21,18 @@ enum class ParamFlowControlBehavior {
   kThrotting = 2,
   kWarmUpThrottling = 3
 };
+
+enum class ParamItemType {
+  kString = 0,  // Default type
+  kInt32 = 1,
+  kInt64 = 2,
+
+  kNum
+};
+
+static constexpr char* kString = "String";
+static constexpr char* kInt32 = "int";
+static constexpr char* kInt64 = "long";
 
 }  // namespace Param
 }  // namespace Sentinel

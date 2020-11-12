@@ -37,6 +37,7 @@ class TokenResult {
 
  private:
   const TokenStatus status_;
+  static TokenResultSharedPtr cachedOkPtr;
   absl::optional<std::string> blocked_reason_;
   absl::optional<std::chrono::milliseconds> wait_ms_;
 };

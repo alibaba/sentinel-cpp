@@ -20,7 +20,6 @@ using HotPairList = std::vector<HotPair>;
 
 class ParamBucket {
  public:
-  ParamBucket() : ParamBucket(DEFAULT_MAX_CAPACITY) {}
   ParamBucket(int capacity);
 
   int Get(const ParamMetricEvent& e, const absl::any& value) const;
@@ -30,7 +29,6 @@ class ParamBucket {
 
  private:
   std::vector<ScalableCacheUniquePtr> counters_;
-  const static int DEFAULT_MAX_CAPACITY = 200;
 };
 
 }  // namespace Param

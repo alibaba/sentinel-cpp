@@ -7,6 +7,7 @@
 #include "sentinel-core/test/mock/statistic/node/mock.h"
 
 #include "sentinel-core/common/string_resource_wrapper.h"
+#include "sentinel-core/param/param_flow_rule_constants.h"
 #include "sentinel-core/param/param_flow_slot.h"
 
 using testing::_;
@@ -18,6 +19,7 @@ namespace Sentinel {
 namespace Slot {
 
 TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
+  Sentinel::Log::Logger::InitDefaultLogger();
   std::string resourceName{"testResource"};
   std::string anotherResourceName{"anotherTestResource"};
   EntryContextSharedPtr context =
@@ -37,12 +39,12 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
   }
 
   Param::ParamFlowRule rule0{resourceName}, rule1{resourceName},
-      rule2{anotherResourceName};
+      rule2{anotherResourceName}, rule3{resourceName}, rule4{resourceName};
   rule0.set_metric_type(Param::ParamFlowMetricType::kQps);
   rule0.set_param_idx(0);
   rule0.set_threshold(10);
   rule0.set_interval_in_ms(5000);  // limit 10 Qs in 5s, QPS=2
-  Param::ParamFlowItem item0(78, "int", 100);
+  Param::ParamFlowItem item0(78, Param::kInt32, 100);
   rule0.set_param_flow_item_list({item0});
 
   rule1.set_param_idx(1);
@@ -55,8 +57,18 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
   rule2.set_threshold(1);
   rule2.set_metric_type(Param::ParamFlowMetricType::kQps);
 
+  // rule3 and rule4 are neither valid rule
+  rule3.set_param_idx(1);
+  rule3.set_threshold(-1);
+  rule3.set_metric_type(Param::ParamFlowMetricType::kQps);
+
+  rule4.set_param_idx(1);
+  rule4.set_threshold(1);
+  rule4.set_sample_count(0);
+  rule4.set_metric_type(Param::ParamFlowMetricType::kQps);
+
   Param::ParamFlowRuleManager& m = Param::ParamFlowRuleManager::GetInstance();
-  m.LoadRules({rule0, rule1, rule2});
+  m.LoadRules({rule0, rule1, rule2, rule3, rule4});
   EXPECT_EQ(m.GetRuleOfResource(resourceName)->size(), 2);
   EXPECT_EQ(m.GetRuleOfResource(anotherResourceName)->size(), 1);
 

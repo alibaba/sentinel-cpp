@@ -11,17 +11,17 @@ class ParamFlowChecker {
   ParamFlowChecker() = default;
   ~ParamFlowChecker() = default;
 
-  static bool PassCheck(ParamMetricSharedPtr metric,
-                        const ParamFlowRuleSharedPtr rule, int count,
+  static bool PassCheck(ParamMetricSharedPtr& metric,
+                        const ParamFlowRuleSharedPtr& rule, int count,
                         const std::vector<absl::any>& params);
 
  private:
-  static bool PassLocalCheck(ParamMetricSharedPtr metric,
-                             const ParamFlowRuleSharedPtr rule, int count,
+  static bool PassLocalCheck(ParamMetricSharedPtr& metric,
+                             const ParamFlowRuleSharedPtr& rule, int count,
                              const std::vector<absl::any>& params);
-  static bool PassSingleValueCheck(ParamMetricSharedPtr metric,
-                                   const ParamFlowRuleSharedPtr rule, int count,
-                                   const absl::any& param);
+  static bool PassSingleValueCheck(ParamMetricSharedPtr& metric,
+                                   const ParamFlowRuleSharedPtr& rule,
+                                   int count, const absl::any& param);
 };
 
 }  // namespace Param

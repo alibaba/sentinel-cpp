@@ -27,8 +27,7 @@ class ParamFlowSlot : public RuleCheckerSlot {
   const std::string& Name() const override;
   void initHotParamMetricsFor(const std::string& resource,
                               const Param::ParamFlowRuleSharedPtr& rule);
-  TokenResultSharedPtr CheckFlow(const ResourceWrapperSharedPtr& resource,
-                                 int count,
+  TokenResultSharedPtr CheckFlow(const std::string& resource, int count,
                                  const std::vector<absl::any>& params);
 
   friend class Param::ParamFlowRuleManager;

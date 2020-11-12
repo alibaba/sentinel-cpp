@@ -1,4 +1,5 @@
 #include "sentinel-core/param/param_flow_slot.h"
+#include <iostream>
 
 namespace Sentinel {
 namespace Slot {
@@ -15,7 +16,7 @@ TokenResultSharedPtr ParamFlowSlot::Entry(
   TokenResultSharedPtr res = TokenResult::Ok();
   auto rule_map_ = Param::ParamFlowRuleManager::GetInstance().GetRuleMap();
   if (rule_map_ && rule_map_->size() > 0) {
-    res = CheckFlow(resource, count, params);
+    res = CheckFlow(resource->name(), count, params);
   }
   return res;
 }
@@ -26,9 +27,14 @@ void ParamFlowSlot::initHotParamMetricsFor(
     const std::string& resource, const Param::ParamFlowRuleSharedPtr& rule) {
   MetricMap::const_accessor cac;
   // Do insert if this key does not exist, do nothing otherwise.
-  metric_map_->insert(
-      cac, std::make_pair<>(resource, std::make_shared<Param::ParamMetric>()));
-  cac->second->initializeForRule(rule);
+  if (!metric_map_->find(cac, resource)) {
+    metric_map_->insert(
+        cac,
+        std::make_pair<>(resource, std::make_shared<Param::ParamMetric>()));
+  }
+  if (cac->second) {
+    cac->second->initializeForRule(rule);
+  }
 }
 
 Param::ParamMetricSharedPtr ParamFlowSlot::GetParamMetric(
@@ -45,11 +51,10 @@ Param::ParamMetricSharedPtr ParamFlowSlot::GetParamMetric(
 }
 
 TokenResultSharedPtr ParamFlowSlot::CheckFlow(
-    const ResourceWrapperSharedPtr& resource, int count,
+    const std::string& resource, int count,
     const std::vector<absl::any>& params) {
   Param::ParamFlowRulePtrListSharedPtr rule_list =
-      Param::ParamFlowRuleManager::GetInstance().GetRuleOfResource(
-          resource->name());
+      Param::ParamFlowRuleManager::GetInstance().GetRuleOfResource(resource);
   if (rule_list) {
     for (const Param::ParamFlowRuleSharedPtr& rule : *rule_list) {
       if (!rule) {
@@ -57,13 +62,12 @@ TokenResultSharedPtr ParamFlowSlot::CheckFlow(
         continue;
       }
 
-      initHotParamMetricsFor(resource->name(), rule);
-      auto metric = GetParamMetric(resource->name());
+      initHotParamMetricsFor(resource, rule);
+      auto metric = GetParamMetric(resource);
 
       if (!checker_.PassCheck(metric, rule, count, params)) {
         metric->AddBlock(count, params);
         return TokenResult::Blocked("param exception");
-        // std::string("Parameter flow control on rule: ") + rule->ToString());
       }
     }
   }

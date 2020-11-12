@@ -11,7 +11,7 @@ bool EntryResult::Exit(int count) {
   if (entry_ == nullptr) {
     return false;
   }
-  const std::vector<absl::any>& params = entry_->params();
+  const std::vector<absl::any> params = entry_->params();
   if (!entry_->exited()) {
     Slot::SlotChainSharedPtr chain = Slot::GetGlobalSlotChain();
     if (chain != nullptr) {

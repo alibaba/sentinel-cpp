@@ -16,7 +16,7 @@ genrule(
 
          if [[ $$(echo `uname` | grep 'Dar') != "" ]]; then
           files=build/*/*.dylib;
-          else files=build/*/*.so;
+          else files=build/*/*.so*;
          fi
          echo cp $$files $$DEST_DIR
          cp $$files $$DEST_DIR
@@ -26,6 +26,9 @@ genrule(
             "libtbb.so",
             "libtbbmalloc.so",
             "libtbbmalloc_proxy.so",
+            "libtbb.so.2",
+            "libtbbmalloc.so.2",
+            "libtbbmalloc_proxy.so.2",
          ],
 )
 
@@ -39,6 +42,9 @@ cc_library(
       "libtbb.so",
       "libtbbmalloc.so",
       "libtbbmalloc_proxy.so",
+      "libtbb.so.2",
+      "libtbbmalloc.so.2",
+      "libtbbmalloc_proxy.so.2",
     ],
     includes = ["include"],
     visibility = ["//visibility:public"],

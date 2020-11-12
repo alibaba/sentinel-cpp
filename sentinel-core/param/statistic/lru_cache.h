@@ -27,7 +27,7 @@
 namespace Sentinel {
 namespace Param {
 
-using AtomicIntSharedPtr = std::shared_ptr<std::atomic<int>>;
+using AtomicIntSharedPtr = std::shared_ptr<std::atomic<int32_t>>;
 
 /**
  * ThreadSafeLRUCache is a thread-safe hashtable with a limited size. When
@@ -89,8 +89,9 @@ class ThreadSafeLRUCache {
   struct HashMapValue {
     HashMapValue() : m_listNode(nullptr) {}
 
-    HashMapValue(int value, std::shared_ptr<ListNode> node) : m_listNode(node) {
-      m_value = std::make_shared<std::atomic<int>>(value);
+    HashMapValue(int32_t value, std::shared_ptr<ListNode> node)
+        : m_listNode(node) {
+      m_value = std::make_shared<std::atomic<int32_t>>(value);
     }
 
     AtomicIntSharedPtr m_value;

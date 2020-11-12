@@ -35,7 +35,7 @@ class Entry {
   void set_error(const std::string& message) { error_ = message; }
   void set_cur_node(const Stat::NodeSharedPtr& node) { cur_node_ = node; }
   void set_origin_node(const Stat::NodeSharedPtr& node) { origin_node_ = node; }
-  void set_params(const std::vector<absl::any>& params) { params_ = params; }
+  void set_params(const std::vector<absl::any>&& params) { params_ = params; }
 
  private:
   const ResourceWrapperSharedPtr resource_;

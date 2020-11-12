@@ -16,7 +16,9 @@
 namespace Sentinel {
 namespace Param {
 
-using HotItemsMap = tbb::concurrent_hash_map<absl::any, int, AnyCmp>;
+using HotItemsMap = std::unordered_map<
+    absl::any, int32_t, std::function<size_t(const absl::any& any)>,
+    std::function<bool(const absl::any& any1, const absl::any& any2)>>;
 using HotItemsMapSharedPtr = std::shared_ptr<HotItemsMap>;
 
 // Deep copy safe
@@ -24,10 +26,10 @@ class ParamFlowRule : public Rule {
  public:
   class ParamLeapArrayKey {
    public:
-    int param_idx_ = -1;
-    int interval_in_ms_ = 1000;
-    int sample_count_ = 1000;
-    int cache_size_ = DEFAULT_CACHE_SIZE;
+    int32_t param_idx_ = -1;
+    int32_t interval_in_ms_ = 1000;
+    int32_t sample_count_ = 1;
+    int32_t cache_size_ = DEFAULT_CACHE_SIZE;
   };
   using ParamLeapArrayKeySharedPtr = std::shared_ptr<ParamLeapArrayKey>;
 
@@ -61,16 +63,16 @@ class ParamFlowRule : public Rule {
   explicit ParamFlowRule(const std::string& resource)
       : resource_(resource),
         metric_key_(std::make_shared<ParamLeapArrayKey>()),
-        hot_items_(std::make_shared<HotItemsMap>()) {}
+        hot_items_(std::make_shared<HotItemsMap>(1, PubAnyHash, PubAnyEq)) {}
   virtual ~ParamFlowRule() = default;
 
   const std::string& resource() const noexcept { return resource_; }
   ParamFlowMetricType metric_type() const noexcept { return metric_type_; }
   double threshold() const noexcept { return threshold_; }
-  int param_idx() const noexcept { return param_idx_; }
-  int cache_size() const noexcept { return cache_size_; }
-  int interval_in_ms() const noexcept { return interval_in_ms_; }
-  int sample_count() const noexcept { return sample_count_; }
+  int32_t param_idx() const noexcept { return param_idx_; }
+  int32_t cache_size() const noexcept { return cache_size_; }
+  int32_t interval_in_ms() const noexcept { return interval_in_ms_; }
+  int32_t sample_count() const noexcept { return sample_count_; }
   bool cluster_mode() const noexcept { return cluster_mode_; }
   HotItemsMapSharedPtr hot_items() const noexcept { return hot_items_; }
   ParamLeapArrayKeySharedPtr metric_key() const noexcept { return metric_key_; }
@@ -86,19 +88,19 @@ class ParamFlowRule : public Rule {
   void set_threshold(double threshold) noexcept {
     this->threshold_ = threshold;
   }
-  void set_param_idx(int index) noexcept {
+  void set_param_idx(int32_t index) noexcept {
     this->param_idx_ = index;
     this->metric_key_->param_idx_ = index;
   }
-  void set_cache_size(int cache_size) noexcept {
+  void set_cache_size(int32_t cache_size) noexcept {
     this->cache_size_ = cache_size;
     this->metric_key_->cache_size_ = cache_size;
   }
-  void set_sample_count(int sample_count) noexcept {
+  void set_sample_count(int32_t sample_count) noexcept {
     this->sample_count_ = sample_count;
     this->metric_key_->sample_count_ = sample_count;
   }
-  void set_interval_in_ms(int interval) noexcept {
+  void set_interval_in_ms(int32_t interval) noexcept {
     this->interval_in_ms_ = interval;
     this->metric_key_->interval_in_ms_ = interval;
   }
@@ -112,18 +114,18 @@ class ParamFlowRule : public Rule {
   void FillExceptionFlowItems() const;
   bool operator==(const ParamFlowRule& rule) const;
   std::string ToString() const;
-  const static int DEFAULT_CACHE_SIZE = 10;
+  const static int32_t DEFAULT_CACHE_SIZE = 200;
 
  private:
   ParamLeapArrayKeySharedPtr metric_key_;
 
   std::string resource_;  // resource
-  int param_idx_ = -1;
+  int32_t param_idx_ = -1;
   ParamFlowMetricType metric_type_{ParamFlowMetricType::kQps};  // grade
   double threshold_ = 0;                                        // threshold
-  int interval_in_ms_ = 1000;
-  int sample_count_ = 1;
-  int cache_size_ = DEFAULT_CACHE_SIZE;
+  int32_t interval_in_ms_ = 1000;
+  int32_t sample_count_ = 1;
+  int32_t cache_size_ = DEFAULT_CACHE_SIZE;
 
   mutable ParamFlowItemList param_flow_item_list_;
   mutable HotItemsMapSharedPtr hot_items_;
@@ -135,8 +137,6 @@ using ParamFlowRuleSharedPtr = std::shared_ptr<ParamFlowRule>;
 using ParamFlowRuleList = std::vector<ParamFlowRule>;
 using ParamFlowRulePtrList = std::vector<ParamFlowRuleSharedPtr>;
 using ParamFlowRulePtrListSharedPtr = std::shared_ptr<ParamFlowRulePtrList>;
-
-struct ParamFlowRuleSharedPtrHashEq;
 
 }  // namespace Param
 }  // namespace Sentinel

@@ -22,7 +22,7 @@ class ParamLeapArray : public Stat::LeapArray<ParamBucket> {
 
  private:
   int cache_size_;
-  const static int DEFAULT_CACHE_SIZE = 10;
+  const static int DEFAULT_CACHE_SIZE = 200;
 };
 
 using ParamLeapArraySharedPtr = std::shared_ptr<ParamLeapArray>;
