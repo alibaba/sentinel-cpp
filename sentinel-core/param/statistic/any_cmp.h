@@ -10,7 +10,7 @@ extern const std::string INT_TYPE_STR;
 extern const std::string INT64_TYPE_STR;
 extern const std::string STRING_TYPE_STR;
 
-bool IsInt(const absl::any& a);
+bool IsInt32(const absl::any& a);
 bool IsInt64(const absl::any& a);
 bool IsString(const absl::any& a);
 
@@ -19,15 +19,15 @@ bool IsString(const absl::any& a);
 
 namespace std {
 
-using Sentinel::Param::IsInt;
+using Sentinel::Param::IsInt32;
 using Sentinel::Param::IsInt64;
 using Sentinel::Param::IsString;
 
 template <>
 struct hash<absl::any> {
   size_t operator()(const absl::any& any) const {
-    if (IsInt(any)) {
-      return 31 * absl::any_cast<int>(any);
+    if (IsInt32(any)) {
+      return 31 * absl::any_cast<int32_t>(any);
     } else if (IsInt64(any)) {
       return 31 * absl::any_cast<int64_t>(any);
     } else if (IsString(any)) {
@@ -40,7 +40,7 @@ struct hash<absl::any> {
 }  // namespace std
 
 namespace absl {
-using Sentinel::Param::IsInt;
+using Sentinel::Param::IsInt32;
 using Sentinel::Param::IsInt64;
 using Sentinel::Param::IsString;
 bool operator==(const absl::any& any1, const absl::any& any2);

@@ -11,14 +11,16 @@ bool ParamFlowItem::operator==(const ParamFlowItem& item) const noexcept {
 
 std::string ParamFlowItem::ToString() const {
   std::string typeName;
-  if (IsInt(param_value_) || IsInt64(param_value_)) {
-    typeName = "int";
+  if (IsInt32(param_value_)) {
+    typeName = "int32";
+  } else if (IsInt64(param_value_)) {
+    typeName = "int64";
   } else if (IsString(param_value_)) {
     typeName = "String";
   } else {
     typeName = "unknown";
   }
-  return absl::StrFormat("ParamFlowItem{threshold=%d, type=%s}", threshold_,
+  return absl::StrFormat("ParamFlowItem{threshold=%.2lf, type=%s}", threshold_,
                          typeName);
 }
 

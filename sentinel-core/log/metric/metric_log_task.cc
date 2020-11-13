@@ -40,7 +40,7 @@ void MetricLogTask::AggregateMetrics(
 }
 
 void MetricLogTask::RunLogTask() {
-  while (stopped_.load()) {
+  while (!stopped_.load()) {
     std::map<int64_t, std::vector<Stat::MetricItemSharedPtr>> map;
     const auto resource_node_map =
         Stat::ResourceNodeStorage::GetInstance().GetNodeMap();
