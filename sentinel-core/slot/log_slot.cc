@@ -15,7 +15,9 @@ LogSlot::LogSlot() {
 
 TokenResultSharedPtr LogSlot::Entry(const EntrySharedPtr& entry,
                                     const ResourceWrapperSharedPtr& resource,
-                                    /*const*/ Stat::NodeSharedPtr&, int, int) {
+                                    /*const*/ Stat::NodeSharedPtr& node,
+                                    int count, int flag,
+                                    const std::vector<absl::any>& params) {
   if (entry == nullptr || entry->context() == nullptr) {
     return TokenResult::Ok();
   }
@@ -30,8 +32,8 @@ TokenResultSharedPtr LogSlot::Entry(const EntrySharedPtr& entry,
   return prev_result;
 }
 
-void LogSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&,
-                   int) {
+void LogSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&, int,
+                   const std::vector<absl::any>& params) {
   // Do nothing
 }
 

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "sentinel-core/slot/base/rule_checker_slot.h"
-#include "sentinel-core/system/system_rule.h"
 #include "sentinel-core/system/system_rule_manager.h"
-#include "sentinel-core/system/system_status_listener.h"
 
 namespace Sentinel {
 namespace Slot {
@@ -17,10 +15,11 @@ class SystemSlot : public RuleCheckerSlot {
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodeSharedPtr& node, int count,
-                             int flag) override;
+                             Stat::NodeSharedPtr& node, int count, int flag,
+                             const std::vector<absl::any>& params) override;
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count) override;
+            const ResourceWrapperSharedPtr& resource, int count,
+            const std::vector<absl::any>& params) override;
   const std::string& Name() const override;
   TokenResultSharedPtr CheckSystem(
       const System::SystemRuleMapSharedPtr sysRuleMap,

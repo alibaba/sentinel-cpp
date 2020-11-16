@@ -16,12 +16,8 @@ cc_library(
   deps = [
      "@com_google_absl//absl/strings",
      "@com_google_absl//absl/time",
-     "//sentinel-core/utils:utils_lib",
-     "//sentinel-core/utils:file_utils_lib",
      "//sentinel-core/statistic/base:metric_item_lib",
      "//sentinel-core/config:local_config_lib",
-     "//sentinel-core/log:logger_lib",
-     "//sentinel-core/log:log_base_impl_lib",
   ],
 )
 
@@ -35,8 +31,6 @@ cc_library(
   deps = [
     ":metric_log_lib",
     "//sentinel-core/init:init_target_interface",
-    "//sentinel-core/statistic/base:metric_item_lib",
-    "//sentinel-core/config:local_config_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )

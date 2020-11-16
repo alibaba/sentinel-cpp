@@ -4,7 +4,6 @@
 #include "gtest/gtest.h"
 
 #include "sentinel-core/system/system_rule_manager.h"
-#include "sentinel-core/system/system_slot_mock.h"
 #include "sentinel-core/system/system_status_listener.h"
 
 namespace Sentinel {

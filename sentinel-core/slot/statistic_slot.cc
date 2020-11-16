@@ -36,7 +36,8 @@ void StatisticSlot::RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
 
 TokenResultSharedPtr StatisticSlot::OnPass(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    const Stat::NodeSharedPtr& node, int count, int) {
+    const Stat::NodeSharedPtr& node, int count, int flag,
+    const std::vector<absl::any>& params) {
   this->RecordPassFor(node, count);
   if (resource->entry_type() == EntryType::IN) {
     this->RecordPassFor(Stat::ResourceNodeStorage::GetInstance().GetEntryNode(),
@@ -45,6 +46,11 @@ TokenResultSharedPtr StatisticSlot::OnPass(
   if (entry != nullptr) {
     this->RecordPassFor(entry->origin_node(), count);
   }
+  auto metric = ParamFlowSlot::GetParamMetric(resource->name());
+  if (metric) {
+    metric->AddPass(count, params);
+    metric->AddThreadCount(params);
+  }
 
   return TokenResult::Ok();
 }
@@ -52,7 +58,7 @@ TokenResultSharedPtr StatisticSlot::OnPass(
 TokenResultSharedPtr StatisticSlot::OnBlock(
     const TokenResultSharedPtr& prev_result, const EntrySharedPtr& entry,
     const ResourceWrapperSharedPtr& resource, const Stat::NodeSharedPtr& node,
-    int count, int) {
+    int count, int flag, const std::vector<absl::any>& params) {
   if (entry == nullptr) {
     return prev_result;
   }
@@ -71,25 +77,27 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
 
 TokenResultSharedPtr StatisticSlot::Entry(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    /*const*/ Stat::NodeSharedPtr& node, int count, int flag) {
+    /*const*/ Stat::NodeSharedPtr& node, int count, int flag,
+    const std::vector<absl::any>& params) {
   if (entry == nullptr || entry->context() == nullptr) {
-    return OnPass(entry, resource, node, count, flag);
+    return OnPass(entry, resource, node, count, flag, params);
   }
   TokenResultSharedPtr prev_result = entry->context()->last_token_result();
   if (prev_result == nullptr) {
-    return OnPass(entry, resource, node, count, flag);
+    return OnPass(entry, resource, node, count, flag, params);
   }
   switch (prev_result->status()) {
     case TokenStatus::RESULT_STATUS_BLOCKED:
-      return OnBlock(prev_result, entry, resource, node, count, flag);
+      return OnBlock(prev_result, entry, resource, node, count, flag, params);
     case TokenStatus::RESULT_STATUS_OK:
     default:
-      return OnPass(entry, resource, node, count, flag);
+      return OnPass(entry, resource, node, count, flag, params);
   }
 }
 
 void StatisticSlot::Exit(const EntrySharedPtr& entry,
-                         const ResourceWrapperSharedPtr& resource, int count) {
+                         const ResourceWrapperSharedPtr& resource, int count,
+                         const std::vector<absl::any>& params) {
   if (entry == nullptr) {
     return;
   }
@@ -111,6 +119,10 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry,
   if (resource->entry_type() == EntryType::IN) {
     this->RecordCompleteFor(
         Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt, count);
+  }
+  auto metric = ParamFlowSlot::GetParamMetric(resource->name());
+  if (metric) {
+    metric->DecreaseThreadCount(params);
   }
 }
 

@@ -13,7 +13,8 @@ const std::string& SystemSlot::Name() const { return name_; }
 TokenResultSharedPtr SystemSlot::Entry(const EntrySharedPtr& entry,
                                        const ResourceWrapperSharedPtr& resource,
                                        Stat::NodeSharedPtr& node, int count,
-                                       int flag) {
+                                       int flag,
+                                       const std::vector<absl::any>& params) {
   // Fetch global statistic node for inbound traffic
   Stat::NodeSharedPtr entryNode =
       Stat::ResourceNodeStorage::GetInstance().GetEntryNode();
@@ -92,7 +93,7 @@ bool SystemSlot::CheckBbr(double concurrency, Stat::NodeSharedPtr& node) const {
 }
 
 void SystemSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&,
-                      int) {
+                      int, const std::vector<absl::any>& params) {
   // Do nothing
 }
 

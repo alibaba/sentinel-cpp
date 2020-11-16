@@ -22,7 +22,6 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":node_interface",
-    "//sentinel-core/utils:utils_lib",
     "//sentinel-core/statistic/base:sliding_window_metric_lib",
     "//sentinel-core/statistic/base:stat_config_lib",
   ]
@@ -49,7 +48,6 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/log:logger_lib",
     "//sentinel-core/statistic/node:cluster_node_lib",
     "@com_google_absl//absl/container:flat_hash_map",
     "@com_google_absl//absl/synchronization",

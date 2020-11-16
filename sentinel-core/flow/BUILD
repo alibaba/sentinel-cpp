@@ -20,7 +20,6 @@ cc_library(
   deps = [
     "@com_google_absl//absl/strings:str_format",
     ":flow_rule_constants_lib",
-    "//sentinel-core/common:constants",
     "//sentinel-core/common:rule_lib",
   ]
 )
@@ -39,8 +38,6 @@ cc_library(
     ":default_traffic_shaping_calculator_lib",
     ":default_traffic_shaping_checker_lib",
     "//sentinel-core/property:property_listener_interface",
-    "//sentinel-core/log:logger_lib",
-    "//sentinel-core/property:sentinel_property_interface",
     "//sentinel-core/property:dynamic_sentinel_property_lib",
     "@com_google_absl//absl/synchronization",
   ]
@@ -56,8 +53,6 @@ cc_library(
   deps = [
     ":flow_rule_manager_lib",
     "//sentinel-core/common:entry_lib",
-    "//sentinel-core/slot/base:token_result_lib",
-    "//sentinel-core/statistic/node:node_interface",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
@@ -70,7 +65,6 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    ":flow_rule_manager_lib",
     ":flow_rule_checker_lib",
     "//sentinel-core/slot/base:rule_checker_slot_interface",
   ]

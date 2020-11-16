@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "sentinel-core/slot/base/slot.h"
-#include "sentinel-core/slot/base/slot_base.h"
 
 namespace Sentinel {
 namespace Slot {

@@ -21,7 +21,6 @@ cc_library(
     ":config_constants",
     "//sentinel-core/init:init_target_interface",
     "//sentinel-core/log:logger_lib",
-    "//sentinel-core/utils:utils_lib",
     "@com_google_absl//absl/strings",
   ]
 )

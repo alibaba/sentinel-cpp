@@ -2,7 +2,6 @@
 
 namespace Sentinel {
 namespace Slot {
-
 MockRuleCheckerSlot::MockRuleCheckerSlot() = default;
 MockRuleCheckerSlot::~MockRuleCheckerSlot() = default;
 

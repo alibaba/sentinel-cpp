@@ -24,7 +24,6 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     "//sentinel-core/slot/base:stats_slot_interface",
-    "//sentinel-core/statistic/node:cluster_node_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
   ]
 )
@@ -37,11 +36,9 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/common:constants",
-    "//sentinel-core/common:entry_lib",
-    "//sentinel-core/slot/base:stats_slot_interface",
-    "//sentinel-core/utils:utils_lib",
+    "//sentinel-core/param:param_flow_slot_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
+    "//sentinel-core/slot/base:stats_slot_interface",
   ]
 )
 

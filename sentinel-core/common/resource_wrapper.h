@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 
+#include "absl/types/any.h"
 #include "sentinel-core/common/entry_type.h"
 
 namespace Sentinel {
