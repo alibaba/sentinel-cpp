@@ -16,7 +16,7 @@
 
 std::mutex mtx;
 std::atomic<bool> stop(false);
-constexpr int SECONDS = 60, THREAD_NUM = 16;
+constexpr int SECONDS = 60, THREAD_NUM = 8;
 
 std::atomic<int> pass, block, seconds(SECONDS);
 std::vector<std::atomic<int>> pPassCnt(10);
@@ -31,7 +31,6 @@ int64_t CurrentTimeMillis() {
 }
 void RunTask() {
   double ans = 1.001;
-  // std::this_thread::sleep_for(std::chrono::milliseconds(2));
   for (int i = 0; i < 3000; i++) {
     double index = (rand() % 5) * ((CurrentTimeMillis() / 1000) % 3);
     ans = pow(ans, index);
@@ -41,8 +40,8 @@ void RunTask() {
 void DoEntry(const char* resource) {
   int cnt = 0;
   while (!stop.load()) {
-    int randParam = (rand() + (CurrentTimeMillis() / 10)) % 10;
-    randParam = ((cnt++)) % 300;
+    int32_t randParam = (rand() + (CurrentTimeMillis() / 10)) % 10;
+    randParam = ((cnt++)) % 50;
     auto r = Sentinel::SphU::Entry(resource, Sentinel::EntryType::IN, 1, 0,
                                    randParam, std::string("example"));
     if (r->IsBlocked()) {
@@ -81,24 +80,7 @@ void TimerTask() {
     std::cerr << "[" << seconds.load() << "] total=" << oneSecondTotal
               << ", pass=" << oneSecondPass << ", block=" << oneSecondBlock
               << std::endl;
-    // std::cout << "no," << cnt++ << "," << oneSecondPass << std::endl;
-    // for (int i = 0; i < 10; i++) {
-    //   int globalPPass = pPassCnt[i].load();
-    //   int globalPBlock = pBlockCnt[i].load();
-    //   int globalPTotal = globalPBlock + globalPPass;
 
-    //   int oneSecPPass = globalPPass - oldPPass[i];
-    //   int oneSecPBlock = globalPBlock - oldPBlock[i];
-    //   int oneSecPTotal = oneSecPPass + oneSecPBlock;
-
-    //   oldPPass[i] = globalPPass;
-    //   oldPBlock[i] = globalPBlock;
-    //   oldPTotal[i] = globalPTotal;
-    //   std::cout << "[" << i << "]" << oneSecPTotal << "/" << oneSecPPass <<
-    //   "/"
-    //             << oneSecPBlock << "; ";
-    // }
-    // std::cout << std::endl;
     int leftSec = seconds.fetch_sub(1);
     if (leftSec <= 0) {
       stop.store(true);
@@ -119,7 +101,7 @@ int main() {
   Sentinel::Log::MetricLogTask metric_log_task;
   metric_log_task.Initialize();
 
-  std::string myResource("tengjiao.jy");
+  std::string myResource("some_param_test");
   Sentinel::Param::ParamFlowRule rule0, rule1, rule12, rule11;
   rule0.set_resource(myResource);
   rule0.set_metric_type(Sentinel::Param::ParamFlowMetricType::kQps);
@@ -134,7 +116,8 @@ int main() {
   rule1.set_param_idx(1);
   rule1.set_interval_in_ms(1000);
   Sentinel::Param::ParamFlowItem item0(std::string("nonexisting-str"),
-                                       Sentinel::Param::kString, 100);
+                                       Sentinel::Param::ParamItemType::kString,
+                                       100);
   rule1.set_param_flow_item_list({item0});
 
   rule12.set_resource("non-existing-resource");  // should not work

@@ -18,10 +18,10 @@ bool IsValidRule(const ParamFlowRule& rule) {
 
   // Check each item
   for (const auto& item : rule.specific_item_list()) {
-    if (item.threshold() < 0 || !item.param_value().has_value() ||
-        (std::string(kString).compare(item.param_type()) != 0 &&
-         std::string(kInt32).compare(item.param_type()) != 0 &&
-         std::string(kInt64).compare(item.param_type()) != 0)) {
+    if (item.threshold() < 0 || !item.param_value().has_value()) {
+      return false;
+    }
+    if (item.param_type() > ParamItemType::kNum) {
       return false;
     }
   }

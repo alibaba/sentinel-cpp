@@ -16,7 +16,7 @@ static void BM_StringCreation(benchmark::State& state) {
 // BENCHMARK(BM_StringCreation);
 
 static void ParamRun(benchmark::State& state) {
-  std::string myResource("tengjiao.jy");
+  std::string myResource("some_param_test");
   Sentinel::Param::ParamFlowRule rule0, rule1, rule12;
   rule0.set_resource(myResource);
   rule0.set_metric_type(Sentinel::Param::ParamFlowMetricType::kQps);
@@ -31,7 +31,8 @@ static void ParamRun(benchmark::State& state) {
   rule1.set_param_idx(1);
   rule1.set_interval_in_ms(1000);
   Sentinel::Param::ParamFlowItem item0(std::string("nonexisting-str"),
-                                       Sentinel::Param::kString, 100);
+                                       Sentinel::Param::ParamItemType::kString,
+                                       100);
   rule1.set_param_flow_item_list({item0});
 
   rule12.set_resource("non-existing-resource");  // should not work
@@ -52,7 +53,7 @@ static void ParamRun(benchmark::State& state) {
 }
 
 static void ParamNotRun(benchmark::State& state) {
-  std::string myResource("tengjiao.jy");
+  std::string myResource("some_param_test");
   Sentinel::Log::Logger::InitDefaultLogger();
   Sentinel::Log::MetricLogTask metric_log_task;
   metric_log_task.Initialize();

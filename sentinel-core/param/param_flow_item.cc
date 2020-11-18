@@ -12,9 +12,9 @@ bool ParamFlowItem::operator==(const ParamFlowItem& item) const noexcept {
 std::string ParamFlowItem::ToString() const {
   std::string typeName;
   if (IsInt32(param_value_)) {
-    typeName = "int32";
+    typeName = "int32_t";
   } else if (IsInt64(param_value_)) {
-    typeName = "int64";
+    typeName = "int64_t";
   } else if (IsString(param_value_)) {
     typeName = "String";
   } else {

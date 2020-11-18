@@ -34,9 +34,9 @@ bool ParamFlowRule::operator==(const ParamFlowRule& rule) const {
 
 std::string ParamFlowRule::ToString() const {
   return absl::StrFormat(
-      "ParamFlowRule{resource=%s, index=%d, metric_type=%d, "
+      "ParamFlowRule{resource=%s, param_idx=%d, metric_type=%d, "
       "threshold=%.2f, interval_in_ms=%d, sample_count=%d, "
-      "cache_size=%d, cluster_mode=%d, exception_list=%s}",
+      "cache_size=%d, cluster_mode=%d, specific_item_list=%s}",
       resource_, param_idx_, static_cast<int32_t>(metric_type_), threshold_,
       interval_in_ms_, sample_count_, cache_size_, cluster_mode_,
       specific_item_list_.ToString());
