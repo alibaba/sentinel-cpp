@@ -16,7 +16,7 @@
 
 std::mutex mtx;
 std::atomic<bool> stop(false);
-constexpr int SECONDS = 3, THREAD_NUM = 20;
+constexpr int SECONDS = 60, THREAD_NUM = 16;
 
 std::atomic<int> pass, block, seconds(SECONDS);
 std::vector<std::atomic<int>> pPassCnt(10);

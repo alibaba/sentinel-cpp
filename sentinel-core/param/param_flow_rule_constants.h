@@ -30,9 +30,9 @@ enum class ParamItemType {
   kNum
 };
 
-static constexpr char* kString = "String";
-static constexpr char* kInt32 = "int";
-static constexpr char* kInt64 = "long";
+static constexpr const char* kString = "String";
+static constexpr const char* kInt32 = "int";
+static constexpr const char* kInt64 = "long";
 
 }  // namespace Param
 }  // namespace Sentinel

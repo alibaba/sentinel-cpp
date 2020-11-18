@@ -5,11 +5,12 @@ namespace Sentinel {
 namespace Param {
 
 void ParamFlowRule::FillExceptionFlowItems() const {
-  if (param_flow_item_list_.size() == 0) {
+  if (specific_item_list_.size() == 0) {
     return;
   }
-  for (auto& item : param_flow_item_list_) {
-    hot_items_->insert(std::make_pair<>(item.param_value(), item.threshold()));
+  for (auto& item : specific_item_list_) {
+    parsed_hot_items_->insert(
+        std::make_pair<>(item.param_value(), item.threshold()));
   }
 }
 
@@ -20,11 +21,11 @@ bool ParamFlowRule::operator==(const ParamFlowRule& rule) const {
         sample_count_ == rule.sample_count() &&
         cache_size_ == rule.cache_size() &&
         cluster_mode_ == rule.cluster_mode() &&
-        param_flow_item_list_.size() == rule.param_flow_item_list_.size())) {
+        specific_item_list_.size() == rule.specific_item_list_.size())) {
     return false;
   }
-  for (int i = 0; i < param_flow_item_list_.size(); i++) {
-    if (!(rule.param_flow_item_list_[i] == param_flow_item_list_[i])) {
+  for (int i = 0; i < specific_item_list_.size(); i++) {
+    if (!(rule.specific_item_list_[i] == specific_item_list_[i])) {
       return false;
     }
   }
@@ -38,7 +39,7 @@ std::string ParamFlowRule::ToString() const {
       "cache_size=%d, cluster_mode=%d, exception_list=%s}",
       resource_, param_idx_, static_cast<int32_t>(metric_type_), threshold_,
       interval_in_ms_, sample_count_, cache_size_, cluster_mode_,
-      param_flow_item_list_.ToString());
+      specific_item_list_.ToString());
 }
 
 }  // namespace Param

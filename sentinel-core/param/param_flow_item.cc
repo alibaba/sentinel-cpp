@@ -45,12 +45,12 @@ bool ParamFlowItemList::operator==(const ParamFlowItemList& list) const
 }
 
 std::string ParamFlowItemList::ToString() const {
-  std::string str("<");
+  std::string str("[");
   for (const auto& item : *this) {
     str += item.ToString();
     str += ",";
   }
-  str += ">";
+  str += "]";
   return str;
 }
 

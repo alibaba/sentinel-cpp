@@ -26,7 +26,7 @@ class ParamFlowRule : public Rule {
   explicit ParamFlowRule(const std::string& resource)
       : resource_(resource),
         metric_key_(std::make_shared<ParamLeapArrayKey>()),
-        hot_items_(std::make_shared<HotItemsMap>(1)) {}
+        parsed_hot_items_(std::make_shared<HotItemsMap>(1)) {}
   virtual ~ParamFlowRule() = default;
 
   const std::string& resource() const noexcept { return resource_; }
@@ -37,10 +37,12 @@ class ParamFlowRule : public Rule {
   int32_t interval_in_ms() const noexcept { return interval_in_ms_; }
   int32_t sample_count() const noexcept { return sample_count_; }
   bool cluster_mode() const noexcept { return cluster_mode_; }
-  HotItemsMapSharedPtr hot_items() const noexcept { return hot_items_; }
-  ParamLeapArrayKeySharedPtr metric_key() const noexcept { return metric_key_; }
+  ParamFlowItemList specific_item_list() const { return specific_item_list_; }
 
-  ParamFlowItemList param_item_list() const { return param_flow_item_list_; }
+  HotItemsMapSharedPtr parsed_hot_items() const noexcept {
+    return parsed_hot_items_;
+  }
+  ParamLeapArrayKeySharedPtr metric_key() const noexcept { return metric_key_; }
 
   void set_resource(const std::string& resource) noexcept {
     this->resource_ = resource;
@@ -71,7 +73,7 @@ class ParamFlowRule : public Rule {
     this->cluster_mode_ = cluster_mode;
   }
   void set_param_flow_item_list(ParamFlowItemList&& list) noexcept {
-    this->param_flow_item_list_ = std::move(list);
+    this->specific_item_list_ = std::move(list);
   }
 
   void FillExceptionFlowItems() const;
@@ -80,8 +82,6 @@ class ParamFlowRule : public Rule {
   const static int32_t DEFAULT_CACHE_SIZE = 200;
 
  private:
-  ParamLeapArrayKeySharedPtr metric_key_;
-
   std::string resource_;  // resource
   int32_t param_idx_ = -1;
   ParamFlowMetricType metric_type_{ParamFlowMetricType::kQps};  // grade
@@ -89,11 +89,12 @@ class ParamFlowRule : public Rule {
   int32_t interval_in_ms_ = 1000;
   int32_t sample_count_ = 1;
   int32_t cache_size_ = DEFAULT_CACHE_SIZE;
+  mutable ParamFlowItemList specific_item_list_;
 
-  mutable ParamFlowItemList param_flow_item_list_;
-  mutable HotItemsMapSharedPtr hot_items_;
+  bool cluster_mode_ = false;  // reserved field
 
-  bool cluster_mode_ = false;  // clusterMode
+  ParamLeapArrayKeySharedPtr metric_key_;  // internal key for metric storage
+  mutable HotItemsMapSharedPtr parsed_hot_items_;  // parsed param items
 };
 
 using ParamFlowRuleSharedPtr = std::shared_ptr<ParamFlowRule>;

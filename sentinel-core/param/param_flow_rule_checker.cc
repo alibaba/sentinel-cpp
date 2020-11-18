@@ -25,7 +25,7 @@ bool ParamFlowChecker::PassSingleValueCheck(ParamMetricSharedPtr& metric,
                                             const ParamFlowRuleSharedPtr& rule,
                                             int count, const absl::any& param) {
   bool result = true;
-  auto item_map = rule->hot_items();
+  auto item_map = rule->parsed_hot_items();
   if (rule->metric_type() == ParamFlowMetricType::kQps) {
     int threshold = static_cast<int>(rule->threshold());
     int curCount = metric->PassInterval(rule->metric_key(), param);
