@@ -2,10 +2,10 @@
 
 #include <chrono>
 #include <memory>
+#include <vector>
 
 #include "sentinel-core/common/entry_context.h"
 #include "sentinel-core/common/resource_wrapper.h"
-#include "sentinel-core/statistic/node/node.h"
 #include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
@@ -29,6 +29,7 @@ class Entry {
   Stat::NodeSharedPtr cur_node() const { return cur_node_; }
   Stat::NodeSharedPtr origin_node() const { return origin_node_; }
   int64_t rt() const { return rt_; }
+  std::vector<absl::any> params() const { return params_; }
   bool exited() const { return exited_; }
   std::string error() const { return error_; }
   bool HasError() const { return !error_.empty(); };
@@ -39,6 +40,7 @@ class Entry {
   void set_block_error(const std::string& message) { block_error_ = message; }
   void set_cur_node(const Stat::NodeSharedPtr& node) { cur_node_ = node; }
   void set_origin_node(const Stat::NodeSharedPtr& node) { origin_node_ = node; }
+  void set_params(const std::vector<absl::any>&& params) { params_ = params; }
 
  private:
   const ResourceWrapperSharedPtr resource_;
@@ -51,6 +53,7 @@ class Entry {
   std::string block_error_{};
   Stat::NodeSharedPtr cur_node_;
   Stat::NodeSharedPtr origin_node_;
+  std::vector<absl::any> params_;
 };
 
 using EntrySharedPtr = std::shared_ptr<Entry>;

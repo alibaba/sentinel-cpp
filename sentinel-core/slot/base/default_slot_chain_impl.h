@@ -1,9 +1,9 @@
 #pragma once
 
+#include <assert.h>
 #include <deque>
 #include <memory>
 
-#include "sentinel-core/slot/base/slot.h"
 #include "sentinel-core/slot/base/slot_chain.h"
 #include "sentinel-core/slot/base/token_result.h"
 
@@ -20,10 +20,11 @@ class DefaultSlotChainImpl : public SlotChain {
   void AddLast(std::unique_ptr<Slot>&& slot) override;
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
-                             Stat::NodeSharedPtr& node, int count,
-                             int flag) override;
+                             Stat::NodeSharedPtr& node, int count, int flag,
+                             const std::vector<absl::any>& params) override;
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count) override;
+            const ResourceWrapperSharedPtr& resource, int count,
+            const std::vector<absl::any>& params) override;
 
  private:
   std::deque<std::unique_ptr<Slot>> slots_;

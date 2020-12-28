@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "sentinel-core/statistic/node/statistic_node.h"
-#include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
 namespace Stat {

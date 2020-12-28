@@ -1,10 +1,11 @@
 #pragma once
 
 #include <memory>
-
+#include <string>
+#include <vector>
 #include "absl/types/optional.h"
-
-#include "sentinel-core/common/entry.h"
+#include "sentinel-core/common/entry_result.h"
+#include "sentinel-core/slot/global_slot_chain.h"
 
 namespace Sentinel {
 
@@ -23,6 +24,7 @@ class EntryResult {
   bool IsBlocked() const;
   bool Exit();
   bool Exit(int count);
+  bool Exit(int count, const std::vector<absl::any>& params);
 
   void SetError(const std::string& err);
 

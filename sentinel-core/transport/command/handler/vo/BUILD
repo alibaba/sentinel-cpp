@@ -11,6 +11,5 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     "//sentinel-core/statistic/node:cluster_node_lib",
-    "//sentinel-core/utils:utils_lib",
   ]
 )

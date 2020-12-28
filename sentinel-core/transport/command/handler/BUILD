@@ -10,10 +10,7 @@ cc_library(
   ],
   copts = DEFAULT_COPTS,
   deps = [
-    "//sentinel-core/config:local_config_lib",
     "//sentinel-core/log/metric:metric_log_lib",
-    "//sentinel-core/statistic/base:metric_item_lib",
-    "//sentinel-core/utils:utils_lib",
     "//sentinel-core/transport/command:command_handler_interface",
   ]
 )
@@ -28,7 +25,6 @@ cc_library(
   deps = [
     "//third_party/nlohmann:nlohmann_json_lib",
     "//sentinel-core/statistic/node:resource_node_storage_lib",
-    "//sentinel-core/utils:utils_lib",
     "//sentinel-core/transport/command:command_handler_interface",
     "//sentinel-core/transport/command/handler/vo:statistic_node_vo_lib",
   ]

@@ -10,7 +10,7 @@ namespace Stat {
 
 Stat::ClusterNodeSharedPtr ResourceNodeStorage::GetClusterNode(
     const std::string& resource_name) const {
-  absl::ReaderMutexLock lck(&mtx_);
+  absl::ReaderMutexLock lck(&node_map_mtx_);
   auto got = node_map_.find(resource_name);
   if (got == node_map_.end()) {
     return nullptr;
@@ -22,7 +22,7 @@ Stat::ClusterNodeSharedPtr ResourceNodeStorage::GetOrCreateClusterNode(
     const std::string& resource_name) {
   auto cluster_node = GetClusterNode(resource_name);
   if (cluster_node == nullptr) {
-    absl::WriterMutexLock lck(&mtx_);
+    absl::WriterMutexLock lck(&node_map_mtx_);
     auto got = node_map_.find(resource_name);
     if (got == node_map_.end()) {
       if (node_map_.size() >= Constants::kMaxResourceSize) {
@@ -42,7 +42,7 @@ Stat::ClusterNodeSharedPtr ResourceNodeStorage::GetOrCreateClusterNode(
 }
 
 void ResourceNodeStorage::ResetClusterNodes() {
-  absl::WriterMutexLock lck(&mtx_);
+  absl::WriterMutexLock lck(&node_map_mtx_);
   for (const auto& e : node_map_) {
     e.second->Reset();
   }
@@ -50,7 +50,7 @@ void ResourceNodeStorage::ResetClusterNodes() {
 
 const std::unordered_map<std::string, Stat::ClusterNodeSharedPtr>
 ResourceNodeStorage::GetNodeMap() const {
-  absl::ReaderMutexLock lck(&mtx_);
+  absl::ReaderMutexLock lck(&node_map_mtx_);
   return this->node_map_;
 }
 

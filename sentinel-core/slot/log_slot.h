@@ -3,7 +3,12 @@
 #include <memory>
 
 #include "sentinel-core/log/block/block_log_task.h"
+#include "sentinel-core/log/log_base.h"
 #include "sentinel-core/slot/base/stats_slot.h"
+#include "sentinel-core/slot/log_slot.h"
+#include "sentinel-core/utils/time_utils.h"
+
+using namespace Sentinel::Utils;
 
 namespace Sentinel {
 namespace Slot {
@@ -19,9 +24,11 @@ class LogSlot : public StatsSlot {
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
                              const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodeSharedPtr& node, int count,
-                             int flag) override;
+                             int flag,
+                             const std::vector<absl::any>& params) override;
   void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count) override;
+            const ResourceWrapperSharedPtr& resource, int count,
+            const std::vector<absl::any>& params) override;
 
  private:
   const std::string name_{kLogSlotName};
