@@ -9,7 +9,8 @@ namespace CircuitBreaker {
 
 Sentinel::Slot::TokenResultSharedPtr CheckerSlot::Entry(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    Stat::NodeSharedPtr& node, int count, int flag) {
+    Stat::NodeSharedPtr& node, int count, int flag,
+    const std::vector<absl::any>& params) {
   auto cbs = RuleManager::GetInstance().GetCircuitBreakers(resource->name());
   if (cbs.empty()) {
     return Sentinel::Slot::TokenResult::Ok();
@@ -23,13 +24,15 @@ Sentinel::Slot::TokenResultSharedPtr CheckerSlot::Entry(
 }
 
 void CheckerSlot::Exit(const EntrySharedPtr& entry,
-                       const ResourceWrapperSharedPtr& resource, int count) {}
+                       const ResourceWrapperSharedPtr& resource, int count,
+                       const std::vector<absl::any>& params) {}
 
 // CompleteStatSlot
 
 Sentinel::Slot::TokenResultSharedPtr CompleteStatSlot::Entry(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    /*const*/ Stat::NodeSharedPtr& node, int count, int flag) {
+    /*const*/ Stat::NodeSharedPtr& node, int count, int flag,
+    const std::vector<absl::any>& params) {
   if (entry == nullptr || entry->context() == nullptr) {
     return Sentinel::Slot::TokenResult::Ok();
   }
@@ -41,8 +44,8 @@ Sentinel::Slot::TokenResultSharedPtr CompleteStatSlot::Entry(
 }
 
 void CompleteStatSlot::Exit(const EntrySharedPtr& entry,
-                            const ResourceWrapperSharedPtr& resource,
-                            int count) {
+                            const ResourceWrapperSharedPtr& resource, int count,
+                            const std::vector<absl::any>& params) {
   if (entry == nullptr || entry->HasBlockError()) {
     return;
   }

@@ -119,9 +119,10 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry,
   this->RecordCompleteFor(entry->origin_node(), rt, entry->error(), count);
   if (resource->entry_type() == EntryType::IN) {
     this->RecordCompleteFor(
-        Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt, entry->error(), count);
+        Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt,
+        entry->error(), count);
   }
-  
+
   auto metric = ParamFlowSlot::GetParamMetric(resource->name());
   if (metric) {
     metric->DecreaseThreadCount(params);

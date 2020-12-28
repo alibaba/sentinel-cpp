@@ -17,7 +17,7 @@ namespace {
 SlotChainSharedPtr BuildDefaultSlotChain() {
   auto chain = std::make_shared<DefaultSlotChainImpl>();
   chain->AddLast(std::make_unique<ResourceNodeBuilderSlot>());
-  
+
   chain->AddLast(std::make_unique<SystemSlot>());
   chain->AddLast(std::make_unique<FlowSlot>());
   chain->AddLast(std::make_unique<ParamFlowSlot>());
