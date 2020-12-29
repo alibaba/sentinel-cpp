@@ -26,10 +26,13 @@ void StatisticSlot::RecordBlockFor(const Stat::NodeSharedPtr& node, int count) {
 }
 
 void StatisticSlot::RecordCompleteFor(const Stat::NodeSharedPtr& node, int rt,
-                                      int count) {
+                                      const std::string& err, int count) {
   if (node != nullptr) {
     // Record response time and success count.
     node->AddRtAndCompleteRequest(rt, count);
+    if (!err.empty()) {
+      node->AddExceptionRequest(count);
+    }
     node->DecreaseThreadNum();
   }
 }
@@ -62,7 +65,7 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
   if (entry == nullptr) {
     return prev_result;
   }
-  entry->set_error(
+  entry->set_block_error(
       prev_result->blocked_reason().value_or("unexpected_blocked"));
 
   this->RecordBlockFor(node, count);
@@ -105,21 +108,21 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry,
   if (node == nullptr) {
     return;  // Should not happen.
   }
-  if (entry->HasError()) {
+  if (entry->HasBlockError()) {
     return;
   }
   long rt = Utils::TimeUtils::CurrentTimeMillis().count() -
             entry->create_time().count();
-  if (rt > Constants::kMaxAllowedRt) {
-    rt = Constants::kMaxAllowedRt;
-  }
+  entry->set_rt(rt);
 
-  this->RecordCompleteFor(node, rt, count);
-  this->RecordCompleteFor(entry->origin_node(), rt, count);
+  this->RecordCompleteFor(node, rt, entry->error(), count);
+  this->RecordCompleteFor(entry->origin_node(), rt, entry->error(), count);
   if (resource->entry_type() == EntryType::IN) {
     this->RecordCompleteFor(
-        Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt, count);
+        Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt,
+        entry->error(), count);
   }
+
   auto metric = ParamFlowSlot::GetParamMetric(resource->name());
   if (metric) {
     metric->DecreaseThreadCount(params);

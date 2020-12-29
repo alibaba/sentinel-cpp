@@ -26,6 +26,8 @@ class EntryResult {
   bool Exit(int count);
   bool Exit(int count, const std::vector<absl::any>& params);
 
+  void SetError(const std::string& err);
+
  private:
   const EntrySharedPtr entry_;
   const absl::optional<std::string> blocked_reason_;

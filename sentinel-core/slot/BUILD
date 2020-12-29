@@ -54,6 +54,7 @@ cc_library(
     ":statistic_slot_lib",
     ":log_slot_lib",
     "//sentinel-core/flow:flow_slot_lib",
+    "//sentinel-core/circuitbreaker:rule_slot_lib",
     "//sentinel-core/slot/base:default_slot_chain_impl_lib",
     "//sentinel-core/system:system_slot_lib",
   ]

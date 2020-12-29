@@ -24,4 +24,10 @@ bool EntryResult::Exit(int count) {
   return false;
 }
 
+void EntryResult::SetError(const std::string& err) {
+  if (entry_ != nullptr) {
+    entry_->set_error(err);
+  }
+}
+
 }  // namespace Sentinel
