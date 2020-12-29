@@ -90,6 +90,20 @@ cc_library(
   ]
 )
 
+cc_test(
+  name = "slot_unittests",
+  srcs = [
+    "slot_test.cc",
+  ],
+  copts = TEST_COPTS,
+  deps = [
+    ":rule_slot_lib",
+    "//sentinel-core/common:string_resource_wrapper_lib",
+    "//sentinel-core/test/mock/statistic/node:mock_lib",
+    "@com_google_googletest//:gtest_main",
+  ]
+)
+
 # cc_library(
 #   name = "flow_rule_manager_lib",
 #   srcs = [
