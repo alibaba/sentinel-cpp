@@ -119,7 +119,6 @@ CircuitBreakerSharedPtr RuleManager::NewCircuitBreaker(const Rule& rule) {
       return std::make_shared<ResponseTimeCircuitBreaker>(rule);
     case Strategy::kErrorRatio:
       return std::make_shared<ErrorCircuitBreaker>(rule);
-      return std::make_shared<ResponseTimeCircuitBreaker>(rule);
     default:
       return nullptr;
   }
