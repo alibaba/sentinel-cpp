@@ -20,11 +20,10 @@ bool EventLoopThread::Start() {
 }
 
 void EventLoopThread::Stop() {
-  if (stoped_.load()) {
+  bool expected = false;
+  if (!stoped_.compare_exchange_strong(expected, true)) {
     return;
   }
-
-  stoped_ = true;
 
   Wakeup();
 
