@@ -3,10 +3,10 @@
 
 #include "sentinel-core/test/mock/statistic/node/mock.h"
 
-#include "sentinel-core/common/string_resource_wrapper.h"
-#include "sentinel-core/circuitbreaker/rule_manager.h"
 #include "sentinel-core/circuitbreaker/rule.h"
+#include "sentinel-core/circuitbreaker/rule_manager.h"
 #include "sentinel-core/circuitbreaker/slot.h"
+#include "sentinel-core/common/string_resource_wrapper.h"
 
 using testing::_;
 using testing::InSequence;
@@ -38,7 +38,7 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerErrorRatioTest) {
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);
   entry->set_cur_node(node);
-  
+
   auto entry_error = std::make_shared<Entry>(resource, context);
   entry_error->set_cur_node(node);
   entry_error->set_error("test_error");
@@ -50,7 +50,8 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerErrorRatioTest) {
 
   // Test breaker checking when no rule exists.
   for (int i = 0; i < 10; i++) {
-    Entry_And_Exit(slot_checker, slot_complete, entry, resource, node, 1, 0, myParams);
+    Entry_And_Exit(slot_checker, slot_complete, entry, resource, node, 1, 0,
+                   myParams);
   }
 
   Rule rule{resource_name};
@@ -68,7 +69,8 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerErrorRatioTest) {
 
   // Test breaker checking when error entry happens.
   for (int i = 0; i < 10; i++) {
-    Entry_And_Exit(slot_checker, slot_complete, entry_error, resource, node, 1, 0, myParams);
+    Entry_And_Exit(slot_checker, slot_complete, entry_error, resource, node, 1,
+                   0, myParams);
   }
 
   EXPECT_EQ(cbs[0]->CurrentState(), State::kOpen);
@@ -89,7 +91,7 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerErrorRatioTest) {
 }
 
 TEST(CircuitBreakerSlotTest, CircuitBreakerSlowRatioTest) {
-    std::string resource_name{"test_resource"};
+  std::string resource_name{"test_resource"};
   EntryContextSharedPtr context =
       std::make_shared<EntryContext>("test_context");
   Stat::NodeSharedPtr node = std::make_shared<Stat::MockNode>();
@@ -110,7 +112,8 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerSlowRatioTest) {
 
   // Test breaker checking when no rule exists.
   for (int i = 0; i < 10; i++) {
-    Entry_And_Exit(slot_checker, slot_complete, entry, resource, node, 1, 0, myParams);
+    Entry_And_Exit(slot_checker, slot_complete, entry, resource, node, 1, 0,
+                   myParams);
   }
 
   Rule rule{resource_name};
@@ -129,7 +132,8 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerSlowRatioTest) {
 
   // Test breaker checking when slow entry happens.
   for (int i = 0; i < 10; i++) {
-    Entry_And_Exit(slot_checker, slot_complete, entry_slow, resource, node, 1, 0, myParams);
+    Entry_And_Exit(slot_checker, slot_complete, entry_slow, resource, node, 1,
+                   0, myParams);
   }
 
   EXPECT_EQ(cbs[0]->CurrentState(), State::kOpen);
@@ -149,5 +153,5 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerSlowRatioTest) {
   m.LoadRules({});
 }
 
-}
-}
+}  // namespace CircuitBreaker
+}  // namespace Sentinel
