@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: "*"
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [8]
+        os: [ubuntu-18.04]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install bazel
+        run: |
+          wget https://github.com/bazelbuild/bazel/releases/download/3.7.0/bazel_3.7.0-linux-x86_64.deb
+          sudo dpkg -i bazel_3.7.0-linux-x86_64.deb
+      - name: Install clang8
+        run: |
+          echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" | sudo tee -a /etc/apt/sources.list
+          echo "deb-src http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" | sudo tee -a /etc/apt/sources.list
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get -y install clang-8 clang-format-8
+
+      - name: Clang format checker
+        run: |
+          bash format.sh
+
+      - name: Library build
+        run: |
+          bazel build //sentinel-core/... && bazel build //sentinel-datasource-extension/...
+
+      - name: Sentinel core unit tests
+        run: |
+          bazel test --test_filter=*-ParamMetricTest.TestOperateMetric --test_output=errors --strategy=TestRunner=standalone //sentinel-core/...
+
+      - name: Sentinel datasource extension tests
+        run: |
+          bazel build //sentinel-core/... && bazel build //sentinel-datasource-extension/...
+
+      - name: tsan for flow control
+        run: |
+          bazel build -c dbg --config=clang-tsan //tests/... && ./bazel-bin/tests/tsan-flow
