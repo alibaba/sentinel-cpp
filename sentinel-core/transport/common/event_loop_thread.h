@@ -7,6 +7,8 @@
 
 #include <event2/event.h>
 
+#include "absl/synchronization/mutex.h"
+
 namespace Sentinel {
 namespace Transport {
 
@@ -22,7 +24,7 @@ class EventLoopThread {
 
   struct event_base *GetEventBase();
 
-  void RunTask(Functor func);
+  void RunTask(Functor &&func);
 
   bool IsInLoopThread() const;
 
@@ -31,7 +33,7 @@ class EventLoopThread {
   void ClearEventBase();
 
   void Dispatch();
-  void Work(std::promise<bool> &promise);
+  void Work(std::promise<bool> &&promise);
   void Wakeup();
   void DoPendingTasks();
 
@@ -42,11 +44,11 @@ class EventLoopThread {
   struct event_base *base_ = nullptr;
 
   std::unique_ptr<std::thread> thd_;
-  std::atomic<bool> stoped_;
+  std::atomic<bool> stoped_{true};
   evutil_socket_t wakeup_fd_[2];  // 0:read 1:write
 
-  std::mutex task_mutex_;
-  std::vector<Functor> pending_tasks_;
+  absl::Mutex task_mutex_;
+  std::vector<Functor> pending_tasks_ GUARDED_BY(task_mutex_);
 };
 
 }  // namespace Transport
