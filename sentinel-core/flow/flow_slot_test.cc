@@ -32,7 +32,7 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
   FlowSlot slot;
   {
     // Test flow checking when no rule exists.
-    auto result = slot.Entry(entry, resource, node, 1000, 0, myParams);
+    auto result = slot.Entry(entry, node, 1000, 0, myParams);
     EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
   }
 
@@ -47,14 +47,14 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
         .WillOnce(Return(0));
     EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-              slot.Entry(entry, resource, node, 1, 0, myParams)->status());
+              slot.Entry(entry, node, 1, 0, myParams)->status());
     Mock::VerifyAndClearExpectations(node.get());
   }
   {
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
         .WillOnce(Return(0));
     EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-              slot.Entry(entry, resource, node, 2, 0, myParams)->status());
+              slot.Entry(entry, node, 2, 0, myParams)->status());
     Mock::VerifyAndClearExpectations(node.get());
   }
 
@@ -62,7 +62,7 @@ TEST(FlowSlotTest, FlowControlSingleThreadIntegrationTest) {
     EXPECT_CALL(*(static_cast<Stat::MockNode*>(node.get())), PassQps())
         .WillOnce(Return(1));
     EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-              slot.Entry(entry, resource, node, 1, 0, myParams)->status());
+              slot.Entry(entry, node, 1, 0, myParams)->status());
     Mock::VerifyAndClearExpectations(node.get());
   }
 

@@ -14,7 +14,6 @@ LogSlot::LogSlot() {
 }
 
 TokenResultSharedPtr LogSlot::Entry(const EntrySharedPtr& entry,
-                                    const ResourceWrapperSharedPtr& resource,
                                     /*const*/ Stat::NodeSharedPtr& node,
                                     int count, int flag,
                                     const std::vector<absl::any>& params) {
@@ -26,13 +25,13 @@ TokenResultSharedPtr LogSlot::Entry(const EntrySharedPtr& entry,
     return TokenResult::Ok();
   }
   if (prev_result->status() == TokenStatus::RESULT_STATUS_BLOCKED) {
-    log_task_->Log(resource->name(),
+    log_task_->Log(entry->resource()->name(),
                    prev_result->blocked_reason().value_or("unknown"));
   }
   return prev_result;
 }
 
-void LogSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&, int,
+void LogSlot::Exit(const EntrySharedPtr&, int,
                    const std::vector<absl::any>& params) {
   // Do nothing
 }

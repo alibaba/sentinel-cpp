@@ -24,7 +24,6 @@ class RequireNodeFakeStatsSlot : public StatsSlot {
   virtual ~RequireNodeFakeStatsSlot() = default;
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
-                             const ResourceWrapperSharedPtr& resource,
                              Stat::NodeSharedPtr& node, int count, int flag,
                              const std::vector<absl::any>& params) {
     if (node == nullptr) {
@@ -33,8 +32,7 @@ class RequireNodeFakeStatsSlot : public StatsSlot {
     return TokenResult::Ok();
   };
 
-  void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count,
+  void Exit(const EntrySharedPtr& entry, int count,
             const std::vector<absl::any>& params){};
 
   const std::string& Name() const { return name_; };
@@ -65,14 +63,13 @@ TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
   Stat::NodeSharedPtr empty_node = nullptr;
   const std::vector<absl::any> myParams;
 
-  auto result = slot_chain.Entry(entry, resource, empty_node, 1, 0, myParams);
+  auto result = slot_chain.Entry(entry, empty_node, 1, 0, myParams);
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
 
   auto res_node = s.GetClusterNode(resource_name);
   EXPECT_FALSE(res_node == nullptr);
-  EXPECT_EQ(
-      TokenStatus::RESULT_STATUS_OK,
-      slot_chain.Entry(entry, resource, empty_node, 1, 0, myParams)->status());
+  EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+            slot_chain.Entry(entry, empty_node, 1, 0, myParams)->status());
   EXPECT_EQ(res_node, s.GetClusterNode(resource_name));
 }
 

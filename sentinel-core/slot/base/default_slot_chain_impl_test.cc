@@ -28,9 +28,9 @@ TEST(DefaultSlotChainImplTest, Basic) {
     auto mock_stat_slot = std::make_unique<MockStatsSlot>();
 
     InSequence s;
-    EXPECT_CALL(*mock_rule_checker_slot.get(), Entry(_, _, _, _, _, _))
+    EXPECT_CALL(*mock_rule_checker_slot.get(), Entry(_, _, _, _, _))
         .WillOnce(Return(TokenResult::Blocked("test")));
-    EXPECT_CALL(*mock_stat_slot.get(), Entry(_, _, _, _, _, _)).Times(1);
+    EXPECT_CALL(*mock_stat_slot.get(), Entry(_, _, _, _, _)).Times(1);
 
     slot_chain.AddLast(std::move(mock_rule_checker_slot));
     slot_chain.AddLast(std::move(mock_stat_slot));
@@ -38,7 +38,7 @@ TEST(DefaultSlotChainImplTest, Basic) {
     ResourceWrapperSharedPtr test_resource =
         std::make_shared<StringResourceWrapper>("test_resource", EntryType::IN);
     auto entry = std::make_shared<Entry>(test_resource, context);
-    slot_chain.Entry(entry, test_resource, node, 1, 1, myParams);
+    slot_chain.Entry(entry, node, 1, 1, myParams);
   }
 
   {
@@ -50,12 +50,11 @@ TEST(DefaultSlotChainImplTest, Basic) {
     auto mock_stat_slot2 = std::make_unique<MockStatsSlot>();
 
     InSequence s;
-    EXPECT_CALL(*mock_rule_checker_slot1.get(), Entry(_, _, _, _, _, _))
+    EXPECT_CALL(*mock_rule_checker_slot1.get(), Entry(_, _, _, _, _))
         .WillOnce(Return(TokenResult::Blocked("test")));
-    EXPECT_CALL(*mock_rule_checker_slot2.get(), Entry(_, _, _, _, _, _))
-        .Times(0);
-    EXPECT_CALL(*mock_stat_slot1.get(), Entry(_, _, _, _, _, _)).Times(1);
-    EXPECT_CALL(*mock_stat_slot2.get(), Entry(_, _, _, _, _, _)).Times(1);
+    EXPECT_CALL(*mock_rule_checker_slot2.get(), Entry(_, _, _, _, _)).Times(0);
+    EXPECT_CALL(*mock_stat_slot1.get(), Entry(_, _, _, _, _)).Times(1);
+    EXPECT_CALL(*mock_stat_slot2.get(), Entry(_, _, _, _, _)).Times(1);
 
     slot_chain.AddLast(std::move(mock_rule_checker_slot1));
     slot_chain.AddLast(std::move(mock_rule_checker_slot2));
@@ -66,7 +65,7 @@ TEST(DefaultSlotChainImplTest, Basic) {
         std::make_shared<StringResourceWrapper>("test_resource", EntryType::IN);
     auto entry = std::make_shared<Entry>(test_resource, context);
 
-    slot_chain.Entry(entry, test_resource, node, 1, 1, myParams);
+    slot_chain.Entry(entry, node, 1, 1, myParams);
   }
 }
 

@@ -12,7 +12,8 @@ static constexpr const char* kLimitOriginOther = "other";
 static constexpr const char* kDefaultContextName = "sentinel_default_context";
 
 static constexpr int kMaxAllowedRt = 4900;
-static constexpr int kMaxResourceSize = 6000;
+static constexpr int kMaxResourceSize = 10000;
+static constexpr int kMaxTagSize = 1000;
 
 };  // namespace Constants
 }  // namespace Sentinel

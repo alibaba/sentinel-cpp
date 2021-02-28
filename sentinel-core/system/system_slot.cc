@@ -1,4 +1,5 @@
 #include "sentinel-core/system/system_slot.h"
+
 #include "absl/strings/str_format.h"
 #include "sentinel-core/common/resource_wrapper.h"
 #include "sentinel-core/slot/base/token_result.h"
@@ -11,15 +12,14 @@ namespace Slot {
 const std::string& SystemSlot::Name() const { return name_; }
 
 TokenResultSharedPtr SystemSlot::Entry(const EntrySharedPtr& entry,
-                                       const ResourceWrapperSharedPtr& resource,
-                                       Stat::NodeSharedPtr& node, int count,
-                                       int flag,
-                                       const std::vector<absl::any>& params) {
+                                       Stat::NodeSharedPtr&, int count, int,
+                                       const std::vector<absl::any>&) {
   // Fetch global statistic node for inbound traffic
   Stat::NodeSharedPtr entryNode =
       Stat::ResourceNodeStorage::GetInstance().GetEntryNode();
   TokenResultSharedPtr res = TokenResult::Ok();
-  if (resource->entry_type() == EntryType::IN && entryNode != nullptr) {
+  if (entry->resource()->entry_type() == EntryType::IN &&
+      entryNode != nullptr) {
     System::SystemRuleMapSharedPtr ruleMap = sysMgr.rule_map();
     if (ruleMap && ruleMap->size() > 0) {
       return CheckSystem(ruleMap, entryNode, count);
@@ -92,8 +92,8 @@ bool SystemSlot::CheckBbr(double concurrency, Stat::NodeSharedPtr& node) const {
   return true;
 }
 
-void SystemSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&,
-                      int, const std::vector<absl::any>& params) {
+void SystemSlot::Exit(const EntrySharedPtr&, int,
+                      const std::vector<absl::any>& params) {
   // Do nothing
 }
 

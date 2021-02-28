@@ -10,13 +10,12 @@ MetricMapSharedPtr ParamFlowSlot::metric_map_ = std::make_shared<
 const std::string& ParamFlowSlot::Name() const { return name_; }
 
 TokenResultSharedPtr ParamFlowSlot::Entry(
-    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    Stat::NodeSharedPtr&, int count, int flag,
+    const EntrySharedPtr& entry, Stat::NodeSharedPtr&, int count, int flag,
     const std::vector<absl::any>& params) {
   TokenResultSharedPtr res = TokenResult::Ok();
   auto rule_map_ = Param::ParamFlowRuleManager::GetInstance().GetRuleMap();
   if (rule_map_ && rule_map_->size() > 0) {
-    res = CheckFlow(resource->name(), count, params);
+    res = CheckFlow(entry->resource()->name(), count, params);
   }
   return res;
 }
@@ -74,8 +73,8 @@ TokenResultSharedPtr ParamFlowSlot::CheckFlow(
   return TokenResult::Ok();
 }
 
-void ParamFlowSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&,
-                         int, const std::vector<absl::any>& params) {
+void ParamFlowSlot::Exit(const EntrySharedPtr&, int,
+                         const std::vector<absl::any>& params) {
   // Do nothing
 }
 

@@ -15,11 +15,9 @@ class CheckerSlot : public Slot::RuleCheckerSlot {
   virtual ~CheckerSlot() = default;
 
   Sentinel::Slot::TokenResultSharedPtr Entry(
-      const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-      Stat::NodeSharedPtr& node, int count, int flag,
-      const std::vector<absl::any>& params) override;
-  void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count,
+      const EntrySharedPtr& entry, Stat::NodeSharedPtr& node, int count,
+      int flag, const std::vector<absl::any>& params) override;
+  void Exit(const EntrySharedPtr& entry, int count,
             const std::vector<absl::any>& params) override;
   const std::string& Name() const override { return name_; };
 
@@ -34,11 +32,10 @@ class CompleteStatSlot : public Slot::StatsSlot {
 
   const std::string& Name() const override { return name_; };
   Sentinel::Slot::TokenResultSharedPtr Entry(
-      const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
+      const EntrySharedPtr& entry,
       /*const*/ Stat::NodeSharedPtr& node, int count, int flag,
       const std::vector<absl::any>& params) override;
-  void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count,
+  void Exit(const EntrySharedPtr& entry, int count,
             const std::vector<absl::any>& params) override;
 
  private:

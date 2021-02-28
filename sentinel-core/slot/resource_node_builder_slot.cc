@@ -9,17 +9,17 @@ namespace Slot {
 const std::string& ResourceNodeBuilderSlot::Name() const { return name_; }
 
 TokenResultSharedPtr ResourceNodeBuilderSlot::Entry(
-    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    Stat::NodeSharedPtr& node, int, int, const std::vector<absl::any>& params) {
-  auto cluster_node = node_storage_.GetOrCreateClusterNode(resource->name());
+    const EntrySharedPtr& entry, Stat::NodeSharedPtr& node, int, int,
+    const std::vector<absl::any>& params) {
+  auto cluster_node =
+      node_storage_.GetOrCreateClusterNode(entry->resource()->name());
 
   entry->set_cur_node(cluster_node);
   node = cluster_node;
   return TokenResult::Ok();
 }
 
-void ResourceNodeBuilderSlot::Exit(const EntrySharedPtr&,
-                                   const ResourceWrapperSharedPtr&, int,
+void ResourceNodeBuilderSlot::Exit(const EntrySharedPtr&, int,
                                    const std::vector<absl::any>& params) {
   // Do nothing.
 }
