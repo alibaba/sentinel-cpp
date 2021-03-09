@@ -41,7 +41,7 @@ Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
 }
 
 Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
-    const FlowRule& rule, const EntrySharedPtr&,
+    const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodeSharedPtr& node) {
   const std::string& ref_resource = rule.ref_resource();
   auto rel_strategy = rule.strategy();
@@ -50,7 +50,19 @@ Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
     return Stat::ResourceNodeStorage::GetInstance().GetClusterNode(
         ref_resource);
   }
+
+  // TODO: Need support kLimitOriginOther
+  if (IsValidTag(entry->context()->tag()) &&
+      (rule.limit_origin() == entry->context()->tag())) {
+    return entry->context()->get_tag_node();
+  }
+
   return node;
+}
+
+bool FlowRuleChecker::IsValidTag(const std::string& tag) {
+  return !tag.empty() && (tag != Constants::kLimitOriginDefault) &&
+         (tag != Constants::kLimitOriginOther);
 }
 
 }  // namespace Flow

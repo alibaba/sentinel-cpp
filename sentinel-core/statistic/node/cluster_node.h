@@ -16,13 +16,13 @@ class ClusterNode : public StatisticNode {
   explicit ClusterNode() = default;
   virtual ~ClusterNode() {}
 
+  StatisticNodeSharedPtr GetTagNode(const std::string& tag) const;
   StatisticNodeSharedPtr GetOrCreateTagNode(const std::string& tag);
   void TraceException(int32_t count);
 
  public:
   absl::flat_hash_map<std::string, StatisticNodeSharedPtr> tag_node_map_;
-
-  absl::Mutex mtx_;
+  mutable absl::Mutex node_map_mtx_;
 };
 
 using ClusterNodeSharedPtr = std::shared_ptr<ClusterNode>;

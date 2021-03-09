@@ -53,7 +53,7 @@ TEST(ResourceNodeBuilderSlotTest, TestEntrySingleThread) {
   std::string resource_name{
       "ResourceNodeBuilderSlotTest:TestEntrySingleThread"};
   EntryContextSharedPtr context =
-      std::make_shared<EntryContext>("test_context");
+      std::make_shared<EntryContext>("test_context", "test_tag");
   auto resource =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
   auto entry = std::make_shared<Entry>(resource, context);

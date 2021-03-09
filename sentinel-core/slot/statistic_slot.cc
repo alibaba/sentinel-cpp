@@ -47,7 +47,7 @@ TokenResultSharedPtr StatisticSlot::OnPass(
                         count);
   }
   if (entry != nullptr) {
-    this->RecordPassFor(entry->origin_node(), count);
+    this->RecordPassFor(entry->context()->get_tag_node(), count);
   }
   auto metric = ParamFlowSlot::GetParamMetric(resource->name());
   if (metric) {
@@ -69,7 +69,7 @@ TokenResultSharedPtr StatisticSlot::OnBlock(
       prev_result->blocked_reason().value_or("unexpected_blocked"));
 
   this->RecordBlockFor(node, count);
-  this->RecordBlockFor(entry->origin_node(), count);
+  this->RecordBlockFor(entry->context()->get_tag_node(), count);
   if (resource->entry_type() == EntryType::IN) {
     this->RecordBlockFor(
         Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), count);
@@ -116,7 +116,8 @@ void StatisticSlot::Exit(const EntrySharedPtr& entry, int count,
   entry->set_rt(rt);
 
   this->RecordCompleteFor(node, rt, entry->error(), count);
-  this->RecordCompleteFor(entry->origin_node(), rt, entry->error(), count);
+  this->RecordCompleteFor(entry->context()->get_tag_node(), rt, entry->error(),
+                          count);
   if (entry->resource()->entry_type() == EntryType::IN) {
     this->RecordCompleteFor(
         Stat::ResourceNodeStorage::GetInstance().GetEntryNode(), rt,

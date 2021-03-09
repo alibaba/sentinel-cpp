@@ -27,7 +27,6 @@ class Entry {
   std::chrono::milliseconds create_time() const { return create_time_; }
   EntryContextSharedPtr context() const { return context_; }
   Stat::NodeSharedPtr cur_node() const { return cur_node_; }
-  Stat::NodeSharedPtr origin_node() const { return origin_node_; }
   int64_t rt() const { return rt_; }
   std::vector<absl::any> params() const { return params_; }
   bool exited() const { return exited_; }
@@ -39,7 +38,6 @@ class Entry {
   void set_error(const std::string& message) { error_ = message; }
   void set_block_error(const std::string& message) { block_error_ = message; }
   void set_cur_node(const Stat::NodeSharedPtr& node) { cur_node_ = node; }
-  void set_origin_node(const Stat::NodeSharedPtr& node) { origin_node_ = node; }
   void set_params(const std::vector<absl::any>&& params) { params_ = params; }
 
  private:
@@ -52,7 +50,6 @@ class Entry {
   std::string error_{};
   std::string block_error_{};
   Stat::NodeSharedPtr cur_node_;
-  Stat::NodeSharedPtr origin_node_;
   std::vector<absl::any> params_;
 };
 

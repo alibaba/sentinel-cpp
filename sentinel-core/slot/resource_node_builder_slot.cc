@@ -13,9 +13,16 @@ TokenResultSharedPtr ResourceNodeBuilderSlot::Entry(
     const std::vector<absl::any>& params) {
   auto cluster_node =
       node_storage_.GetOrCreateClusterNode(entry->resource()->name());
-
   entry->set_cur_node(cluster_node);
+
+  if (cluster_node && !entry->context()->tag().empty()) {
+    Stat::NodeSharedPtr tag_node =
+        cluster_node->GetOrCreateTagNode(entry->context()->tag());
+    entry->context()->set_tag_node(tag_node);
+  }
+
   node = cluster_node;
+
   return TokenResult::Ok();
 }
 
