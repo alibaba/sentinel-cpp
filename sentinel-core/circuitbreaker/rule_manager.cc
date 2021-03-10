@@ -165,7 +165,7 @@ CircuitBreakerMap RulePropertyListener::BuildCircuitBreakerMap(
     if (it == m.end()) {
       m.insert({rule.resource(), {cb}});
     } else {
-      auto vec = it->second;
+      auto& vec = it->second;
       vec.push_back(std::move(cb));
     }
   }

@@ -189,7 +189,7 @@ void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value, bool) {
     if (it == new_rule_map.end()) {
       new_rule_map.insert({rule.resource(), {rule}});
     } else {
-      auto vec = it->second;
+      auto& vec = it->second;
       vec.push_back(std::move(rule));
     }
   }
