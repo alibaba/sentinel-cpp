@@ -16,6 +16,7 @@ class EntryContext {
 
   const std::string& name() const { return name_; };
   const std::string& tag() const { return tag_; };
+  Stat::NodeSharedPtr tag_node() { return tag_node_; }
 
   const Slot::TokenResultSharedPtr& last_token_result() const {
     return last_token_result_;
@@ -26,7 +27,6 @@ class EntryContext {
   void set_last_token_result(const Slot::TokenResultSharedPtr& r) {
     last_token_result_ = r;
   }
-  Stat::NodeSharedPtr get_tag_node() { return tag_node_; }
   void set_tag_node(Stat::NodeSharedPtr& node) { tag_node_ = node; }
 
  private:

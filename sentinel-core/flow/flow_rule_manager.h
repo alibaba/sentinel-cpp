@@ -38,8 +38,8 @@ class FlowRuleManager {
 
   std::shared_ptr<TrafficShapingController> GetTrafficControllerFor(
       const FlowRule& rule) const;
-  bool IsTagInFlowRuleList(const std::string& resource_name,
-                           const std::string& tag);
+  bool IsTagNotInFlowRuleList(const std::string& resource_name,
+                              const std::string& tag);
 
  private:
   FlowRuleManager();

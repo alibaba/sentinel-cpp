@@ -47,7 +47,7 @@ Stat::NodeSharedPtr FlowRuleChecker::selectNodeByRequesterAndStrategy(
   std::string tag = entry->context()->tag();
   std::string limit_origin = rule.limit_origin();
   FlowRelationStrategy strategy = rule.strategy();
-  Stat::NodeSharedPtr tag_node = entry->context()->get_tag_node();
+  Stat::NodeSharedPtr tag_node = entry->context()->tag_node();
 
   if ((tag == limit_origin) && IsValidTag(tag)) {
     if (strategy == FlowRelationStrategy::kDirect) {
@@ -63,7 +63,7 @@ Stat::NodeSharedPtr FlowRuleChecker::selectNodeByRequesterAndStrategy(
     }
     return SelectNodeByRelStrategy(rule, entry, node);
   } else if ((limit_origin == Constants::kLimitOriginOther) &&
-             m.IsTagInFlowRuleList(rule.resource(), tag)) {
+             m.IsTagNotInFlowRuleList(rule.resource(), tag)) {
     if (strategy == FlowRelationStrategy::kDirect) {
       // When rule contains other tag, which means all request except this tag
       // should follow this rule.
