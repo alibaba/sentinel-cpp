@@ -68,7 +68,7 @@ void ErrorCircuitBreaker::RecordAndHandleStateChange(const std::string& err) {
   double cur_value = strategy_ == Strategy::kErrorRatio
                          ? err_count * 1.0 / total_count
                          : err_count;
-  if (cur_value > threshold_) {
+  if (cur_value >= threshold_) {
     auto cs = current_state_.load();
     switch (cs) {
       case State::kClosed:
