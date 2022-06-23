@@ -3,8 +3,8 @@
 #include <atomic>
 #include <memory>
 
-#include "sentinel-core/common/constants.h"
-#include "sentinel-core/statistic/base/metric_event.h"
+#include "constants.h"
+#include "metric_event.h"
 
 namespace Sentinel {
 namespace Stat {

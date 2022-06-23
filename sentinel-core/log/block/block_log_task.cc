@@ -1,11 +1,11 @@
-#include "sentinel-core/log/block/block_log_task.h"
+#include "block_log_task.h"
 
 #include <iostream>
 #include <memory>
 #include <thread>
 
-#include "sentinel-core/log/logger.h"
-#include "sentinel-core/utils/time_utils.h"
+#include "logger.h"
+#include "time_utils.h"
 
 #include "absl/strings/str_format.h"
 #include "absl/time/time.h"

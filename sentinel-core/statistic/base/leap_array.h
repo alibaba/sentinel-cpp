@@ -5,9 +5,9 @@
 #include <mutex>
 #include <vector>
 
-#include "sentinel-core/log/logger.h"
-#include "sentinel-core/statistic/base/window_wrap.h"
-#include "sentinel-core/utils/time_utils.h"
+#include "logger.h"
+#include "window_wrap.h"
+#include "time_utils.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -31,6 +31,7 @@ class LeapArray {
                              int64_t start_time) = 0;
 
   virtual WindowWrapSharedPtr<T> CurrentWindow();
+  virtual WindowWrapSharedPtr<T> CurrentWindow(int64_t time_millis);
   virtual WindowWrapSharedPtr<T> CurrentWindow(int64_t time_millis);
 
   std::vector<WindowWrapSharedPtr<T>> Buckets() const;
