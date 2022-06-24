@@ -17,8 +17,6 @@ class TimeUtils {
   constexpr static std::chrono::milliseconds CHECK_INTERVAL_ {std::chrono::milliseconds{3000}};
   const static long HITS_LOWER_BOUNDARY_ = 800;
   const static long HITS_UPPER_BOUNDARY_ = 1200;
-//  constexpr static std::chrono::milliseconds HITS_LOWER_BOUNDARY_ {std::chrono::milliseconds{800}};
-//  constexpr static std::chrono::milliseconds  HITS_UPPER_BOUNDARY_ {std::chrono::milliseconds{1200}};
 
   static std::chrono::milliseconds last_check_;
   static TimeUtils INSTANCE_;
@@ -37,7 +35,7 @@ class TimeUtils {
     inline std::atomic<long> get_writes() { writes_.load();};
     inline std::atomic<long> get_reads() { reads_.load();};
   };
-  Stat::LeapArray<Statistic>* statistics;
+  Stat::LeapArray<Statistic>* statistics_;
 
  public:
   TimeUtils();

@@ -25,6 +25,11 @@ std::chrono::milliseconds TimeUtils::CurrentTimeMillis() {
       std::chrono::system_clock::now().time_since_epoch());
 }
 
+TimeUtils::TimeUtils()
+{
+  statistics_ = new Stat::LeapArray<TimeUtils::Statistic>
+}
+
 void TimeUtils::Run()
 {
   while(true)
@@ -34,7 +39,7 @@ void TimeUtils::Run()
     {
       this->currentTimeMillis_ = std::chrono::duration_cast<std::chrono::milliseconds>(
           std::chrono::system_clock::now().time_since_epoch());
-      this->statistics->CurrentWindow(currentTimeMillis_)->Value()->get_writes().fetch_add(1);
+      this->statistics_->CurrentWindow(currentTimeMillis_.count())->Value()->get_writes().fetch_add(1);
       try {
         usleep(1000);//1000 microseconds = 1ms
       } catch (std::exception e)
@@ -92,7 +97,7 @@ void TimeUtils::Check()
 
 std::pair<long, long> TimeUtils::get_current_qps(std::chrono::milliseconds now)
 {
-  std::vector<Stat::WindowWrapSharedPtr<Statistic>> vec = this->statistics->Buckets();
+  std::vector<Stat::WindowWrapSharedPtr<Statistic>> vec = this->statistics_->Buckets();
   long reads = 0, writes = 0;
   int cnt = 0;
   for (auto const elem : vec)
