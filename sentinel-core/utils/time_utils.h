@@ -2,12 +2,14 @@
 
 #include <chrono>
 #include <atomic>
-#include "leap_array.h"
 #include <utility>
 #include <unistd.h>
 #include <vector>
 #include <memory>
 #include "window_wrap.h"
+#include "leap_array.h"
+#include "bucket_leap_array.h"
+#include <thread>
 
 namespace Sentinel {
 namespace Utils {
@@ -21,21 +23,11 @@ class TimeUtils {
   static std::chrono::milliseconds last_check_;
   static TimeUtils INSTANCE_;
   std::chrono::milliseconds currentTimeMillis_;
+  Stat::BucketLeapArray* statistics_ = nullptr;
+
  private:
   void Check();
   std::chrono::milliseconds CurrentTime(bool inner_call);
-
- private:
-  static class Statistic
-  {
-   private:
-    const static std::atomic<long> writes_;
-    const static std::atomic<long> reads_;
-   public:
-    inline std::atomic<long> get_writes() { writes_.load();};
-    inline std::atomic<long> get_reads() { reads_.load();};
-  };
-  Stat::LeapArray<Statistic>* statistics_;
 
  public:
   TimeUtils();

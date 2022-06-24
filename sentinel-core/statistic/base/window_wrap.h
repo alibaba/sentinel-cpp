@@ -17,7 +17,10 @@ class WindowWrap {
   int64_t BucketStart() const;
   std::shared_ptr<T> Value() const;
 
-  void ResetTo(int64_t start_time);
+  inline void ResetTo(int64_t start_time)
+  {
+    bucket_start_ = start_time;
+  }
   bool IsTimeInBucket(int64_t time_millis) const;
 
  private:

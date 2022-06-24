@@ -27,7 +27,11 @@ std::chrono::milliseconds TimeUtils::CurrentTimeMillis() {
 
 TimeUtils::TimeUtils()
 {
-  statistics_ = new Stat::LeapArray<TimeUtils::Statistic>
+  statistics_ = new Stat::BucketLeapArray(3, 3000);
+  currentTimeMillis_ = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now().time_since_epoch());
+  std::thread t(&TimeUtils::Run, this);
+  t.detach();
 }
 
 void TimeUtils::Run()
@@ -97,7 +101,7 @@ void TimeUtils::Check()
 
 std::pair<long, long> TimeUtils::get_current_qps(std::chrono::milliseconds now)
 {
-  std::vector<Stat::WindowWrapSharedPtr<Statistic>> vec = this->statistics_->Buckets();
+  auto vec = this->statistics_->Buckets();
   long reads = 0, writes = 0;
   int cnt = 0;
   for (auto const elem : vec)
@@ -115,6 +119,28 @@ std::pair<long, long> TimeUtils::get_current_qps(std::chrono::milliseconds now)
     }
     return std::make_pair(reads/cnt, writes/cnt);
   }
+}
+
+std::chrono::milliseconds TimeUtils::CurrentTime(bool inner_call)
+{
+  auto now = this->currentTimeMillis_;
+  auto val = this->statistics_->CurrentWindow()->Value();
+  if(!inner_call)
+  {
+    //external call
+    val->get_reads().fetch_add(1);
+  }
+  if(this->state == STATE::IDLE || this->state == STATE::PREPARE)
+  {
+    now =  std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch());
+    this->currentTimeMillis_ = now; //cache time
+    if(!inner_call)
+    {
+      val->get_writes().fetch_add(1);
+    }
+  }
+  return now;
 }
 
 }  // namespace Utils
