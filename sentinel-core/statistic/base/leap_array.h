@@ -32,7 +32,7 @@ class LeapArray {
 
   virtual WindowWrapSharedPtr<T> CurrentWindow();
   virtual WindowWrapSharedPtr<T> CurrentWindow(int64_t time_millis);
-  virtual WindowWrapSharedPtr<T> CurrentWindow(int64_t time_millis);
+  virtual WindowWrapSharedPtr<T> CurrentWindow(std::chrono::milliseconds time_millis);
 
   std::vector<WindowWrapSharedPtr<T>> Buckets() const;
   std::vector<WindowWrapSharedPtr<T>> Buckets(int64_t time_millis) const;
