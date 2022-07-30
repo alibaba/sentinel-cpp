@@ -5,9 +5,8 @@
 #include <mutex>
 #include <vector>
 
-#include "logger.h"
 #include "window_wrap.h"
-#include "time_utils.h"
+#include "sentinel-core/utils/time_utils.h"
 
 namespace Sentinel {
 namespace Stat {

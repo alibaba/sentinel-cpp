@@ -6,10 +6,13 @@
 #include <unistd.h>
 #include <vector>
 #include <memory>
-#include "window_wrap.h"
-#include "leap_array.h"
-#include "bucket_leap_array.h"
+//#include "window_wrap.h"
+//#include "bucket_leap_array.h"
 #include <thread>
+
+#include "sentinel-core/statistic/base/leap_array.h"
+#include "sentinel-core/statistic/base/window_wrap.h"
+#include "sentinel-core/statistic/base/bucket_leap_array.h"
 
 namespace Sentinel {
 namespace Utils {
@@ -32,7 +35,7 @@ class TimeUtils {
  public:
   TimeUtils();
  public:
-  static enum STATE
+  static enum class STATE
   {
     IDLE,
     PREPARE,
@@ -43,7 +46,7 @@ class TimeUtils {
 
  public:
  void Run();
- inline STATE get_state() { state.load();};
+ inline STATE& get_state() { state.load();};
  std::pair<long, long> get_current_qps(std::chrono::milliseconds now);
  inline std::chrono::milliseconds get_time() {return CurrentTime(false); } ;
  static TimeUtils& get_instance() { return INSTANCE_; }

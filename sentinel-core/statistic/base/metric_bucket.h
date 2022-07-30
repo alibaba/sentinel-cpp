@@ -3,7 +3,7 @@
 #include <atomic>
 #include <memory>
 
-#include "constants.h"
+#include "sentinel-core/common/constants.h"
 #include "metric_event.h"
 
 namespace Sentinel {

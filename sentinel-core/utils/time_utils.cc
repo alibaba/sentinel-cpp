@@ -27,7 +27,7 @@ std::chrono::milliseconds TimeUtils::CurrentTimeMillis() {
 
 TimeUtils::TimeUtils()
 {
-  statistics_ = new Stat::BucketLeapArray(3, 3000);
+//  statistics_ = new Stat::BucketLeapArray(3, 3000);
   currentTimeMillis_ = std::chrono::duration_cast<std::chrono::milliseconds>(
       std::chrono::system_clock::now().time_since_epoch());
   std::thread t(&TimeUtils::Run, this);
