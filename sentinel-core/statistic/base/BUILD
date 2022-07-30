@@ -79,6 +79,7 @@ cc_library(
   copts = DEFAULT_COPTS,
   deps = [
     ":window_wrap_lib",
+    #"//sentinel-core/utils:utils_lib"
     #"//sentinel-core/log:logger_lib",
   ]
 )
