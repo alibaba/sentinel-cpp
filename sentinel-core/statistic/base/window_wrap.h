@@ -47,10 +47,10 @@ std::shared_ptr<T> WindowWrap<T>::Value() const {
   return value_;
 }
 
-template <typename T>
-void WindowWrap<T>::ResetTo(int64_t start_time) {
-  this->bucket_start_ = start_time;
-}
+//template <typename T>
+//void WindowWrap<T>::ResetTo(int64_t start_time) {
+//  this->bucket_start_ = start_time;
+//}
 
 template <typename T>
 /**

@@ -75,6 +75,8 @@ cc_library(
   name = "leap_array_lib",
   srcs = [
     "leap_array.h",
+    "statistic_time_utils.h",
+    "statistic_time_utils.cc",
   ],
   copts = DEFAULT_COPTS,
   deps = [
