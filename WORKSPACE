@@ -20,7 +20,7 @@ http_archive(
    name = "rules_foreign_cc",
    strip_prefix = "rules_foreign_cc-main",
    #url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/main.zip",
+   url = "https://github.com/shiyi23/sentinel-cpp/raw/master/rules_foreign_cc-main.zip",
 )
 
 #load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")

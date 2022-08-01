@@ -17,7 +17,10 @@ class WindowWrap {
   int64_t BucketStart() const;
   std::shared_ptr<T> Value() const;
 
-  void ResetTo(int64_t start_time);
+  inline void ResetTo(int64_t start_time)
+  {
+    bucket_start_ = start_time;
+  }
   bool IsTimeInBucket(int64_t time_millis) const;
 
  private:
@@ -44,12 +47,18 @@ std::shared_ptr<T> WindowWrap<T>::Value() const {
   return value_;
 }
 
-template <typename T>
-void WindowWrap<T>::ResetTo(int64_t start_time) {
-  this->bucket_start_ = start_time;
-}
+//template <typename T>
+//void WindowWrap<T>::ResetTo(int64_t start_time) {
+//  this->bucket_start_ = start_time;
+//}
 
 template <typename T>
+/**
+ * Check whether given timestamp is in current bucket.
+ *
+ * @param time_millis valid timestamp in ms
+ * @return true if the given time is in current bucket, otherwise false
+ * */
 bool WindowWrap<T>::IsTimeInBucket(int64_t time_millis) const {
   return bucket_start_ <= time_millis &&
          time_millis < bucket_start_ + bucket_length_ms_;

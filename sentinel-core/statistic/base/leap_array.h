@@ -5,9 +5,8 @@
 #include <mutex>
 #include <vector>
 
-#include "sentinel-core/log/logger.h"
-#include "sentinel-core/statistic/base/window_wrap.h"
-#include "sentinel-core/utils/time_utils.h"
+#include "statistic_time_utils.h"
+#include "window_wrap.h"
 
 namespace Sentinel {
 namespace Stat {
@@ -66,7 +65,7 @@ int32_t LeapArray<T>::IntervalInMs() const {
 
 template <typename T>
 WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow() {
-  return this->CurrentWindow(Utils::TimeUtils::CurrentTimeMillis().count());
+  return this->CurrentWindow(Statistic_Utils::TimeUtils::CurrentTimeMillis().count());
 }
 
 template <typename T>
@@ -119,7 +118,7 @@ int64_t LeapArray<T>::CalculateWindowStart(int64_t time_millis) const {
 template <typename T>
 bool LeapArray<T>::IsBucketDeprecated(
     const WindowWrapSharedPtr<T>& wrap) const {
-  return this->IsBucketDeprecated(Utils::TimeUtils::CurrentTimeMillis().count(),
+  return this->IsBucketDeprecated(Statistic_Utils::TimeUtils::CurrentTimeMillis().count(),
                                   wrap);
 }
 
@@ -131,12 +130,12 @@ bool LeapArray<T>::IsBucketDeprecated(
 
 template <typename T>
 std::vector<WindowWrapSharedPtr<T>> LeapArray<T>::Buckets() const {
-  return this->Buckets(Utils::TimeUtils::CurrentTimeMillis().count());
+  return this->Buckets(Statistic_Utils::TimeUtils::CurrentTimeMillis().count());
 }
 
 template <typename T>
 std::vector<std::shared_ptr<T>> LeapArray<T>::Values() const {
-  return this->Values(Utils::TimeUtils::CurrentTimeMillis().count());
+  return this->Values(Statistic_Utils::TimeUtils::CurrentTimeMillis().count());
 }
 
 template <typename T>
