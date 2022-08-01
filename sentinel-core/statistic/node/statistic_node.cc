@@ -81,7 +81,8 @@ bool StatisticNode::IsNodeInTime(const MetricItemSharedPtr& item,
 }
 
 std::unordered_map<long, MetricItemSharedPtr> StatisticNode::Metrics() {
-  int64_t cur_time = Utils::TimeUtils::CurrentTimeMillis().count();
+  using Sentinel::Statistic_Utils;
+  int64_t cur_time = Sentinel::Statistic_Utils::TimeUtils::CurrentTimeMillis().count();
   cur_time = cur_time - cur_time % 1000;
   std::unordered_map<long, MetricItemSharedPtr> map;
   std::vector<MetricItemSharedPtr> items_of_second =

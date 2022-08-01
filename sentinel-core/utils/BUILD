@@ -14,6 +14,7 @@ cc_library(
   deps = [
     "//sentinel-core/statistic/base:leap_array_lib",
     "//sentinel-core/statistic/base:bucket_leap_array_lib",
+    "//sentinel-core/statistic/base:metric_bucket_lib",
     "//sentinel-core/statistic/base:window_wrap_lib",
   ]
 )

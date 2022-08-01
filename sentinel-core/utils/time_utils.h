@@ -10,9 +10,10 @@
 //#include "bucket_leap_array.h"
 #include <thread>
 
+//#include "../../bazel-sentinel-cpp/sentinel-core/statistic/base/bucket_leap_array.h"
+#include "sentinel-core/statistic/base/bucket_leap_array.h"
 #include "sentinel-core/statistic/base/leap_array.h"
 #include "sentinel-core/statistic/base/window_wrap.h"
-#include "sentinel-core/statistic/base/bucket_leap_array.h"
 
 namespace Sentinel {
 namespace Utils {
@@ -35,18 +36,18 @@ class TimeUtils {
  public:
   TimeUtils();
  public:
-  static enum class STATE
+  enum class STATE
   {
     IDLE,
     PREPARE,
     RUNNING
   };
  private:
-  static std::atomic<STATE> state;
+  static std::atomic<STATE> state_;
 
  public:
  void Run();
- inline STATE& get_state() { state.load();};
+ inline STATE& get_state() { auto item = state_.load(); return item; };
  std::pair<long, long> get_current_qps(std::chrono::milliseconds now);
  inline std::chrono::milliseconds get_time() {return CurrentTime(false); } ;
  static TimeUtils& get_instance() { return INSTANCE_; }

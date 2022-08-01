@@ -39,7 +39,7 @@ void TimeUtils::Run()
   while(true)
   {
     this->Check();
-    if(this->state == STATE::RUNNING)
+    if(this->state_ == STATE::RUNNING)
     {
       this->currentTimeMillis_ = std::chrono::duration_cast<std::chrono::milliseconds>(
           std::chrono::system_clock::now().time_since_epoch());
@@ -53,7 +53,7 @@ void TimeUtils::Run()
       continue ;
     }
 
-    if(this->state == STATE::IDLE)
+    if(this->state_ == STATE::IDLE)
     {
       try {
         usleep(300000);//300000 micro seconds = 300 ms
@@ -64,13 +64,13 @@ void TimeUtils::Run()
       continue ;
     }
 
-    if(this->state == STATE::PREPARE)
+    if(this->state_ == STATE::PREPARE)
     {
       //TODO:should print debug level log info here, but I don't have too much time now
       std::cout << "TimeUtils switches to RUNNING" << std::endl;
       this->currentTimeMillis_ = std::chrono::duration_cast<std::chrono::milliseconds>(
           std::chrono::system_clock::now().time_since_epoch());
-      this->state = STATE::RUNNING;
+      this->state_ = STATE::RUNNING;
     }
 
   }
@@ -86,16 +86,16 @@ void TimeUtils::Check()
   }
   this->last_check_ = now;
   std::pair<long, long> qps = this->get_current_qps(now);
-  if(this->state == STATE::IDLE && qps.first > HITS_UPPER_BOUNDARY_)
+  if(this->state_ == STATE::IDLE && qps.first > HITS_UPPER_BOUNDARY_)
   {
     std::cout << "TimeUtil switches to PREPARE for better performance, "
                  "reads= << " << qps.first << "writes= << " << qps.second << std::endl;
-    this->state = STATE::PREPARE;
-  } else if(this->state == STATE::RUNNING && qps.first < HITS_LOWER_BOUNDARY_)
+    this->state_ = STATE::PREPARE;
+  } else if(this->state_ == STATE::RUNNING && qps.first < HITS_LOWER_BOUNDARY_)
   {
     std::cout << "TimeUtil switches to IDLE due to not enough load, "
                  "reads= " << qps.first << "writes= " << qps.second <<std::endl;
-    this->state = STATE::IDLE;
+    this->state_ = STATE::IDLE;
   }
 }
 
@@ -117,8 +117,8 @@ std::pair<long, long> TimeUtils::get_current_qps(std::chrono::milliseconds now)
     {
       return std::make_pair(0,0);
     }
-    return std::make_pair(reads/cnt, writes/cnt);
   }
+  return std::make_pair(reads/cnt, writes/cnt);
 }
 
 std::chrono::milliseconds TimeUtils::CurrentTime(bool inner_call)
@@ -130,7 +130,7 @@ std::chrono::milliseconds TimeUtils::CurrentTime(bool inner_call)
     //external call
     val->get_reads().fetch_add(1);
   }
-  if(this->state == STATE::IDLE || this->state == STATE::PREPARE)
+  if(this->state_ == STATE::IDLE || this->state_ == STATE::PREPARE)
   {
     now =  std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now().time_since_epoch());

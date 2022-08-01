@@ -19,8 +19,8 @@ class MetricBucket {
   void Add(const MetricEvent& event, int64_t n);
   void AddRt(int64_t rt);
 
-  inline long get_writes() { auto temp = writes_.load(); return temp; };
-  inline long get_reads() { auto temp = reads_.load(); return temp; };
+  inline std::atomic<long>& get_writes() { return writes_;};
+  inline std::atomic<long>& get_reads() { return reads_;};
 
  private:
   const std::unique_ptr<std::atomic<int64_t>[]> counters_ =
