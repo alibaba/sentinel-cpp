@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TIME_UTILS_H_
+#define TIME_UTILS_H_
 
 #include <chrono>
 #include <atomic>
@@ -58,3 +59,5 @@ class TimeUtils {
 
 }  // namespace Utils
 }  // namespace Sentinel
+
+#endif //TIME_UTILS_H_
