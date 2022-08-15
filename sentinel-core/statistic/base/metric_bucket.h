@@ -19,17 +19,16 @@ class MetricBucket {
   void Add(const MetricEvent& event, int64_t n);
   void AddRt(int64_t rt);
 
-  //原子类型的拷贝构造函数是deleted的，所以需要返回引用类型，而不是拷贝
-  inline std::atomic<long>& get_writes() { return writes_;};
-  inline std::atomic<long>& get_reads() { return reads_;};
+  inline long get_writes() { return writes_.load();};
+  inline long get_reads() { return reads_.load();};
 
  private:
   const std::unique_ptr<std::atomic<int64_t>[]> counters_ =
       std::make_unique<std::atomic<int64_t>[]>(
           static_cast<int>(MetricEvent::Count));
   long min_rt_;
-  static std::atomic<long> writes_;
-  static std::atomic<long> reads_;
+  std::atomic<long> writes_;
+  std::atomic<long> reads_;
 
   void InitMinRt();
 };
