@@ -18,20 +18,19 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # Rule repository
 http_archive(
    name = "rules_foreign_cc",
-   strip_prefix = "rules_foreign_cc-master",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+   strip_prefix = "rules_foreign_cc-main",
+   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/main.zip",
 )
 
-load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
 rules_foreign_cc_dependencies()
 
 # abseil-cpp
 http_archive(
   name = "com_google_absl",
-  urls = ["https://github.com/abseil/abseil-cpp/archive/61c9bf3e3e1c28a4aa6d7f1be4b37fd473bb5529.tar.gz"], # 2019-06-05
-  strip_prefix = "abseil-cpp-61c9bf3e3e1c28a4aa6d7f1be4b37fd473bb5529",
-  sha256 = "7ddf863ddced6fa5bf7304103f9c7aa619c20a2fcf84475512c8d3834b9d14fa",
+  urls = ["https://github.com/abseil/abseil-cpp/archive/6f9d96a1f41439ac172ee2ef7ccd8edf0e5d068c.zip"],
+  strip_prefix = "abseil-cpp-6f9d96a1f41439ac172ee2ef7ccd8edf0e5d068c",
 )
 
 # Google Test
