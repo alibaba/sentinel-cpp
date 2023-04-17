@@ -66,7 +66,7 @@ RuleSet RuleManager::GetRulesOfResource(const std::string& resource) const {
   absl::ReaderMutexLock lck(&update_mtx_);
   auto it = rule_map_.find(resource);
   if (it == rule_map_.end()) {
-    return {};
+    return RuleSet{};
   }
   return it->second;
 }

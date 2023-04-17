@@ -70,7 +70,8 @@ class SystemStatusListener {
   void UpdateCpuUsage();
   void UpdateSystemLoad();
 
-  std::ifstream file_stat_, file_load_;
+  std::ifstream file_stat_{"/proc/stat", std::ios::binary};
+  std::ifstream file_load_{"/proc/loadavg", std::ios::binary};
 
   // Two snapshots of cpu stat are required to get
   // usage percentage. `p2` is newer than `p1`
