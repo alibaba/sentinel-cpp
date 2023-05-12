@@ -24,7 +24,7 @@ std::shared_ptr<StatisticNodeVO> StatisticNodeVO::FromResourceNode(
   vo->set_block_per_min(node->BlockCountInMinute());
   vo->set_total_per_min(node->TotalCountInMinute());
   vo->set_exception_per_min(node->ExceptionCountInMinute());
-  vo->set_timestamp(Utils::TimeUtils::CurrentTimeMillis().count());
+  vo->set_timestamp(Sentinel::Statistic_Utils::TimeUtils::CurrentTimeMillis().count());
   return vo;
 }
 

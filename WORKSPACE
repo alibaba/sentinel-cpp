@@ -18,11 +18,14 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # Rule repository
 http_archive(
    name = "rules_foreign_cc",
-   strip_prefix = "rules_foreign_cc-master",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+   strip_prefix = "rules_foreign_cc-main",
+   #url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+   url = "https://github.com/shiyi23/sentinel-cpp/raw/master/rules_foreign_cc-main.zip",
 )
 
-load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+#load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
 rules_foreign_cc_dependencies()
 

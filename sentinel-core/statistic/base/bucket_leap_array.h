@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "sentinel-core/statistic/base/leap_array.h"
-#include "sentinel-core/statistic/base/metric_bucket.h"
+#include "leap_array.h"
+#include "metric_bucket.h"
 
 namespace Sentinel {
 namespace Stat {
