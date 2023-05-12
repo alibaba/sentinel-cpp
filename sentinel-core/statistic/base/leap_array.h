@@ -48,7 +48,7 @@ class LeapArray {
   const int32_t bucket_length_ms_;  // time length of each bucket
  private:
   const std::unique_ptr<WindowWrapSharedPtr<T>[]> array_;
-  std::mutex mtx_;
+  mutable std::mutex leap_array_mtx_;
 
   int32_t CalculateTimeIdx(/*@Valid*/ int64_t time_millis) const;
   int64_t CalculateWindowStart(/*@Valid*/ int64_t time_millis) const;
@@ -78,9 +78,12 @@ WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
   int64_t bucket_start = CalculateWindowStart(time_millis);
 
   while (true) {
+    std::unique_lock<std::mutex> lck(leap_array_mtx_, std::defer_lock);
+    // TODO: granularity too rough, need to be optimized.
+    leap_array_mtx_.lock();
     WindowWrapSharedPtr<T> old = array_[idx];
+    leap_array_mtx_.unlock();
     if (old == nullptr) {
-      std::unique_lock<std::mutex> lck(mtx_, std::defer_lock);
       if (lck.try_lock() && array_[idx] == nullptr) {
         WindowWrapSharedPtr<T> bucket = std::make_shared<WindowWrap<T>>(
             bucket_length_ms_, bucket_start, NewEmptyBucket(time_millis));
@@ -90,7 +93,7 @@ WindowWrapSharedPtr<T> LeapArray<T>::CurrentWindow(int64_t time_millis) {
     } else if (bucket_start == old->BucketStart()) {
       return old;
     } else if (bucket_start > old->BucketStart()) {
-      std::unique_lock<std::mutex> lck(mtx_, std::defer_lock);
+      std::unique_lock<std::mutex> lck(leap_array_mtx_, std::defer_lock);
       if (lck.try_lock()) {
         ResetWindowTo(old, bucket_start);
         return old;
@@ -148,7 +151,10 @@ std::vector<WindowWrapSharedPtr<T>> LeapArray<T>::Buckets(
   }
   int size = sample_count_;  // array_.size()
   for (int i = 0; i < size; i++) {
+    // TODO: granularity too rough, need to be optimized.
+    leap_array_mtx_.lock();
     auto w = array_[i];
+    leap_array_mtx_.unlock();
     if (w == nullptr || IsBucketDeprecated(time_millis, w)) {
       continue;
     }
@@ -166,7 +172,10 @@ std::vector<std::shared_ptr<T>> LeapArray<T>::Values(
   }
   int size = sample_count_;  // array_.size()
   for (int i = 0; i < size; i++) {
+    // TODO: granularity too rough, need to be optimized.
+    leap_array_mtx_.lock();
     WindowWrapSharedPtr<T> w = array_[i];
+    leap_array_mtx_.unlock();
     if (w == nullptr || IsBucketDeprecated(time_millis, w)) {
       continue;
     }

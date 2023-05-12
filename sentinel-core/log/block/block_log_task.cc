@@ -81,7 +81,7 @@ void BlockLogTask::Log(const std::string& resource, const std::string& cause) {
   }
   auto key = absl::StrFormat("%s|%s", resource, cause);
   {
-    absl::ReaderMutexLock lck(&mtx_);
+    absl::WriterMutexLock lck(&mtx_);
     auto it = map_.find(key);
     if (it != map_.end()) {
       it->second.last_block_ = TimeUtils::CurrentTimeMillis().count();

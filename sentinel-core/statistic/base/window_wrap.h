@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <memory>
 
 namespace Sentinel {
@@ -21,7 +22,7 @@ class WindowWrap {
   bool IsTimeInBucket(int64_t time_millis) const;
 
  private:
-  int64_t bucket_start_;
+  std::atomic<int64_t> bucket_start_;
   const int64_t bucket_length_ms_;
   const std::shared_ptr<T> value_;
 };
@@ -36,7 +37,7 @@ int64_t WindowWrap<T>::BucketLengthInMs() const {
 
 template <typename T>
 int64_t WindowWrap<T>::BucketStart() const {
-  return bucket_start_;
+  return bucket_start_.load();
 }
 
 template <typename T>
@@ -46,7 +47,7 @@ std::shared_ptr<T> WindowWrap<T>::Value() const {
 
 template <typename T>
 void WindowWrap<T>::ResetTo(int64_t start_time) {
-  this->bucket_start_ = start_time;
+  this->bucket_start_.store(start_time);
 }
 
 template <typename T>

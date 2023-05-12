@@ -11,12 +11,7 @@ namespace Transport {
 HttpServer::HttpServer(http_request_callback_t callback)
     : request_callback_(callback) {}
 
-HttpServer::~HttpServer() {
-  if (http_) {
-    evhttp_free(http_);
-    http_ = nullptr;
-  }
-}
+HttpServer::~HttpServer() { Stop(); }
 
 bool HttpServer::Start(int port) {
   auto ret = event_loop_thread_.Start();
@@ -26,11 +21,9 @@ bool HttpServer::Start(int port) {
 
   port_ = port;
 
-  std::promise<bool> start_promise;
-  auto start_future = start_promise.get_future();
-  auto task = [&start_promise, this]() { InternalStart(start_promise); };
-
-  event_loop_thread_.RunTask(task);
+  auto start_future = start_promise_.get_future();
+  event_loop_thread_.RunTask(
+      [this](void) mutable { InternalStart(start_promise_); });
 
   return start_future.get();
 }
