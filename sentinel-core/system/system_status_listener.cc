@@ -7,7 +7,6 @@ namespace System {
 // Unless both of two /proc/* files read error, the listener thread should be
 // started
 SystemStatusListener::SystemStatusListener() {
-  file_stat_ = std::ifstream("/proc/stat");
   if (file_stat_.is_open()) {
     usage_info_p1_ = std::make_unique<CpuUsageInfo>();
     usage_info_p2_ = std::make_unique<CpuUsageInfo>();
@@ -17,7 +16,6 @@ SystemStatusListener::SystemStatusListener() {
                  "listener not enabled");
   }
 
-  file_load_ = std::ifstream("/proc/loadavg");
   if (file_load_.is_open()) {
     load_info_p_ = std::make_unique<CpuLoadInfo>();
   } else {

@@ -8,13 +8,10 @@ We use the same flags as absl.
 
 load(
     "@com_google_absl//absl:copts/GENERATED_copts.bzl",
-    "ABSL_GCC_EXCEPTIONS_FLAGS",
     "ABSL_GCC_FLAGS",
     "ABSL_GCC_TEST_FLAGS",
-    "ABSL_LLVM_EXCEPTIONS_FLAGS",
     "ABSL_LLVM_FLAGS",
     "ABSL_LLVM_TEST_FLAGS",
-    "ABSL_MSVC_EXCEPTIONS_FLAGS",
     "ABSL_MSVC_FLAGS",
     "ABSL_MSVC_LINKOPTS",
     "ABSL_MSVC_TEST_FLAGS",

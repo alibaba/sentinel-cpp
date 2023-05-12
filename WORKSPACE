@@ -18,26 +18,25 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # Rule repository
 http_archive(
    name = "rules_foreign_cc",
-   strip_prefix = "rules_foreign_cc-master",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+   strip_prefix = "rules_foreign_cc-main",
+   url = "https://ghproxy.com/https://github.com/bazelbuild/rules_foreign_cc/archive/main.zip",
 )
 
-load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
 rules_foreign_cc_dependencies()
 
 # abseil-cpp
 http_archive(
   name = "com_google_absl",
-  urls = ["https://github.com/abseil/abseil-cpp/archive/61c9bf3e3e1c28a4aa6d7f1be4b37fd473bb5529.tar.gz"], # 2019-06-05
-  strip_prefix = "abseil-cpp-61c9bf3e3e1c28a4aa6d7f1be4b37fd473bb5529",
-  sha256 = "7ddf863ddced6fa5bf7304103f9c7aa619c20a2fcf84475512c8d3834b9d14fa",
+  urls = ["https://ghproxy.com/https://github.com/abseil/abseil-cpp/archive/6f9d96a1f41439ac172ee2ef7ccd8edf0e5d068c.zip"],
+  strip_prefix = "abseil-cpp-6f9d96a1f41439ac172ee2ef7ccd8edf0e5d068c",
 )
 
 # Google Test
 http_archive(
   name = "com_google_googletest",
-  urls = ["https://github.com/google/googletest/archive/8b6d3f9c4a774bef3081195d422993323b6bb2e0.zip"],  # 2019-03-05
+  urls = ["https://ghproxy.com/https://github.com/google/googletest/archive/8b6d3f9c4a774bef3081195d422993323b6bb2e0.zip"],  # 2019-03-05
   strip_prefix = "googletest-8b6d3f9c4a774bef3081195d422993323b6bb2e0",
   sha256 = "d21ba93d7f193a9a0ab80b96e8890d520b25704a6fac976fe9da81fffb3392e3",
 )
@@ -45,7 +44,7 @@ http_archive(
 # Google Benchmark
 http_archive(
   name = "com_google_benchmark",
-  urls = ["https://github.com/google/benchmark/archive/505be96ab23056580a3a2315abba048f4428b04e.tar.gz"],
+  urls = ["https://ghproxy.com/https://github.com/google/benchmark/archive/505be96ab23056580a3a2315abba048f4428b04e.tar.gz"],
   strip_prefix = "benchmark-505be96ab23056580a3a2315abba048f4428b04e",
   sha256 = "0de43b6eaddd356f1d6cd164f73f37faf2f6c96fd684e1f7ea543ce49c1d144e",
 )
