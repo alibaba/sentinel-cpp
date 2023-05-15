@@ -8,11 +8,6 @@
 #include "sentinel-core/init/init_target_registry.h"
 #include "sentinel-core/log/metric/metric_log_task.h"
 #include "sentinel-core/public/sph_u.h"
-#include "sentinel-core/transport/command/http_server_init_target.h"
-
-Sentinel::Init::InitTargetRegister<
-    Sentinel::Transport::HttpCommandCenterInitTarget>
-    HCCIT_registered;
 
 void doEntry(const char* resource) {
   while (true) {
@@ -39,8 +34,6 @@ void doAnotherEntry() { doEntry("big_brother_service:foo()"); }
 int main() {
   // Initialize for Sentinel.
   Sentinel::Log::Logger::InitDefaultLogger();
-  Sentinel::Transport::HttpCommandCenterInitTarget command_center_init;
-  command_center_init.Initialize();
   Sentinel::Log::MetricLogTask metric_log_task;
   metric_log_task.Initialize();
 

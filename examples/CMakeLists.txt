@@ -8,7 +8,7 @@ set(SENTINEL_CORE_ROOT_DIR "${CMAKE_SOURCE_DIR}/../sentinel-core")
 
 set(SENTINEL_ROOT_DIR "${CMAKE_SOURCE_DIR}/..")
 
-include( ${CMAKE_SOURCE_DIR}/../cmake/common.cmake )
+include( ${CMAKE_SOURCE_DIR}/../cmake/sentinel_core.cmake )
 
 # basic_qps_limit
 add_executable(basic_qps_limit ${CMAKE_SOURCE_DIR}/../examples/sentinel-cpp/basic_qps_limit.cc)

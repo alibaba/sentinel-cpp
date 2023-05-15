@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION 3.14 )
 
-find_package(Libevent REQUIRED)
-include_directories(${LIBEVENT_INCLUDE_DIR})
+# find_package(Libevent REQUIRED)
+# include_directories(${LIBEVENT_INCLUDE_DIR})
 
 include( ${SENTINEL_ROOT_DIR}/cmake/third_party.cmake )
 
@@ -42,11 +42,6 @@ file(GLOB_RECURSE STATISTIC_SOURCE_FILES "${SENTINEL_CORE_ROOT_DIR}/statistic/*.
 file(GLOB_RECURSE STATISTIC_TEST_SOURCE_FILES "${SENTINEL_CORE_ROOT_DIR}/statistic/*_test.cc")
 list(REMOVE_ITEM STATISTIC_SOURCE_FILES ${STATISTIC_TEST_SOURCE_FILES})
 
-# transport
-file(GLOB_RECURSE TRANSPORT_SOURCE_FILES "${SENTINEL_CORE_ROOT_DIR}/transport/*.cc")
-file(GLOB_RECURSE TRANSPORT_TEST_SOURCE_FILES "${SENTINEL_CORE_ROOT_DIR}/transport/*_test.cc")
-list(REMOVE_ITEM TRANSPORT_SOURCE_FILES ${TRANSPORT_TEST_SOURCE_FILES})
-
 # flow
 file(GLOB FLOW_SOURCE_FILES "${SENTINEL_CORE_ROOT_DIR}/flow/*.cc")
 file(GLOB FLOW_TEST_SOURCE_FILES "${SENTINEL_CORE_ROOT_DIR}/flow/*_test.cc")
@@ -83,10 +78,7 @@ list(APPEND
 
 add_library(sentinel STATIC ${SENTINEL_SOURCE_FILES})
 
-target_link_libraries(sentinel PUBLIC 
-                      libevent::core
-                      libevent::extra
-                      libevent::pthreads
+target_link_libraries(sentinel PUBLIC
                       TBB::tbb
                       spdlog
                       absl::flat_hash_set
