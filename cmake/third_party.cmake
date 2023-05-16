@@ -20,8 +20,10 @@ FetchContent_Declare( onetbb
     GIT_TAG         v2021.9.0
     )
 
+set(ABSL_PROPAGATE_CXX_STD ON)
 FetchContent_MakeAvailable(abseil)
 
 FetchContent_MakeAvailable(spdlog)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTBB_ALLOCATOR_TRAITS_BROKEN")
 FetchContent_MakeAvailable(onetbb)
