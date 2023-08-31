@@ -19,7 +19,7 @@ cc_library(
 cc_test(
   name = "event_loop_thread_unittests",
   srcs = [
-      "event_loop_thread.cc",
+      "event_loop_thread_test.cc",
   ],
   copts = TEST_COPTS,
   deps = [

@@ -38,7 +38,7 @@ cc_library(
 cc_test(
   name = "dynamic_sentinel_property_unittests",
   srcs = [
-    "dynamic_sentinel_property_unittests.cc",
+    "dynamic_sentinel_property_test.cc",
   ],
   copts = TEST_COPTS,
   deps = [

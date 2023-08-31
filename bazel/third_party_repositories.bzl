@@ -6,8 +6,8 @@ def include_third_party_repositories():
     http_archive(
         name = "com_github_libevent",
         build_file_content = all_content,
-        strip_prefix = "libevent-2.1.8-stable",
-        urls = ["https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz"],
+        strip_prefix = "libevent-0d7d85c2083f7a4c9efe01c061486f332b576d28",
+        urls = ["https://github.com/libevent/libevent/archive/0d7d85c2083f7a4c9efe01c061486f332b576d28.tar.gz"],
     )
 
     http_archive(

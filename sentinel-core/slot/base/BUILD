@@ -84,7 +84,7 @@ cc_library(
 cc_test(
   name = "default_slot_chain_impl_unittests",
   srcs = [
-    "default_slot_chain_impl_unittests.cc",
+    "default_slot_chain_impl_test.cc",
   ],
   copts = TEST_COPTS,
   deps = [

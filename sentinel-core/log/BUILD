@@ -57,7 +57,7 @@ cc_test(
 cc_test(
   name = "logger_unittests",
   srcs = [
-    "logger_unittests.cc",
+    "logger_test.cc",
   ],
   copts = TEST_COPTS,
   deps = [
