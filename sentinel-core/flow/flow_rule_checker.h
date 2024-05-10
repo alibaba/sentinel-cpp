@@ -27,9 +27,14 @@ class FlowRuleChecker {
                                             const Stat::NodeSharedPtr& node,
                                             int count, int flag);
 
+  Stat::NodeSharedPtr selectNodeByRequesterAndStrategy(
+      const FlowRule& rule, const EntrySharedPtr& entry,
+      const Stat::NodeSharedPtr& node);
+
   Stat::NodeSharedPtr SelectNodeByRelStrategy(const FlowRule& rule,
                                               const EntrySharedPtr& entry,
                                               const Stat::NodeSharedPtr& node);
+  bool IsValidTag(const std::string& tag);
 };
 
 }  // namespace Flow

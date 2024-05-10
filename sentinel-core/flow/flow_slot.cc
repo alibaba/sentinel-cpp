@@ -9,13 +9,12 @@ namespace Slot {
 const std::string& FlowSlot::Name() const { return name_; }
 
 TokenResultSharedPtr FlowSlot::Entry(const EntrySharedPtr& entry,
-                                     const ResourceWrapperSharedPtr& resource,
                                      Stat::NodeSharedPtr& node, int count,
                                      int flag,
                                      const std::vector<absl::any>& params) {
   std::vector<Flow::FlowRule> rules =
       Flow::FlowRuleManager::GetInstance().GetRulesForResource(
-          resource->name());
+          entry->resource()->name());
   if (!rules.empty()) {
     for (const auto& rule : rules) {
       // check in order
@@ -35,7 +34,7 @@ TokenResultSharedPtr FlowSlot::Entry(const EntrySharedPtr& entry,
   return TokenResult::Ok();
 }
 
-void FlowSlot::Exit(const EntrySharedPtr&, const ResourceWrapperSharedPtr&, int,
+void FlowSlot::Exit(const EntrySharedPtr&, int,
                     const std::vector<absl::any>& params) {
   // Do nothing
 }

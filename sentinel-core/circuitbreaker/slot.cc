@@ -1,4 +1,5 @@
 #include "sentinel-core/circuitbreaker/slot.h"
+
 #include "sentinel-core/circuitbreaker/rule_manager.h"
 #include "sentinel-core/utils/time_utils.h"
 
@@ -8,10 +9,10 @@ namespace CircuitBreaker {
 // CheckerSlot
 
 Sentinel::Slot::TokenResultSharedPtr CheckerSlot::Entry(
-    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
-    Stat::NodeSharedPtr& node, int count, int flag,
+    const EntrySharedPtr& entry, Stat::NodeSharedPtr& node, int count, int flag,
     const std::vector<absl::any>& params) {
-  auto cbs = RuleManager::GetInstance().GetCircuitBreakers(resource->name());
+  auto cbs =
+      RuleManager::GetInstance().GetCircuitBreakers(entry->resource()->name());
   if (cbs.empty()) {
     return Sentinel::Slot::TokenResult::Ok();
   }
@@ -23,14 +24,13 @@ Sentinel::Slot::TokenResultSharedPtr CheckerSlot::Entry(
   return Sentinel::Slot::TokenResult::Ok();
 }
 
-void CheckerSlot::Exit(const EntrySharedPtr& entry,
-                       const ResourceWrapperSharedPtr& resource, int count,
+void CheckerSlot::Exit(const EntrySharedPtr& entry, int count,
                        const std::vector<absl::any>& params) {}
 
 // CompleteStatSlot
 
 Sentinel::Slot::TokenResultSharedPtr CompleteStatSlot::Entry(
-    const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
+    const EntrySharedPtr& entry,
     /*const*/ Stat::NodeSharedPtr& node, int count, int flag,
     const std::vector<absl::any>& params) {
   if (entry == nullptr || entry->context() == nullptr) {
@@ -43,13 +43,13 @@ Sentinel::Slot::TokenResultSharedPtr CompleteStatSlot::Entry(
   return prev_result;
 }
 
-void CompleteStatSlot::Exit(const EntrySharedPtr& entry,
-                            const ResourceWrapperSharedPtr& resource, int count,
+void CompleteStatSlot::Exit(const EntrySharedPtr& entry, int count,
                             const std::vector<absl::any>& params) {
   if (entry == nullptr || entry->HasBlockError()) {
     return;
   }
-  auto cbs = RuleManager::GetInstance().GetCircuitBreakers(resource->name());
+  auto cbs =
+      RuleManager::GetInstance().GetCircuitBreakers(entry->resource()->name());
   if (cbs.empty()) {
     return;
   }

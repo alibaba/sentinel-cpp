@@ -19,11 +19,9 @@ class DefaultSlotChainImpl : public SlotChain {
   void AddFirst(std::unique_ptr<Slot>&& slot) override;
   void AddLast(std::unique_ptr<Slot>&& slot) override;
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
-                             const ResourceWrapperSharedPtr& resource,
                              Stat::NodeSharedPtr& node, int count, int flag,
                              const std::vector<absl::any>& params) override;
-  void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count,
+  void Exit(const EntrySharedPtr& entry, int count,
             const std::vector<absl::any>& params) override;
 
  private:

@@ -20,12 +20,10 @@ class StatisticSlot : public StatsSlot {
   const std::string& Name() const override;
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
-                             const ResourceWrapperSharedPtr& resource,
                              /*const*/ Stat::NodeSharedPtr&, int count,
                              int flag,
                              const std::vector<absl::any>& params) override;
-  void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count,
+  void Exit(const EntrySharedPtr& entry, int count,
             const std::vector<absl::any>& params) override;
 
  private:

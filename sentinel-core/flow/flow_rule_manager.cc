@@ -119,6 +119,26 @@ std::shared_ptr<TrafficShapingController> FlowRuleManager::GenerateController(
   return CreateDefaultController(rule);
 }
 
+bool FlowRuleManager::IsTagNotInFlowRuleList(const std::string& resource_name,
+                                             const std::string& tag) {
+  if (tag.empty()) {
+    return false;
+  }
+  absl::ReaderMutexLock lck(&update_mtx_);
+  auto got = rule_map_.find(resource_name);
+  if (got == rule_map_.end()) {
+    return true;
+  }
+
+  for (const auto rule : got->second) {
+    if (rule.limit_origin() == tag) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // FlowPropertyListener
 
 void LogFlowMap(const std::unordered_map<std::string, FlowRuleList>& map) {
@@ -169,7 +189,7 @@ void FlowPropertyListener::ConfigUpdate(const FlowRuleList& value, bool) {
     if (it == new_rule_map.end()) {
       new_rule_map.insert({rule.resource(), {rule}});
     } else {
-      auto vec = it->second;
+      auto& vec = it->second;
       vec.push_back(std::move(rule));
     }
   }

@@ -15,11 +15,9 @@ class FlowSlot : public RuleCheckerSlot {
   virtual ~FlowSlot() = default;
 
   TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
-                             const ResourceWrapperSharedPtr& resource,
                              Stat::NodeSharedPtr& node, int count, int flag,
                              const std::vector<absl::any>& params) override;
-  void Exit(const EntrySharedPtr& entry,
-            const ResourceWrapperSharedPtr& resource, int count,
+  void Exit(const EntrySharedPtr& entry, int count,
             const std::vector<absl::any>& params) override;
   const std::string& Name() const override;
 

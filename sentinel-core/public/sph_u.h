@@ -31,14 +31,13 @@ class SphU {
   static EntryResultPtr Entry(const std::string& r, EntryType t, int count);
   static EntryResultPtr Entry(const std::string& r, EntryType t);
   static EntryResultPtr Entry(const std::string& r);
-
- private:
-  SphU() = default;
-  // Will be public after Sentinel C++ supports invocation chain.
   template <typename... Ts>
   static EntryResultPtr Entry(const EntryContextSharedPtr& context,
                               const std::string& r, EntryType t, int count,
                               int flag, Ts... args);
+
+ private:
+  SphU() = default;
 };
 
 template <typename T>
@@ -72,12 +71,12 @@ EntryResultPtr SphU::Entry(const EntryContextSharedPtr& context,
   std::vector<absl::any> params;
   FetchParams(params, args...);
   Stat::NodeSharedPtr empty_node = nullptr;
-  auto result = chain->Entry(e, resource, empty_node, count, flag, params);
+  auto result = chain->Entry(e, empty_node, count, flag, params);
 
   if (result->status() == Slot::TokenStatus::RESULT_STATUS_BLOCKED) {
     // NOTE: keep consistent with EntryResult::exit.
     if (chain != nullptr) {
-      chain->Exit(e, e->resource(), count, params);
+      chain->Exit(e, count, params);
     }
     return std::make_unique<EntryResult>(result->blocked_reason().value());
   }

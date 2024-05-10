@@ -28,7 +28,7 @@ Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
     const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodeSharedPtr& node, int count, int flag) {
   Stat::NodeSharedPtr selected_node =
-      SelectNodeByRelStrategy(rule, entry, node);
+      selectNodeByRequesterAndStrategy(rule, entry, node);
   if (selected_node == nullptr) {
     return Slot::TokenResult::Ok();
   }
@@ -40,8 +40,43 @@ Slot::TokenResultSharedPtr FlowRuleChecker::PassLocalCheck(
   return controller->CanPass(selected_node, count, flag);
 }
 
+Stat::NodeSharedPtr FlowRuleChecker::selectNodeByRequesterAndStrategy(
+    const FlowRule& rule, const EntrySharedPtr& entry,
+    const Stat::NodeSharedPtr& node) {
+  FlowRuleManager& m = FlowRuleManager::GetInstance();
+  std::string tag = entry->context()->tag();
+  std::string limit_origin = rule.limit_origin();
+  FlowRelationStrategy strategy = rule.strategy();
+  Stat::NodeSharedPtr tag_node = entry->context()->tag_node();
+
+  if ((tag == limit_origin) && IsValidTag(tag)) {
+    if (strategy == FlowRelationStrategy::kDirect) {
+      // When tag matches, return tag node.
+      return tag_node;
+    }
+    return SelectNodeByRelStrategy(rule, entry, node);
+  } else if (limit_origin == Constants::kLimitOriginDefault) {
+    if (strategy == FlowRelationStrategy::kDirect) {
+      // When rule contains default tag, which means all request should follow
+      // rule's limit count.
+      return node;
+    }
+    return SelectNodeByRelStrategy(rule, entry, node);
+  } else if ((limit_origin == Constants::kLimitOriginOther) &&
+             m.IsTagNotInFlowRuleList(rule.resource(), tag)) {
+    if (strategy == FlowRelationStrategy::kDirect) {
+      // When rule contains other tag, which means all request except this tag
+      // should follow this rule.
+      return tag_node;
+    }
+    return SelectNodeByRelStrategy(rule, entry, node);
+  }
+
+  return nullptr;
+}
+
 Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
-    const FlowRule& rule, const EntrySharedPtr&,
+    const FlowRule& rule, const EntrySharedPtr& entry,
     const Stat::NodeSharedPtr& node) {
   const std::string& ref_resource = rule.ref_resource();
   auto rel_strategy = rule.strategy();
@@ -50,7 +85,13 @@ Stat::NodeSharedPtr FlowRuleChecker::SelectNodeByRelStrategy(
     return Stat::ResourceNodeStorage::GetInstance().GetClusterNode(
         ref_resource);
   }
+
   return node;
+}
+
+bool FlowRuleChecker::IsValidTag(const std::string& tag) {
+  return !tag.empty() && (tag != Constants::kLimitOriginDefault) &&
+         (tag != Constants::kLimitOriginOther);
 }
 
 }  // namespace Flow

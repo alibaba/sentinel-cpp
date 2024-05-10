@@ -21,10 +21,10 @@ Sentinel::Slot::TokenResultSharedPtr Entry_And_Exit(
     const EntrySharedPtr& entry, const ResourceWrapperSharedPtr& resource,
     Stat::NodeSharedPtr& node, int count, int flag,
     const std::vector<absl::any>& params) {
-  auto result = slot_checker.Entry(entry, resource, node, count, flag, params);
+  auto result = slot_checker.Entry(entry, node, count, flag, params);
   EXPECT_EQ(Sentinel::Slot::TokenStatus::RESULT_STATUS_OK, result->status());
-  slot_complete.Entry(entry, resource, node, count, flag, params);
-  slot_complete.Exit(entry, resource, count, params);
+  slot_complete.Entry(entry, node, count, flag, params);
+  slot_complete.Exit(entry, count, params);
 
   return result;
 }
@@ -78,13 +78,13 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerErrorRatioTest) {
   sleep(1);
 
   // Switch state to kHalfOpen
-  auto result = slot_checker.Entry(entry, resource, node, 1, 0, myParams);
+  auto result = slot_checker.Entry(entry, node, 1, 0, myParams);
   EXPECT_EQ(Sentinel::Slot::TokenStatus::RESULT_STATUS_OK, result->status());
   EXPECT_EQ(cbs[0]->CurrentState(), State::kHalfOpen);
 
   // Switch state to kClosed
-  slot_complete.Entry(entry, resource, node, 1, 0, myParams);
-  slot_complete.Exit(entry, resource, 1, myParams);
+  slot_complete.Entry(entry, node, 1, 0, myParams);
+  slot_complete.Exit(entry, 1, myParams);
   EXPECT_EQ(cbs[0]->CurrentState(), State::kClosed);
 
   m.LoadRules({});
@@ -141,13 +141,13 @@ TEST(CircuitBreakerSlotTest, CircuitBreakerSlowRatioTest) {
   sleep(1);
 
   // Switch state to kHalfOpen
-  auto result = slot_checker.Entry(entry, resource, node, 1, 0, myParams);
+  auto result = slot_checker.Entry(entry, node, 1, 0, myParams);
   EXPECT_EQ(Sentinel::Slot::TokenStatus::RESULT_STATUS_OK, result->status());
   EXPECT_EQ(cbs[0]->CurrentState(), State::kHalfOpen);
 
   // Switch state to kClosed
-  slot_complete.Entry(entry, resource, node, 1, 0, myParams);
-  slot_complete.Exit(entry, resource, 1, myParams);
+  slot_complete.Entry(entry, node, 1, 0, myParams);
+  slot_complete.Exit(entry, 1, myParams);
   EXPECT_EQ(cbs[0]->CurrentState(), State::kClosed);
 
   m.LoadRules({});

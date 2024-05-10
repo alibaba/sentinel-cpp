@@ -15,12 +15,10 @@ class SlotBase {
  public:
   virtual ~SlotBase() = default;
   virtual TokenResultSharedPtr Entry(const EntrySharedPtr& entry,
-                                     const ResourceWrapperSharedPtr& resource,
                                      Stat::NodeSharedPtr& node, int count,
                                      int flag,
                                      const std::vector<absl::any>& params) = 0;
-  virtual void Exit(const EntrySharedPtr& entry,
-                    const ResourceWrapperSharedPtr& resource, int count,
+  virtual void Exit(const EntrySharedPtr& entry, int count,
                     const std::vector<absl::any>& params) = 0;
 };
 

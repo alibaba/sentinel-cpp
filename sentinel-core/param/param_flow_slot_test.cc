@@ -35,7 +35,7 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
   ParamFlowSlot slot;
   {
     // Pass since no rule exists.
-    auto result = slot.Entry(entry, resource, uselessNode, 1000, 0, myParams);
+    auto result = slot.Entry(entry, uselessNode, 1000, 0, myParams);
     EXPECT_EQ(TokenStatus::RESULT_STATUS_OK, result->status());
   }
 
@@ -78,14 +78,12 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
   // but not eliminate this possibility.
   // If this occurs, retry until the test passes...
   {
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_OK,
-        slot.Entry(entry, resource, uselessNode, 9, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(entry, uselessNode, 9, 0, myParams)->status());
     slot.GetParamMetric(resource->name())->AddPass(9, myParams);
 
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_BLOCKED,
-        slot.Entry(entry, resource, uselessNode, 2, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+              slot.Entry(entry, uselessNode, 2, 0, myParams)->status());
     EXPECT_EQ(slot.GetParamMetric(resource->name())
                   ->PassInterval(rule0.metric_key(), myParams[0]),
               9);
@@ -94,9 +92,8 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
               2);
 
     myParams.pop_back();
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_OK,
-        slot.Entry(entry, resource, uselessNode, 100, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(entry, uselessNode, 100, 0, myParams)->status());
     EXPECT_EQ(slot.GetParamMetric(resource->name())
                   ->PassInterval(rule0.metric_key(), 15213),
               9);
@@ -107,31 +104,26 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
 
   {  // Exception hot item rule
     myParams.push_back(78);
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_OK,
-        slot.Entry(entry, resource, uselessNode, 50, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(entry, uselessNode, 50, 0, myParams)->status());
     slot.GetParamMetric(resource->name())->AddPass(50, myParams);
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_OK,
-        slot.Entry(entry, resource, uselessNode, 50, 0, myParams)->status());
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_BLOCKED,
-        slot.Entry(entry, resource, uselessNode, 51, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(entry, uselessNode, 50, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+              slot.Entry(entry, uselessNode, 51, 0, myParams)->status());
     myParams.pop_back();
   }
 
   {  // thread limit
     myParams.push_back(13239);
     myParams.push_back(std::string("justAnExample"));
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_OK,
-        slot.Entry(entry, resource, uselessNode, 1, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(entry, uselessNode, 1, 0, myParams)->status());
     slot.GetParamMetric(resource->name())->AddThreadCount(myParams);
 
     // Blocked due to thread count exceeded on idx 1
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_BLOCKED,
-        slot.Entry(entry, resource, uselessNode, 1, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
+              slot.Entry(entry, uselessNode, 1, 0, myParams)->status());
     EXPECT_EQ(1, slot.GetParamMetric(resource->name())
                      ->GetThreadCount(1, std::string("justAnExample")));
     slot.GetParamMetric(resource->name())->DecreaseThreadCount(myParams);
@@ -140,9 +132,8 @@ TEST(ParamFlowSlotTest, ParamFlowControlSingleThreadIntegrationTest) {
 
     // Pass since value on idx 1 has changed
     myParams[1] = std::string("anotherExample");
-    EXPECT_EQ(
-        TokenStatus::RESULT_STATUS_OK,
-        slot.Entry(entry, resource, uselessNode, 1, 0, myParams)->status());
+    EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
+              slot.Entry(entry, uselessNode, 1, 0, myParams)->status());
   }
 }
 

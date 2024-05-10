@@ -23,13 +23,14 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::IN);
   auto resource_out =
       std::make_shared<StringResourceWrapper>(resource_name, EntryType::OUT);
-  auto entry = std::make_shared<Entry>(resource_in, context);
+  auto entry_in = std::make_shared<Entry>(resource_in, context);
+  auto entry_out = std::make_shared<Entry>(resource_out, context);
   SystemSlot slot;
   std::vector<absl::any> myParams;
 
   // No rule set
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-            slot.Entry(entry, resource_in, node, 1000, 0, myParams)->status());
+            slot.Entry(entry_in, node, 1000, 0, myParams)->status());
 
   System::SystemRule rule1(System::MetricType::kCpuUsage, 0.6);
   System::SystemRule rule2(System::MetricType::kQps, 1);
@@ -41,9 +42,9 @@ TEST(SystemSlotTest, SystemRuleSingleThreadTest) {
 
   // OUT entry type should not be blocked by system rule
   EXPECT_EQ(TokenStatus::RESULT_STATUS_OK,
-            slot.Entry(entry, resource_out, node, 1000, 0, myParams)->status());
+            slot.Entry(entry_out, node, 1000, 0, myParams)->status());
   EXPECT_EQ(TokenStatus::RESULT_STATUS_BLOCKED,
-            slot.Entry(entry, resource_in, node, 10, 0, myParams)->status());
+            slot.Entry(entry_in, node, 10, 0, myParams)->status());
 
   MockSystemSlot mock_system_slot;
   ON_CALL(mock_system_slot, CheckSystem(_, _, _))
