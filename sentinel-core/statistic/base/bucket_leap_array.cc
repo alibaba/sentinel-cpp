@@ -1,4 +1,4 @@
-#include "sentinel-core/statistic/base/bucket_leap_array.h"
+#include "bucket_leap_array.h"
 
 namespace Sentinel {
 namespace Stat {
