@@ -36,8 +36,9 @@ void doAnotherEntry() { doEntry("big_brother_service:foo()"); }
 int main() {
   // Initialize for Sentinel.
   Sentinel::Log::Logger::InitDefaultLogger();
-  Sentinel::Transport::HttpCommandCenterInitTarget command_center_init;
-  command_center_init.Initialize();
+  Sentinel::Transport::HttpCommandCenterInitTarget* p_command_center_init =
+      new Sentinel::Transport::HttpCommandCenterInitTarget();
+  p_command_center_init->Initialize();
   Sentinel::Log::MetricLogTask metric_log_task;
   metric_log_task.Initialize();
 
@@ -73,5 +74,8 @@ int main() {
   t4.join();
   t5.join();
   t6.join();
+
+  delete p_command_center_init;
+
   return 0;
 }

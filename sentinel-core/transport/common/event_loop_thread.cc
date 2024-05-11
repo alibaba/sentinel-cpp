@@ -7,31 +7,32 @@
 namespace Sentinel {
 namespace Transport {
 
-EventLoopThread::EventLoopThread() : stoped_(true) {}
+EventLoopThread::EventLoopThread() = default;
 
 bool EventLoopThread::Start() {
   std::promise<bool> start_promise;
   auto start_future = start_promise.get_future();
 
-  thd_.reset(
-      new std::thread([this, &start_promise] { this->Work(start_promise); }));
+  thd_.reset(new std::thread(
+      [start_promise = std::move(start_promise), this]() mutable {
+        this->Work(std::move(start_promise));
+      }));
 
   return start_future.get();
 }
 
 void EventLoopThread::Stop() {
-  if (stoped_.load()) {
+  bool expected = false;
+  if (!stoped_.compare_exchange_strong(expected, true)) {
     return;
   }
-
-  stoped_ = true;
 
   Wakeup();
 
   thd_->join();
 }
 
-void EventLoopThread::Work(std::promise<bool>& promise) {
+void EventLoopThread::Work(std::promise<bool>&& promise) {
   auto ret = InitEventBase();
   if (!ret) {
     promise.set_value(false);
@@ -42,7 +43,9 @@ void EventLoopThread::Work(std::promise<bool>& promise) {
 
   Dispatch();
 
-  ClearEventBase();
+  // Do free job outside by whom use eventloop event_base struct, i.e.,
+  // HttpServer. If not follow the rule above, which will lead to unexpected
+  // problems of data race. ClearEventBase();
 }
 
 bool EventLoopThread::InitEventBase() {
@@ -101,15 +104,15 @@ void EventLoopThread::Dispatch() {
   }
 }
 
-void EventLoopThread::RunTask(Functor func) {
+void EventLoopThread::RunTask(Functor&& func) {
   if (IsInLoopThread()) {
     func();
     return;
   }
 
   {
-    std::lock_guard<std::mutex> lock(task_mutex_);
-    pending_tasks_.emplace_back(func);
+    absl::WriterMutexLock lck(&task_mutex_);
+    pending_tasks_.emplace_back(std::move(func));
   }
 
   Wakeup();
@@ -142,7 +145,7 @@ void EventLoopThread::DoPendingTasks() {
   std::vector<Functor> functors;
 
   {
-    std::lock_guard<std::mutex> lock(task_mutex_);
+    absl::WriterMutexLock lck(&task_mutex_);
     functors.swap(pending_tasks_);
   }
 
